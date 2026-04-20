@@ -1,29 +1,19 @@
 // src/app/app.ts
 import { Component } from '@angular/core';
-import { RouterOutlet, RouterLink } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
+import { Navbar } from './shared/pages/navbar/navbar';
 import { Player } from './features/podcast/components/player/player';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, Player],
+  imports: [RouterOutlet, Navbar, Player],
   template: `
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
-      <a class="navbar-brand" routerLink="/">ng-podcast</a>
-      <div class="collapse navbar-collapse">
-        <ul class="navbar-nav ms-auto gap-2">
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/podcasts">Podcasts</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
-
-    <main>
+    <app-navbar />
+    <main class="np-page np-section">
       <router-outlet />
     </main>
-
     <app-player />
   `
 })
-export class App {}   // ← nom "App" pour correspondre aux imports dans main.ts
+export class App {}
