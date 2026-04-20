@@ -1,0 +1,22 @@
+// src/styles/theme.scss
+
+[data-theme="dark"] {
+  --np-bg: #1c140f;
+  --np-bg-secondary: #2a1f18;
+  --np-surface: rgba(255, 255, 255, 0.07);
+  --np-surface-hover: rgba(255, 255, 255, 0.13);
+
+  --np-text: #f5e8d3;
+  --np-text-muted: rgba(245, 232, 211, 0.65);
+  --np-text-hint: rgba(245, 232, 211, 0.38);
+
+  --np-border: rgba(245, 232, 211, 0.12);
+  --np-border-subtle: rgba(139, 69, 19, 0.35);
+
+  --np-player-bg: rgba(20, 12, 8, 0.96);
+
+  --np-shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.35);
+  --np-shadow-md: 0 10px 30px rgba(0, 0, 0, 0.45);
+  --np-shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.55);
+  --np-shadow-glow: 0 0 28px rgba(193, 122, 78, 0.45);
+}

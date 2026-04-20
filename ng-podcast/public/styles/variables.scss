@@ -1,0 +1,56 @@
+// src/styles/variables.scss
+
+// =============================================
+// VARIABLES CSS - CAFÉ PROFOND
+// =============================================
+
+:root {
+  // Palette principale Café Profond
+  --np-primary: #8b4513;
+  --np-primary-light: #c17a4e;
+  --np-primary-dark: #5c2f0d;
+  --np-primary-glow: rgba(139, 69, 19, 0.35);
+  --np-primary-soft: rgba(139, 69, 19, 0.12);
+
+  // Neutres chaleureux (inspirés de l'image)
+  --np-beige: #f5e8d3;
+  --np-beige-dark: #e8d4b8;
+
+  // Backgrounds - Light Mode
+  --np-bg: #f8f1e9;
+  --np-bg-secondary: #f0e6d9;
+  --np-surface: rgba(255, 255, 255, 0.75);
+  --np-surface-hover: rgba(255, 255, 255, 0.90);
+
+  // Textes - Light Mode
+  --np-text: #3c2f2f;
+  --np-text-muted: rgba(60, 47, 47, 0.65);
+  --np-text-hint: rgba(60, 47, 47, 0.40);
+
+  // Bordures
+  --np-border: rgba(139, 69, 19, 0.18);
+  --np-border-subtle: rgba(139, 69, 19, 0.12);
+
+  // Glassmorphism
+  --np-blur: blur(16px);
+  --np-blur-strong: blur(24px);
+
+  // Player (barre du bas)
+  --np-player-bg: rgba(60, 35, 20, 0.94);
+
+  // Radius
+  --np-radius-sm: 8px;
+  --np-radius-md: 14px;
+  --np-radius-lg: 20px;
+  --np-radius-xl: 28px;
+
+  // Transitions
+  --np-transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --np-transition-slow: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+  // Ombres
+  --np-shadow-sm: 0 4px 15px rgba(139, 69, 19, 0.08);
+  --np-shadow-md: 0 10px 30px rgba(139, 69, 19, 0.12);
+  --np-shadow-lg: 0 20px 50px rgba(60, 35, 20, 0.18);
+  --np-shadow-glow: 0 0 25px rgba(139, 69, 19, 0.30);
+}

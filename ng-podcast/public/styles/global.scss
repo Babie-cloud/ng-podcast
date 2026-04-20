@@ -1,0 +1,167 @@
+// src/styles/global.scss
+
+// Imports
+@import 'variables';
+@import 'theme';
+
+// Bootstrap (optionnel, tu peux le garder ou le supprimer si tu veux du pur custom)
+@import 'bootstrap/scss/bootstrap';
+
+// Base globale
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--np-bg);
+  color: var(--np-text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  transition: background 0.4s ease, color 0.4s ease;
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+// Glassmorphism (adapté au marron)
+.glass {
+  background: var(--np-surface);
+  border: 1px solid var(--np-border);
+  backdrop-filter: var(--np-blur);
+  -webkit-backdrop-filter: var(--np-blur);
+  border-radius: var(--np-radius-md);
+  box-shadow: var(--np-shadow-sm);
+  transition: var(--np-transition);
+
+  &:hover {
+    background: var(--np-surface-hover);
+    box-shadow: var(--np-shadow-md);
+    transform: translateY(-3px);
+  }
+}
+
+.glass-strong {
+  @extend .glass;
+  backdrop-filter: var(--np-blur-strong);
+  -webkit-backdrop-filter: var(--np-blur-strong);
+  border-radius: var(--np-radius-lg);
+}
+
+.glass-card {
+  @extend .glass;
+  padding: 1.5rem;
+  border-radius: var(--np-radius-lg);
+}
+
+// Boutons adaptés au marron
+.btn-np {
+  background: var(--np-primary);
+  color: white;
+  border: none;
+  border-radius: var(--np-radius-sm);
+  padding: 11px 22px;
+  font-weight: 600;
+  font-size: 14.5px;
+  cursor: pointer;
+  transition: var(--np-transition);
+  box-shadow: var(--np-shadow-sm);
+
+  &:hover {
+    background: var(--np-primary-light);
+    box-shadow: var(--np-shadow-glow);
+    transform: translateY(-2px);
+    color: white;
+  }
+
+  &:active {
+    transform: scale(0.96);
+  }
+}
+
+.btn-np-outline {
+  background: transparent;
+  color: var(--np-primary);
+  border: 1.8px solid var(--np-primary);
+  border-radius: var(--np-radius-sm);
+  padding: 10px 22px;
+  font-weight: 600;
+  transition: var(--np-transition);
+
+  &:hover {
+    background: var(--np-primary-soft);
+    color: var(--np-primary);
+  }
+}
+
+// Navbar
+.np-navbar {
+  background: var(--np-player-bg);
+  backdrop-filter: var(--np-blur-strong);
+  border-bottom: 1px solid var(--np-border);
+  padding: 0 2rem;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  .np-brand {
+    font-size: 22px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--np-primary-light), var(--np-primary));
+    //-webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+// Carte Podcast (très importante pour ton design)
+.np-podcast-card {
+  @extend .glass;
+  border-radius: var(--np-radius-lg);
+  overflow: hidden;
+  height: 100%;
+
+  .np-card-cover {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  &:hover .np-card-cover {
+    transform: scale(1.06);
+  }
+
+  .np-card-body {
+    padding: 1.25rem;
+  }
+
+  .np-card-title {
+    font-size: 15.5px;
+    font-weight: 700;
+    color: var(--np-text);
+    margin-bottom: 6px;
+  }
+
+  .np-card-author {
+    color: var(--np-primary-light);
+    font-weight: 500;
+  }
+}
+
+// Autres composants (tu peux les ajouter progressivement)
+.np-theme-toggle {
+  // même style que dans ton ancien fichier, mais avec les nouvelles variables
+}
+
+// Utilitaires
+.np-gradient-text {
+  background: linear-gradient(135deg, var(--np-primary-light), var(--np-primary));
+ // -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.np-divider {
+  border: none;
+  border-top: 1px solid var(--np-border);
+  margin: 2rem 0;
+}
