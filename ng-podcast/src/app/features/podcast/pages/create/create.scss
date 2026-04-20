@@ -1,0 +1,17 @@
+ form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .error {
+      color: red;
+    } 
+    .cover-preview {
+      margin-top: 8px;
+      max-width: 200px;
+      border-radius: 4px;
+    }
+    .audio-info {
+      margin-top: 8px;
+      font-style: italic;
+    }

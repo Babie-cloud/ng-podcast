@@ -1,1 +1,108 @@
-<p>create works!</p>
+   <div class="container py-4" style="max-width: 680px">
+      <h1 class="mb-4">Créer un podcast</h1>
+
+      <div class="card p-4">
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Titre *</label>
+          <input
+            class="form-control"
+            [class.is-invalid]="isInvalid('title')"
+            placeholder="Le nom de votre podcast"
+            [formControl]="form.controls.title"
+          />
+          @if (isInvalid('title')) {
+            <div class="invalid-feedback">Le titre est requis (3 caractères min.)</div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Description *</label>
+          <textarea
+            class="form-control"
+            rows="4"
+            placeholder="De quoi parle votre podcast ?"
+            [class.is-invalid]="isInvalid('description')"
+            [formControl]="form.controls.description"
+          ></textarea>
+          @if (isInvalid('description')) {
+            <div class="invalid-feedback">La description est requise (10 caractères min.)</div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Image de couverture</label>
+          <input
+            type="file"
+            class="form-control"
+            accept="image/*"
+            (change)="onCoverChange($event)"
+          />
+          @if (coverPreview()) {
+            <img
+              [src]="coverPreview()"
+              alt="Aperçu"
+              class="mt-2 rounded"
+              style="max-height:160px; object-fit:cover"
+            />
+          }
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Premier épisode audio</label>
+          <input
+            type="file"
+            class="form-control"
+            accept="audio/*"
+            (change)="onAudioChange($event)"
+          />
+          @if (audioFile()) {
+            <small class="text-success d-block mt-1">
+              Fichier sélectionné : {{ audioFile()!.name }}
+            </small>
+          }
+        </div>
+
+        @if (store.hasError()) {
+          <div class="alert alert-danger">{{ store.error() }}</div>
+        }
+
+        <div class="d-flex gap-2">
+          <button
+            class="btn btn-primary"
+            [disabled]="form.invalid || store.loading()"
+            (click)="submit()"
+          >
+            @if (store.loading()) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+              Création en cours...
+            } @else {
+              Créer le podcast
+            }
+          </button>
+          <button
+            class="btn btn-outline-secondary"
+            (click)="router.navigate(['/podcasts'])"
+          >
+            Annuler
+          </button>
+        </div>
+      </div>
+
+      // Ajouter dans le template de create.component.ts
+// juste avant le bouton "Créer mon podcast"
+
+@if (store.uploadProgress() > 0 && store.loading()) {
+  <div class="mb-3">
+    <div class="d-flex justify-content-between small text-muted mb-1">
+      <span>Upload en cours...</span>
+      <span>{{ store.uploadProgress() }}%</span>
+    </div>
+    <div class="progress" style="height: 8px">
+      <div
+        class="progress-bar progress-bar-striped progress-bar-animated"
+        [style.width.%]="store.uploadProgress()"
+      ></div>
+    </div>
+  </div>
+}
+    </div>

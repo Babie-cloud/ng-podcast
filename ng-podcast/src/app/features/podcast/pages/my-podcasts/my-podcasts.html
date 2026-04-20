@@ -1,1 +1,77 @@
-<p>my-podcasts works!</p>
+<!-- src/app/features/podcast/pages/my-podcasts/my-podcasts.html -->
+<div class="container py-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Mes podcasts</h1>
+    <a routerLink="/podcasts/create" class="btn btn-primary">
+      + Nouveau podcast
+    </a>
+  </div>
+
+  @if (store.loading()) {
+    <div class="d-flex justify-content-center py-5">
+      <div class="spinner-border text-primary" role="status"></div>
+    </div>
+  }
+
+  @if (store.hasError()) {
+    <div class="alert alert-danger">{{ store.error() }}</div>
+  }
+
+  @if (!store.loading() && store.podcastCount() === 0) {
+    <div class="text-center py-5 text-muted">
+      <p class="mb-3">Vous n'avez pas encore de podcast.</p>
+      <a routerLink="/podcasts/create" class="btn btn-outline-primary">
+        Créer mon premier podcast
+      </a>
+    </div>
+  }
+
+  <div class="list-group">
+    @for (podcast of store.podcasts(); track podcast.id) {
+      <div class="list-group-item d-flex justify-content-between align-items-center">
+
+        <div class="d-flex align-items-center gap-3">
+          <img
+            [src]="podcast.coverUrl"
+            [alt]="podcast.title"
+            width="56"
+            height="56"
+            class="rounded"
+            style="object-fit:cover"
+          />
+          <div>
+            <strong>{{ podcast.title }}</strong>
+            <br />
+            <small class="text-muted">
+              {{ podcast.episodes.length }} épisode(s) —
+              {{ podcast.createdAt | date:'dd/MM/yyyy' }}
+            </small>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2">
+          <!-- ✅ Balise <a> complète avec le chevron d'ouverture  Voir
+          </a> -->
+          
+            [routerLink]="['/podcasts', podcast.id]"
+            class="btn btn-sm btn-outline-secondary"
+          >
+           
+          <button
+            class="btn btn-sm btn-outline-danger"
+            (click)="confirmDelete(podcast.id, podcast.title)"
+          >
+            Supprimer
+          </button>
+        </div>
+
+      </div>
+    } @empty {
+      <div class="text-center py-4 text-muted">
+        Aucun podcast pour le moment.
+      </div>
+    }
+  </div>
+
+</div>

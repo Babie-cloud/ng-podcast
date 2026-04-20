@@ -1,1 +1,20 @@
-<p>home works!</p>
+@if (store.loading()) {
+      <p>Chargement...</p>
+    }
+
+    @if (store.hasError()) {
+      <p class="text-danger">{{ store.error() }}</p>
+    }
+
+    <div class="row">
+      @for (podcast of store.podcasts(); track podcast.id) {
+        <div class="col-md-4">
+          <app-podcast-card
+            [podcast]="podcast"
+            (play)="store.play($event)"
+          />
+        </div>
+      }
+    </div>
+
+    <p class="text-muted">{{ store.podcastCount() }} podcast(s)</p>

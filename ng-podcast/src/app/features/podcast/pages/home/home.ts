@@ -1,9 +1,18 @@
-import { Component } from '@angular/core';
+// src/app/features/podcast/pages/home/home.ts
+import { Component, OnInit, inject } from '@angular/core';
+import { PodcastStore } from '../../store/podcast.store';
+import { PodcastCard } from '../../components/podcast-card/podcast-card';
 
 @Component({
   selector: 'app-home',
-  imports: [],
-  templateUrl: './home.html',
-  styleUrl: './home.scss',
+  standalone: true,
+  imports: [PodcastCard],   // ← PodcastCard importé ici
+  templateUrl: './home.html'
 })
-export class Home {}
+export class Home implements OnInit {
+  readonly store = inject(PodcastStore);
+
+  ngOnInit() {
+    this.store.loadAll();
+  }
+}

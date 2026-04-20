@@ -1,0 +1,15 @@
+.home {
+      padding: 20px;
+    }
+    .loading, .error {
+      font-size: 1.2em;
+      color: #666;
+    }
+    .error {
+      color: red;
+    };
+.podcast-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  } 

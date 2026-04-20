@@ -1,1 +1,95 @@
-<p>player works!</p>
+  @if (store.currentEpisode(); as episode) {
+      <div class="player-bar">
+
+        <!-- Infos épisode -->
+        <div class="player-info">
+          <p class="player-title">{{ episode.title }}</p>
+          <p class="player-time">{{ audio.timeLabel() }}</p>
+        </div>
+
+        <!-- Visualiseur -->
+        <div class="player-wave">
+          <app-waveform />
+        </div>
+
+        <!-- Barre de progression -->
+        <div class="player-seek">
+          <div class="seek-bar" (click)="onSeekClick($event)">
+            <!-- Buffer -->
+            <div
+              class="seek-buffered"
+              [style.width.%]="audio.buffered()"
+            ></div>
+            <!-- Progression -->
+            <div
+              class="seek-progress"
+              [style.width.%]="audio.progress()"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Contrôles -->
+        <div class="player-controls">
+
+          <!-- Vitesse -->
+          <select
+            class="rate-select"
+            [value]="audio.playbackRate()"
+            (change)="onRateChange($event)"
+          >
+            <option value="0.5">0.5×</option>
+            <option value="0.75">0.75×</option>
+            <option value="1">1×</option>
+            <option value="1.25">1.25×</option>
+            <option value="1.5">1.5×</option>
+            <option value="1.75">1.75×</option>
+            <option value="2">2×</option>
+          </select>
+
+          <!-- -15s -->
+          <button class="ctrl-btn" (click)="audio.skipBackward()">
+            -15s
+          </button>
+
+          <!-- Play / Pause -->
+          <button class="ctrl-btn ctrl-main" (click)="togglePlay()">
+            {{ store.isPlaying() ? '⏸' : '▶' }}
+          </button>
+
+          <!-- +15s -->
+          <button class="ctrl-btn" (click)="audio.skipForward()">
+            +15s
+          </button>
+
+          <!-- Volume -->
+          <div class="volume-ctrl">
+            <button class="ctrl-btn" (click)="audio.toggleMute()">
+              {{ audio.state().muted ? '🔇' : '🔊' }}
+            </button>
+            <input
+              type="range"
+              min="0" max="1" step="0.05"
+              [value]="audio.volume()"
+              (input)="onVolumeChange($event)"
+              class="volume-slider"
+            />
+          </div>
+
+        </div>
+
+        <!-- Loader -->
+        @if (audio.loading()) {
+          <div class="player-loader">
+            <div class="spinner-border spinner-border-sm text-light"></div>
+          </div>
+        }
+
+        @if (audio.error()) {
+          <div class="player-error">{{ audio.error() }}</div>
+        }
+
+      </div>
+    } @else {
+      <p class="text-muted">Aucun épisode sélectionné.</p>
+    }   
+    
