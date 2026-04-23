@@ -6,7 +6,8 @@ import { AuthStore } from '../../../features/podcast/store/auth.store';
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth  = inject(AuthStore);
   const token = auth.token();
-
+ //const auth  = inject(AuthService);
+  //const token = auth.token();
   if (!token) return next(req);
 
   return next(
@@ -14,4 +15,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       setHeaders: { Authorization: `Bearer ${token}` }
     })
   );
+  // return next(cloned);
 };
+

@@ -1,32 +1,49 @@
-// podcast-card.ts
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { RouterLink } from '@angular/router';      // ← indispensable !
-import { DatePipe } from '@angular/common';
+// src/app/features/podcast/components/podcast-card/podcast-card.ts
+import {
+  Component,
+  input,
+  output,
+  ChangeDetectionStrategy,
+  inject,
+} from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Podcast, Episode } from '../../models/podcast.model';
+import { PodcastStore } from '../../store/podcast.store';
 
 @Component({
   selector: 'app-podcast-card',
   standalone: true,
-  imports: [RouterLink, DatePipe],                 // ← RouterLink ici !
-  templateUrl: './podcast-card.html',
-  styleUrl: './podcast-card.scss'
+  imports: [RouterLink],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `podcast-card.html`,
+  styles: [`podcast-card.scss`],
 })
 export class PodcastCard {
-  @Input({ required: true }) podcast!: Podcast;
-  @Output() play   = new EventEmitter<Episode>();
-  @Output() delete = new EventEmitter<string>();
+  readonly podcast = input.required<Podcast>();
+  readonly play    = output<Episode>();
 
-  onPlay(episode: Episode) { this.play.emit(episode); }
-  onDelete() { this.delete.emit(this.podcast.id); }
+  private readonly store = inject(PodcastStore);
 
-  get firstEpisode(): Episode | null {
-    return this.podcast.episodes?.[0] ?? null;
+  get latestEpisode(): () => Episode | undefined {
+    return () => this.podcast().episodes.at(-1);
   }
 
-  formatDuration(seconds: number): string {
-    if (!seconds) return '0:00';
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    return `${m}:${s < 10 ? '0' + s : s}`;
+  isCurrentlyPlaying(): boolean {
+    const latest = this.podcast().episodes.at(-1);
+    return !!latest
+      && this.store.currentEpisode()?.id === latest.id
+      && this.store.isPlaying();
+  }
+
+  onPlayLatest(): void {
+    const ep = this.podcast().episodes.at(-1);
+    if (!ep) return;
+
+    if (this.isCurrentlyPlaying()) {
+      this.store.pause();
+    } else {
+      this.store.play(ep);
+      this.play.emit(ep);
+    }
   }
 }

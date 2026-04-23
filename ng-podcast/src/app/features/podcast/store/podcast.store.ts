@@ -1,150 +1,143 @@
-// features/podcast/store/podcast.store.ts
-import { Injectable, computed, signal, effect } from '@angular/core';
+// src/app/features/podcast/store/podcast.store.ts
+import {
+  signalStore,
+  withState,
+  withComputed,
+  withMethods,
+  patchState,
+} from '@ngrx/signals';
+import { computed, inject } from '@angular/core';
+import { PodcastService } from '../services/podcast.service';
 import { Podcast, Episode } from '../models/podcast.model';
-import { PodcastService, CreatePodcastPayload } from '../services/podcast.service';
 
-export interface PlayerState {
+interface PodcastState {
+  podcasts:       Podcast[];
+  selected:       Podcast | null;
   currentEpisode: Episode | null;
   isPlaying:      boolean;
-  currentTime:    number;
   volume:         number;
+  uploadProgress: number;
+  loading:        boolean;
+  error:          string | null;
 }
 
-@Injectable({ providedIn: 'root' })
-export class PodcastStore {
+const initialState: PodcastState = {
+  podcasts:       [],
+  selected:       null,
+  currentEpisode: null,
+  isPlaying:      false,
+  volume:         1,
+  uploadProgress: 0,
+  loading:        false,
+  error:          null,
+};
 
-  constructor(private podcastService: PodcastService) {
-    effect(() => {
-      const state = this._player();
-      if (state.isPlaying) {
-        console.debug('[Player]', state.currentEpisode?.title);
+export const PodcastStore = signalStore(
+  { providedIn: 'root' },
+
+  withState(initialState),
+
+
+  withComputed((store) => ({
+    podcastCount: computed(() => store.podcasts().length),
+    hasError:     computed(() => store.error() !== null),
+  })),
+
+  withMethods((store, service = inject(PodcastService)) => ({
+
+    /** Charge tous les podcasts */
+    async loadAll(): Promise<void> {
+      patchState(store, { loading: true, error: null });
+      try {
+        const podcasts = await service.getAll();
+        patchState(store, { podcasts, loading: false });
+      } catch (e: any) {
+        patchState(store, { error: e.message ?? 'Erreur réseau', loading: false });
       }
-    });
-  }
+    },
 
-  // ─── STATE ───────────────────────────────────────────────────
-  private readonly _podcasts       = signal<Podcast[]>([]);
-  private readonly _selected       = signal<Podcast | null>(null);
-  private readonly _loading        = signal<boolean>(false);
-  private readonly _error          = signal<string | null>(null);
-  private readonly _uploadProgress = signal<number>(0);
-  private readonly _player         = signal<PlayerState>({
-    currentEpisode: null,
-    isPlaying:      false,
-    currentTime:    0,
-    volume:         1,
-  });
-
-  // ─── COMPUTED ────────────────────────────────────────────────
-  readonly podcasts        = this._podcasts.asReadonly();
-  readonly selected        = this._selected.asReadonly();
-  readonly loading         = this._loading.asReadonly();
-  readonly error           = this._error.asReadonly();
-  readonly uploadProgress  = this._uploadProgress.asReadonly();
-  readonly player          = this._player.asReadonly();
-
-  readonly podcastCount    = computed(() => this._podcasts().length);
-  readonly hasError        = computed(() => this._error() !== null);
-  readonly isPlaying       = computed(() => this._player().isPlaying);
-  readonly currentEpisode  = computed(() => this._player().currentEpisode);
-
-  // ─── ACTIONS PODCAST ─────────────────────────────────────────
-
-  async loadAll(): Promise<void> {
-    this._loading.set(true);
-    this._error.set(null);
-    try {
-      const podcasts = await this.podcastService.getAll();
-      this._podcasts.set(podcasts);
-    } catch (e: any) {
-      this._error.set(e.message ?? 'Erreur de chargement');
-    } finally {
-      this._loading.set(false);
-    }
-  }
-
-  async loadOne(id: string): Promise<void> {
-    this._loading.set(true);
-    this._error.set(null);
-    try {
-      const podcast = await this.podcastService.getById(id);
-      this._selected.set(podcast);
-    } catch (e: any) {
-      this._error.set(e.message ?? 'Podcast introuvable');
-    } finally {
-      this._loading.set(false);
-    }
-  }
-
-  // ← Version unique de create() avec upload progress
-  create(data: CreatePodcastPayload): void {
-    this._loading.set(true);
-    this._error.set(null);
-    this._uploadProgress.set(0);
-
-    this.podcastService.create(data).subscribe({
-      next: (progress) => {
-        this._uploadProgress.set(progress.percent);
-        if (progress.done) {
-          this._loading.set(false);
-        }
-      },
-      error: (e: any) => {
-        this._error.set(e.message ?? 'Erreur lors de la création');
-        this._loading.set(false);
-        this._uploadProgress.set(0);
+    async loadMine(): Promise<void> {
+      patchState(store, { loading: true, error: null });
+      try {
+        const podcasts = await service.getMine();
+        patchState(store, { podcasts, loading: false });
+      } catch (e: any) {
+        patchState(store, { error: e.message ?? 'Erreur réseau', loading: false });
       }
-    });
-  }
+    },
 
-  async update(id: string, data: Partial<CreatePodcastPayload>): Promise<void> {
-    this._loading.set(true);
-    this._error.set(null);
-    try {
-      const updated = await this.podcastService.update(id, data);
-      this._podcasts.update(list =>
-        list.map(p => p.id === id ? updated : p)
-      );
-      if (this._selected()?.id === id) {
-        this._selected.set(updated);
+
+    async loadOne(id: string): Promise<void> {
+      patchState(store, { loading: true, error: null, selected: null });
+      try {
+        const podcast = await service.getById(id);
+        patchState(store, { selected: podcast, loading: false });
+      } catch (e: any) {
+        patchState(store, { error: e.message ?? 'Introuvable', loading: false });
       }
-    } catch (e: any) {
-      this._error.set(e.message ?? 'Erreur lors de la mise à jour');
-    } finally {
-      this._loading.set(false);
-    }
-  }
+    },
 
-  async delete(id: string): Promise<void> {
-    this._error.set(null);
-    try {
-      await this.podcastService.delete(id);
-      this._podcasts.update(list => list.filter(p => p.id !== id));
-    } catch (e: any) {
-      this._error.set(e.message ?? 'Erreur lors de la suppression');
-    }
-  }
+ 
+    async create(payload: { title: string; description: string; coverFile?: File; audioFile?: File }): Promise<void> {
+      patchState(store, { loading: true, error: null, uploadProgress: 0 });
 
-  // ─── ACTIONS PLAYER ──────────────────────────────────────────
+      const coverUrl = payload.coverFile ? URL.createObjectURL(payload.coverFile) : undefined;
 
-  // ← utilisé dans home.html via (play)="store.play($event)"
-  play(episode: Episode): void {
-    this._player.update(s => ({
-      ...s,
-      currentEpisode: episode,
-      isPlaying:      true
-    }));
-  }
+      service.create({
+        title:       payload.title,
+        description: payload.description,
+        coverFile:   coverUrl,
+      }).subscribe({
+        next: (progress) => {
+          patchState(store, { uploadProgress: progress.percent });
+          if (progress.done) {
+            patchState(store, { loading: false, uploadProgress: 0 });
+          }
+        },
+        error: (e) => {
+          patchState(store, { error: e.message ?? 'Erreur upload', loading: false, uploadProgress: 0 });
+        },
+      });
+    },
 
-  pause(): void {
-    this._player.update(s => ({ ...s, isPlaying: false }));
-  }
+    async delete(id: string): Promise<void> {
+      patchState(store, { loading: true, error: null });
+      try {
+        await service.delete(id);
+        patchState(store, {
+          podcasts: store.podcasts().filter(p => p.id !== id),
+          // Si on supprime le podcast sélectionné, on vide la sélection
+          selected: store.selected()?.id === id ? null : store.selected(),
+          loading: false,
+        });
+      } catch (e: any) {
+        patchState(store, { error: e.message ?? 'Erreur suppression', loading: false });
+      }
+    },
 
-  setTime(time: number): void {
-    this._player.update(s => ({ ...s, currentTime: time }));
-  }
+    play(episode: Episode): void {
+      // Si c'est le même épisode, on reprend simplement
+      if (store.currentEpisode()?.id === episode.id) {
+        patchState(store, { isPlaying: true });
+        return;
+      }
+      // Sinon on charge le nouvel épisode et on lance
+      patchState(store, { currentEpisode: episode, isPlaying: true, error: null });
+    },
 
-  setVolume(volume: number): void {
-    this._player.update(s => ({ ...s, volume }));
-  }
-}
+
+    pause(): void {
+      patchState(store, { isPlaying: false });
+    },
+
+
+    setVolume(volume: number): void {
+      patchState(store, { volume });
+    },
+
+    
+    clearError(): void {
+      patchState(store, { error: null });
+    },
+  }))
+);

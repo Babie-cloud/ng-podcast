@@ -1,0 +1,106 @@
+<div class="container py-4">
+
+  <!-- Barre de recherche -->
+  <div class="np-search-hero glass-strong mb-4">
+    <h1 class="mb-3">Rechercher un podcast</h1>
+    <div class="np-search-bar">
+      <span class="np-search-icon">🔍</span>
+      <input
+        type="text"
+        class="np-search-input"
+        placeholder="Titre, auteur, thème…"
+        [ngModel]="query()"
+        (ngModelChange)="onSearch($event)"
+        autofocus
+      />
+      @if (query()) {
+        <button class="np-search-clear" (click)="onSearch('')">✕</button>
+      }
+    </div>
+
+    <!-- Suggestions -->
+    <div class="np-search-tags mt-3">
+      @for (tag of ['IA', 'Startup', 'Robotique', 'Biotech', 'Futurisme']; track tag) {
+        <button class="tag-pill" (click)="onSearch(tag)">{{ tag }}</button>
+      }
+    </div>
+  </div>
+
+  <!-- Résultats -->
+  @if (query()) {
+    <p class="np-results-count text-muted mb-3">
+      {{ results().length }} résultat(s) pour « {{ query() }} »
+    </p>
+
+    @if (results().length === 0) {
+      <div class="np-empty text-center py-5">
+        <p class="fs-4">😕</p>
+        <p class="text-muted">Aucun podcast ne correspond à votre recherche.</p>
+      </div>
+    }
+
+    <div class="row g-3">
+      @for (podcast of results(); track podcast.id) {
+        <div class="col-md-4">
+          <app-podcast-card [podcast]="podcast" />
+        </div>
+      }
+    </div>
+  } @else {
+    <!-- Tous les podcasts par défaut -->
+    <h2 class="h5 mb-3">Tous les podcasts</h2>
+    <div class="row g-3">
+      @for (podcast of store.podcasts(); track podcast.id) {
+        <div class="col-md-4">
+          <app-podcast-card [podcast]="podcast" />
+        </div>
+      }
+    </div>
+  }
+
+</div>
+
+<style>
+  .np-search-hero {
+    padding: 2.5rem;
+    border-radius: var(--np-radius-xl);
+    background: var(--np-surface);
+  }
+  .np-search-bar {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    background: var(--np-bg-secondary);
+    border: 1.5px solid var(--np-border);
+    border-radius: var(--np-radius-lg);
+    padding: .75rem 1.25rem;
+    transition: var(--np-transition);
+
+    &:focus-within {
+      border-color: var(--np-primary);
+      box-shadow: 0 0 0 3px var(--np-primary-soft);
+    }
+  }
+  .np-search-icon  { font-size: 1.1rem; flex-shrink: 0; }
+  .np-search-input {
+    flex: 1; background: none; border: none; outline: none;
+    font-size: 1.05rem; color: var(--np-text);
+  }
+  .np-search-clear {
+    background: none; border: none; cursor: pointer;
+    color: var(--np-text-muted); font-size: 1rem;
+    &:hover { color: var(--np-primary); }
+  }
+  .np-search-tags {
+    display: flex; gap: .5rem; flex-wrap: wrap;
+  }
+  .tag-pill {
+    font-size: 12px; font-weight: 500;
+    padding: .3rem .85rem; border-radius: 20px;
+    border: 1px solid var(--np-border);
+    background: transparent; color: var(--np-text-muted); cursor: pointer;
+    transition: var(--np-transition);
+    &:hover { background: var(--np-primary-soft); color: var(--np-primary); border-color: var(--np-primary); }
+  }
+  .np-results-count { font-size: 13.5px; }
+</style>

@@ -1,0 +1,141 @@
+<div class="container py-4" style="max-width: 740px">
+
+  <h1 class="mb-1">Publier un épisode</h1>
+  @if (store.selected(); as podcast) {
+    <p class="text-muted mb-4">Pour : <strong>{{ podcast.title }}</strong></p>
+  }
+
+  <!-- Étapes -->
+  <div class="np-steps mb-4">
+    <div class="np-step done">  <span>1</span> Contenu </div>
+    <div class="np-step active"><span>2</span> Diffusion</div>
+    <div class="np-step">      <span>3</span> Planifier</div>
+    <div class="np-step">      <span>4</span> Confirmer</div>
+  </div>
+
+  <!-- Titre de l'épisode -->
+  <div class="glass-card mb-3">
+    <h3 class="h6 mb-3">Détails de l'épisode</h3>
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Titre *</label>
+      <input class="form-control" placeholder="Ex : Interview avec l'invité X"
+             [formControl]="form.controls.title" />
+    </div>
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Description</label>
+      <textarea class="form-control" rows="3" placeholder="Résumé de l'épisode…"
+                [formControl]="form.controls.description"></textarea>
+    </div>
+    <div>
+      <label class="form-label fw-semibold">Fichier audio *</label>
+      <input type="file" class="form-control" accept="audio/*" (change)="onAudioChange($event)" />
+      @if (audioFile()) {
+        <small class="text-success mt-1 d-block">✔ {{ audioFile()!.name }}</small>
+      }
+    </div>
+  </div>
+
+  <!-- Plateformes -->
+  <div class="glass-card mb-3">
+    <h3 class="h6 mb-3">Plateformes de diffusion</h3>
+    <div class="np-platforms">
+      @for (p of [
+        {id:'spotify',  icon:'🎵', label:'Spotify'},
+        {id:'apple',    icon:'🍎', label:'Apple Podcasts'},
+        {id:'youtube',  icon:'▶',  label:'YouTube'},
+        {id:'deezer',   icon:'🎧', label:'Deezer'},
+        {id:'amazon',   icon:'📻', label:'Amazon Music'},
+        {id:'rss',      icon:'📡', label:'RSS'},
+        {id:'newsletter',icon:'💬',label:'Newsletter'},
+      ]; track p.id) {
+        <div
+          class="np-platform-item"
+          [class.selected]="platforms().includes(p.id)"
+          (click)="togglePlatform(p.id)"
+        >
+          <div class="np-platform-icon">{{ p.icon }}</div>
+          <div class="np-platform-label">{{ p.label }}</div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Planification -->
+  <div class="glass-card mb-4">
+    <h3 class="h6 mb-3">Planification</h3>
+    <div class="d-flex gap-3 mb-3 flex-wrap">
+      <label class="d-flex align-items-center gap-2 cursor-pointer">
+        <input type="radio" name="timing" [formControl]="form.controls.publishNow" [value]="true"
+               style="accent-color:var(--np-primary)"> Publier maintenant
+      </label>
+      <label class="d-flex align-items-center gap-2 cursor-pointer">
+        <input type="radio" name="timing" [formControl]="form.controls.publishNow" [value]="false"
+               style="accent-color:var(--np-primary)"> Planifier
+      </label>
+    </div>
+    @if (!form.controls.publishNow.value) {
+      <div class="row g-2">
+        <div class="col-sm-6">
+          <label class="form-label small">Date</label>
+          <input class="form-control" type="date" [formControl]="form.controls.scheduledAt" />
+        </div>
+        <div class="col-sm-6">
+          <label class="form-label small">Heure</label>
+          <input class="form-control" type="time" />
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Actions -->
+  @if (store.hasError()) {
+    <div class="alert alert-danger">{{ store.error() }}</div>
+  }
+
+  <div class="d-flex gap-2">
+    <button
+      class="btn-np"
+      [disabled]="form.invalid || !audioFile() || store.loading()"
+      (click)="submit()"
+    >
+      @if (store.loading()) {
+        <span class="spinner-border spinner-border-sm me-2"></span>Publication…
+      } @else {
+        🚀 Publier l'épisode
+      }
+    </button>
+    <a class="btn btn-outline-secondary"
+       [routerLink]="['/podcasts', podcastId()]">Annuler</a>
+  </div>
+</div>
+
+<style>
+  .np-steps {
+    display: flex; gap: 0;
+    border: 1px solid var(--np-border);
+    border-radius: var(--np-radius-md); overflow: hidden;
+  }
+  .np-step {
+    flex: 1; padding: .875rem; text-align: center; font-size: 12.5px;
+    font-weight: 500; color: var(--np-text-muted);
+    background: var(--np-surface); border-right: 1px solid var(--np-border);
+    display: flex; align-items: center; justify-content: center; gap: .5rem;
+    span { font-weight: 700; font-size: 1rem; color: var(--np-text-hint); }
+    &:last-child { border-right: none; }
+    &.done   { background: var(--np-primary-soft); color: var(--np-primary); span { color: var(--np-primary); } }
+    &.active { background: var(--np-primary); color: white; span { color: white; } }
+  }
+  .np-platforms {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(110px,1fr)); gap: .75rem;
+  }
+  .np-platform-item {
+    padding: .875rem .5rem; border: 1.5px solid var(--np-border);
+    border-radius: var(--np-radius-md); text-align: center; cursor: pointer;
+    transition: var(--np-transition); background: var(--np-bg-secondary);
+    &:hover   { border-color: var(--np-primary-light); }
+    &.selected { border-color: var(--np-primary); background: var(--np-primary-soft); }
+  }
+  .np-platform-icon  { font-size: 1.5rem; margin-bottom: .35rem; }
+  .np-platform-label { font-size: 11px; font-weight: 600; color: var(--np-text-muted); }
+  .cursor-pointer { cursor: pointer; }
+</style>

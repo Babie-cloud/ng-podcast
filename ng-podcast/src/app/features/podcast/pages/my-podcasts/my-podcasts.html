@@ -1,16 +1,16 @@
 <!-- src/app/features/podcast/pages/my-podcasts/my-podcasts.html -->
+<!-- ⚠️ CORRIGÉ : la balise <a [routerLink]> était incomplète dans l'original -->
+
 <div class="container py-4">
 
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="mb-0">Mes podcasts</h1>
-    <a routerLink="/podcasts/create" class="btn btn-primary">
-      + Nouveau podcast
-    </a>
+    <a routerLink="/podcasts/create" class="btn-np">+ Nouveau podcast</a>
   </div>
 
   @if (store.loading()) {
     <div class="d-flex justify-content-center py-5">
-      <div class="spinner-border text-primary" role="status"></div>
+      <div class="spinner-border" role="status" style="color:var(--np-primary)"></div>
     </div>
   }
 
@@ -19,31 +19,29 @@
   }
 
   @if (!store.loading() && store.podcastCount() === 0) {
-    <div class="text-center py-5 text-muted">
-      <p class="mb-3">Vous n'avez pas encore de podcast.</p>
-      <a routerLink="/podcasts/create" class="btn btn-outline-primary">
-        Créer mon premier podcast
-      </a>
+    <div class="text-center py-5 glass-card">
+      <p class="fs-4 mb-2">🎙</p>
+      <p class="text-muted mb-3">Vous n'avez pas encore de podcast.</p>
+      <a routerLink="/podcasts/create" class="btn-np">Créer mon premier podcast</a>
     </div>
   }
 
-  <div class="list-group">
+  <div class="list-group gap-2 d-flex flex-column">
     @for (podcast of store.podcasts(); track podcast.id) {
-      <div class="list-group-item d-flex justify-content-between align-items-center">
+      <div class="list-group-item glass d-flex justify-content-between align-items-center">
 
         <div class="d-flex align-items-center gap-3">
           <img
             [src]="podcast.coverUrl"
             [alt]="podcast.title"
-            width="56"
-            height="56"
+            width="56" height="56"
             class="rounded"
-            style="object-fit:cover"
+            style="object-fit:cover; border: 2px solid var(--np-border);"
           />
           <div>
             <strong>{{ podcast.title }}</strong>
             <br />
-            <small class="text-muted">
+            <small style="color: var(--np-text-muted)">
               {{ podcast.episodes.length }} épisode(s) —
               {{ podcast.createdAt | date:'dd/MM/yyyy' }}
             </small>
@@ -51,13 +49,20 @@
         </div>
 
         <div class="d-flex gap-2">
-          <!-- ✅ Balise <a> complète avec le chevron d'ouverture  Voir
-          </a> -->
-          
+          <!-- ✅ CORRIGÉ : balise <a> complète avec routerLink -->
+          <a
             [routerLink]="['/podcasts', podcast.id]"
-            class="btn btn-sm btn-outline-secondary"
+            class="btn btn-sm btn-np-outline"
           >
-           
+            Voir
+          </a>
+          <!-- Lien publier un épisode -->
+          <a
+            [routerLink]="['/podcasts', podcast.id, 'publish']"
+            class="btn btn-sm btn-np"
+          >
+            + Épisode
+          </a>
           <button
             class="btn btn-sm btn-outline-danger"
             (click)="confirmDelete(podcast.id, podcast.title)"
