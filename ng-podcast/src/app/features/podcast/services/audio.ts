@@ -25,14 +25,14 @@ export class AudioService implements OnDestroy {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly store      = inject(PodcastStore);
 
-  // ─── Éléments Web Audio (lazy — créés au 1er play) ────────────────────────
+
   private audio!:        HTMLAudioElement;
   private context!:      AudioContext;
   private gainNode!:     GainNode;
   private analyserNode!: AnalyserNode;
-  private sourceCreated  = false;   // ← guard : sourceNode ne se crée qu'1 fois
+  private sourceCreated  = false;   
 
-  // ─── Signals internes ─────────────────────────────────────────────────────
+
   private readonly _state = signal<AudioState>({
     duration: 0, currentTime: 0, volume: 1,
     muted: false, playbackRate: 1, buffered: 0,
@@ -40,7 +40,7 @@ export class AudioService implements OnDestroy {
   private readonly _loading = signal(false);
   private readonly _error   = signal<string | null>(null);
 
-  // ─── API publique (readonly) ───────────────────────────────────────────────
+  
   readonly state       = this._state.asReadonly();
   readonly loading     = this._loading.asReadonly();
   readonly error       = this._error.asReadonly();
@@ -66,17 +66,16 @@ export class AudioService implements OnDestroy {
   constructor() {
     if (!isPlatformBrowser(this.platformId)) return;
 
-    // ── Initialise <audio> immédiatement (pas de Web Audio Context encore)
+  
     this.initElement();
 
-    // ── Réagit aux changements du store (épisode + état de lecture)
+  
     effect(() => {
       const episode = this.store.currentEpisode();
       const playing = this.store.isPlaying();
 
       if (!episode?.audioUrl) return;
 
-      // Charge la piste si elle a changé
       if (this.audio.src !== episode.audioUrl) {
         this.loadTrack(episode.audioUrl);
       }
@@ -95,18 +94,16 @@ export class AudioService implements OnDestroy {
     });
   }
 
-  // ─── Initialisation de l'élément <audio> ──────────────────────────────────
+
   private initElement(): void {
     this.audio          = new Audio();
     this.audio.preload  = 'metadata';
-    // NE PAS mettre crossOrigin ici si le serveur ne renvoie pas les bons headers CORS
-    // this.audio.crossOrigin = 'anonymous';
 
     this.bindEvents();
     this.startPolling();
   }
 
-  // ─── Création lazy du contexte Web Audio (après geste utilisateur) ─────────
+
   private ensureAudioContext(): void {
     if (this.context) return;   // déjà créé
 
@@ -116,7 +113,6 @@ export class AudioService implements OnDestroy {
     this.analyserNode.fftSize = 256;
     this._analyserData = new Uint8Array(this.analyserNode.frequencyBinCount);
 
-    // Le sourceNode ne peut être créé qu'UNE SEULE FOIS par élément audio
     if (!this.sourceCreated) {
       const source = this.context.createMediaElementSource(this.audio);
       source.connect(this.analyserNode);

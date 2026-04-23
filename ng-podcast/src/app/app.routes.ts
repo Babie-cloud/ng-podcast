@@ -1,11 +1,15 @@
 // src/app/app.routes.ts
 import { Routes } from '@angular/router';
+import { Landingpage } from './features/podcast/auth/landingpage/landingpage';
+import { Login } from './features/podcast/auth/login/login';
+import { Signin } from './features/podcast/auth/signin/signin';
+import { Resetpassword } from './features/podcast/auth/resetpassword/resetpassword';
 
 export const routes: Routes = [
 
   // ─── Page principale : redirige vers /podcasts ──────────────
   {
-    path: '',
+    path: './podcasts',
     redirectTo: 'podcasts',
     pathMatch: 'full'
   },
@@ -17,6 +21,12 @@ export const routes: Routes = [
       import('./features/podcast/podcast.routes')
         .then(m => m.PODCAST_ROUTES)
   },
+
+  { path: '', component: Landingpage },
+  { path: 'login', component: Login },
+  { path: 'signup', component: Signin },
+  { path: 'resetpassword', component: Resetpassword },
+
 
   // ─── (à venir) Module Écriture ──────────────────────────────
   // {

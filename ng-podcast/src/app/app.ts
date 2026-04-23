@@ -19,11 +19,6 @@ export class App implements OnInit {
 
   ngOnInit(): void {
     // Branche AudioService → PodcastStore sans injection circulaire
-    this.audio.connectStore({
-      currentEpisode: () => this.store.currentEpisode(),
-      isPlaying:      () => this.store.isPlaying(),
-      pause:          ()  => this.store.pause(),
-      setVolume:      (v: number) => this.store.setVolume(v),
-    });
+   
   }
 }

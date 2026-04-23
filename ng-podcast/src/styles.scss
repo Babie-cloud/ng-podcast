@@ -1,1 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
+
+// Imports
+@use '../public/styles/global.scss' as *;
+@use '../public/styles/theme.scss' as *;
+@use '../public/styles/variables.scss' as *;
+
+// Global styles
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  line-height: 1.6;
+}
