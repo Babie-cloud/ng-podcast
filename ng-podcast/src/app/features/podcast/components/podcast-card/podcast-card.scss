@@ -1,15 +1,103 @@
-// src/app/features/podcast/components/podcast-card/podcast-card.scss
-.card {
-  border-radius: 12px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+.np-card-cover-wrap {
+  position: relative;
+  overflow: hidden;
+  height: 190px;
+  border-radius: var(--np-radius-lg) var(--np-radius-lg) 0 0;
+}
+
+.np-card-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+
+  .np-podcast-card:hover & {
+    transform: scale(1.06);
+  }
+}
+
+.np-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 10, 5, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: var(--np-transition);
+  cursor: pointer;
+
+  .np-podcast-card:hover & {
+    opacity: 1;
+  }
+}
+
+.np-play-fab {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--np-primary);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--np-shadow-glow);
+  transition: var(--np-transition);
+  font-size: 1.2rem;
+  color: white;
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+    background: var(--np-primary-light);
+    transform: scale(1.1);
   }
+}
 
-  .card-img-top {
-    border-radius: 12px 12px 0 0;
-  }
+.np-card-body {
+  padding: 1.25rem;
+}
+
+.np-card-ep-count {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--np-primary-light);
+  margin-bottom: 0.4rem;
+}
+
+.np-card-title {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--np-text);
+  margin-bottom: 4px;
+  line-height: 1.35;
+}
+
+.np-card-author {
+  color: var(--np-primary-light);
+  font-weight: 500;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.np-card-desc {
+  font-size: 13px;
+  color: var(--np-text-muted);
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.np-card-actions {
+  display: flex;
+  gap: .6rem;
+  flex-wrap: wrap;
+}
+
+.btn-np-sm {
+  padding: 7px 14px;
+  font-size: 13px;
 }

@@ -1,47 +1,47 @@
- <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
-      <a class="navbar-brand" routerLink="/">ng-podcast</a>
-      <div class="collapse navbar-collapse">
-        <ul class="navbar-nav ms-auto gap-2">
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/podcasts">Podcasts</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/writing">Écriture</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/storytelling">Storytelling</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
+<nav class="np-navbar">
 
-    <main>
-      <router-outlet />
-    </main>
+  <a class="np-brand" routerLink="/podcasts">◈ ÉtherWave</a>
 
+  <div class="np-nav-links">
+    <a
+      routerLink="/podcasts"
+      routerLinkActive="np-nav-active"
+      [routerLinkActiveOptions]="{exact: true}"
+    >Accueil</a>
 
-      <!-- ── NAVBAR ─────────────────────────────────────────── -->
-    <nav class="np-navbar">
-      <a class="np-brand" routerLink="/podcasts">◈ ÉtherWave</a>
+    <a
+      routerLink="/podcasts/search"
+      routerLinkActive="np-nav-active"
+    >Recherche</a>
 
-      <div class="np-nav-links">
-        <a routerLink="/podcasts"        routerLinkActive="np-nav-active" [routerLinkActiveOptions]="{exact:true}">Accueil</a>
-        <a routerLink="/podcasts/search" routerLinkActive="np-nav-active">Recherche</a>
-        <a routerLink="/podcasts/mine"   routerLinkActive="np-nav-active">Mes podcasts</a>
-        <a routerLink="/podcasts/create" routerLinkActive="np-nav-active" class="btn-np btn-np-sm">+ Créer</a>
-      </div>
+    <a
+      routerLink="/podcasts/mine"
+      routerLinkActive="np-nav-active"
+    >Mes podcasts</a>
 
-      <button class="np-theme-toggle" (click)="theme.toggle()" [attr.aria-label]="theme.isDark() ? 'Mode clair' : 'Mode sombre'">
-        {{ theme.isDark() ? '☀️' : '🌙' }}
-      </button>
-    </nav>
+    <a
+      routerLink="/podcasts/create"
+      routerLinkActive="np-nav-active"
+      class="btn-np btn-np-sm"
+    >+ Créer</a>
+  </div>
 
-    <!-- ── CONTENU PRINCIPAL ──────────────────────────────── -->
-    <main class="np-main" [class.np-main-with-player]="store.currentEpisode()">
-      <router-outlet />
-    </main>
+  <button
+    class="np-theme-toggle"
+    (click)="theme.toggle()"
+    [attr.aria-label]="theme.isDark() ? 'Mode clair' : 'Mode sombre'"
+  >
+    {{ theme.isDark() ? '☀️' : '🌙' }}
+  </button>
 
-    <!-- ── PLAYER PERSISTANT ──────────────────────────────── -->
-    @if (store.currentEpisode()) {
-      <app-player />
-    }
+</nav>
+
+<!-- ── PAGE COURANTE ──────────────────────────────────────────── -->
+<main class="np-main" [class.np-main-with-player]="store.currentEpisode()">
+  <router-outlet />
+</main>
+
+<!-- ── PLAYER (affiché seulement si un épisode est chargé) ────── -->
+@if (store.currentEpisode()) {
+  <app-player />
+}
