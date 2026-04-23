@@ -4,11 +4,12 @@ import { ThemeService } from './features/podcast/services/theme.service';
 import { PodcastStore } from './features/podcast/store/podcast.store';
 import { AudioService } from './features/podcast/services/audio';
 import { Player }       from './features/podcast/components/player/player';
+import { Footer }       from './features/layout/footer/footer';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, Player],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, Player, Footer],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './app.html',
 })

@@ -1,12 +1,152 @@
-<div class="container">
-    <div class="row align-items-center min-vh-100">
-        <div class="col-md-6 offset-md-1 text-center text-md-start">
-        <h1 class="display-4 mb-3">Bienvenue sur ÉtherWave</h1>
-        <p class="lead text-muted mb-4">Créez, hébergez et diffusez votre podcast en toute simplicité.</p>
-        <a routerLink="/podcasts/create" class="btn-np btn-lg">Créer mon podcast</a>
+<div class="page active" id="page-home">
+
+  <div class="hero">
+    <div class="hero-inner">
+      <p class="hero-eyebrow">Podcast Tech & Innovation</p>
+      <h1>Décrypter<br>l'<em>avenir</em><br>ensemble.</h1>
+      <p class="hero-desc">ÉtherWave explore les frontières de la technologie, l'IA, les startups et les idées qui redéfinissent notre monde — avec une chaleur humaine et une curiosité sans limites.</p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="showPage('episodes')">
+          ▶ Écouter maintenant
+        </button>
+        <button class="btn-outline" onclick="showPage('about')">
+          En savoir plus
+        </button>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <span class="hero-stat-num">142</span>
+          <span class="hero-stat-lbl">Épisodes</span>
         </div>
-        <div class="col-md-5 mt-5 mt-md-0 text-center">
-        <img src="/assets/landing-podcast.svg" alt="Illustration de podcast" class="img-fluid" style="max-height: 300px;">
+        <div>
+          <span class="hero-stat-num">48k</span>
+          <span class="hero-stat-lbl">Auditeurs</span>
         </div>
+        <div>
+          <span class="hero-stat-num">3</span>
+          <span class="hero-stat-lbl">Ans en antenne</span>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <!-- Featured strip -->
+  <div class="featured-strip">
+    <span class="featured-strip-label">▶ En ce moment</span>
+    <span class="featured-strip-title">Épisode 142 — L'IA générative va-t-elle tuer la créativité humaine ?</span>
+    <button class="featured-play" onclick="togglePlayer()">▶ Écouter</button>
+  </div>
+
+  <!-- Recent episodes -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header" style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+        <div>
+          <span class="section-label">Derniers épisodes</span>
+          <h2 class="section-title">Tout juste <em>sortis</em></h2>
+        </div>
+        <button class="btn-outline" onclick="showPage('episodes')">Voir tout</button>
+      </div>
+      <div class="ep-grid">
+        <div class="ep-card" onclick="togglePlayer()">
+          <span class="ep-num">142</span>
+          <div class="ep-info">
+            <div class="ep-meta" style="margin-top:0;margin-bottom:.5rem;">
+              <span class="tag rust">IA</span>
+              <span class="tag">Créativité</span>
+            </div>
+            <h3>L'IA générative va-t-elle tuer la créativité humaine ?</h3>
+            <p>Avec Laure Michard, directrice artistique et Karim Younes, chercheur en IA chez Inria.</p>
+            <div class="ep-meta">
+              <span class="ep-dur">⏱ 1h 12min</span>
+              <span class="ep-dur">· 22 avr. 2026</span>
+            </div>
+          </div>
+          <div class="ep-actions">
+            <button class="play-btn" onclick="event.stopPropagation();togglePlayer()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="ep-card">
+          <span class="ep-num">141</span>
+          <div class="ep-info">
+            <div class="ep-meta" style="margin-top:0;margin-bottom:.5rem;">
+              <span class="tag">Startup</span>
+              <span class="tag">Financement</span>
+            </div>
+            <h3>Lever des fonds en 2026 : ce qui a vraiment changé</h3>
+            <p>Sophie Renard, partenaire chez Partech, partage les nouvelles règles du jeu du venture capital européen.</p>
+            <div class="ep-meta">
+              <span class="ep-dur">⏱ 58min</span>
+              <span class="ep-dur">· 15 avr. 2026</span>
+            </div>
+          </div>
+          <div class="ep-actions">
+            <button class="play-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="ep-card">
+          <span class="ep-num">140</span>
+          <div class="ep-info">
+            <div class="ep-meta" style="margin-top:0;margin-bottom:.5rem;">
+              <span class="tag rust">Robotique</span>
+            </div>
+            <h3>Les robots domestiques : fiction ou réalité d'ici 2030 ?</h3>
+            <p>Tour d'horizon avec Thomas Petit, fondateur de la startup Omi Robotics basée à Paris.</p>
+            <div class="ep-meta">
+              <span class="ep-dur">⏱ 1h 04min</span>
+              <span class="ep-dur">· 8 avr. 2026</span>
+            </div>
+          </div>
+          <div class="ep-actions">
+            <button class="play-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Topics -->
+  <section class="section" style="padding-top:0;">
+    <div class="container">
+      <span class="section-label">Explorer par thème</span>
+      <h2 class="section-title" style="margin-bottom:1.5rem;">Vos sujets <em>favoris</em></h2>
+      <div class="topics-grid">
+        <span class="topic-pill">Intelligence Artificielle</span>
+        <span class="topic-pill">Startups</span>
+        <span class="topic-pill">Robotique</span>
+        <span class="topic-pill">Cybersécurité</span>
+        <span class="topic-pill">Futurisme</span>
+        <span class="topic-pill">Web3</span>
+        <span class="topic-pill">Quantique</span>
+        <span class="topic-pill">Biotech</span>
+        <span class="topic-pill">Spatial</span>
+        <span class="topic-pill">Open Source</span>
+        <span class="topic-pill">Green Tech</span>
+        <span class="topic-pill">Design</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter CTA -->
+  <section class="section" style="padding-top:0;">
+    <div class="container">
+      <div class="nl-cta">
+        <h2>Ne manquez plus un épisode</h2>
+        <p>Recevez les nouveaux épisodes, les coulisses et les ressources chaque semaine.</p>
+        <div class="nl-form">
+          <input type="email" placeholder="votre@email.com">
+          <button class="btn-primary">S'abonner</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </div>
