@@ -1,20 +1,101 @@
-@if (store.loading()) {
-      <p>Chargement...</p>
-    }
+<div class="np-page np-section">
 
-    @if (store.hasError()) {
-      <p class="text-danger">{{ store.error() }}</p>
-    }
+  <!-- Hero -->
+  <div class="np-hero glass-card mb-5">
+    <p class="np-hero-eyebrow">Bienvenue sur ng-podcast</p>
+    <h1 class="np-gradient-text">Votre espace<br><em>créatif</em> audio</h1>
+    <p class="np-hero-desc">
+      Créez, partagez et découvrez des podcasts, poèmes et témoignages
+      qui font vibrer les âmes.
+    </p>
+    <div class="d-flex gap-3 flex-wrap">
+      <a routerLink="/podcasts/create" class="btn-np">
+        + Créer un podcast
+      </a>
+      <a routerLink="/podcasts/search" class="btn-np-outline">
+        Explorer
+      </a>
+    </div>
+  </div>
 
-    <div class="row">
-      @for (podcast of store.podcasts(); track podcast.id) {
-        <div class="col-md-4">
-          <app-podcast-card
-            [podcast]="podcast"
-            (play)="store.play($event)"
-          />
+  <!-- Stats -->
+  <div class="np-stats-row mb-5">
+    <div class="np-stat glass-card">
+      <span class="np-stat-num np-gradient-text">{{ store.podcastCount() }}</span>
+      <span class="np-stat-lbl">Podcasts</span>
+    </div>
+    <div class="np-stat glass-card">
+      <span class="np-stat-num np-gradient-text">142</span>
+      <span class="np-stat-lbl">Épisodes</span>
+    </div>
+    <div class="np-stat glass-card">
+      <span class="np-stat-num np-gradient-text">48k</span>
+      <span class="np-stat-lbl">Auditeurs</span>
+    </div>
+  </div>
+
+  <!-- Section podcasts -->
+  <div class="np-section-header mb-4">
+    <div>
+      <span class="np-section-label">Derniers podcasts</span>
+      <h2 class="np-section-title">Tout juste <em>sortis</em></h2>
+    </div>
+    <a routerLink="/podcasts/search" class="btn-np-ghost">Voir tout</a>
+  </div>
+
+  @if (store.loading()) {
+    <div class="np-loader-wrap">
+      <div class="np-spinner"></div>
+      <p class="np-text-muted mt-3">Chargement des podcasts...</p>
+    </div>
+  }
+
+  @if (store.hasError()) {
+    <div class="np-alert np-alert-danger">{{ store.error() }}</div>
+  }
+
+  <div class="np-grid-3 mb-5">
+    @for (podcast of store.podcasts(); track podcast.id) {
+      <app-podcast-card
+        [podcast]="podcast"
+        (play)="store.play($event)"
+      />
+    } @empty {
+      @if (!store.loading()) {
+        <div class="np-empty glass-card">
+          <p>Aucun podcast pour le moment.</p>
+          <a routerLink="/podcasts/create" class="btn-np">
+            Créer le premier
+          </a>
         </div>
       }
-    </div>
+    }
+  </div>
 
-    <p class="text-muted">{{ store.podcastCount() }} podcast(s)</p>
+  <!-- Topics -->
+  <div class="np-section-header mb-3">
+    <span class="np-section-label">Explorer par thème</span>
+  </div>
+  <div class="np-tags-wrap mb-5">
+    @for (tag of topics; track tag) {
+      <button class="np-tag-pill">{{ tag }}</button>
+    }
+  </div>
+
+  <!-- Newsletter -->
+  <div class="np-newsletter glass-card">
+    <h2>Ne manquez plus un épisode</h2>
+    <p class="np-text-muted">
+      Recevez les nouveaux épisodes chaque semaine directement dans votre boîte mail.
+    </p>
+    <div class="np-nl-form">
+      <input
+        type="email"
+        class="np-input"
+        placeholder="votre@email.com"
+      />
+      <button class="btn-np">S'abonner</button>
+    </div>
+  </div>
+
+</div>

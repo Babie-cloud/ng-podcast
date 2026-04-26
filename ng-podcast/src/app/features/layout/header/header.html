@@ -1,1 +1,57 @@
-<p>header works!</p>
+<nav class="np-navbar">
+  <div class="np-navbar-inner">
+
+    <a routerLink="/" class="np-brand">
+      <span class="np-brand-mark" aria-hidden="true"></span>
+      <span class="np-brand-name">ng-podcast</span>
+    </a>
+
+    <div class="np-nav-links">
+      <a
+        routerLink="/podcasts"
+        routerLinkActive="np-nav-active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="np-nav-link"
+      >Accueil</a>
+
+      <a
+        routerLink="/podcasts/search"
+        routerLinkActive="np-nav-active"
+        class="np-nav-link"
+      >Rechercher</a>
+
+      @if (auth.isLoggedIn()) {
+        <a
+          routerLink="/podcasts/mine"
+          routerLinkActive="np-nav-active"
+          class="np-nav-link"
+        >Mes podcasts</a>
+      }
+    </div>
+
+    <div class="np-nav-actions">
+      <button
+        type="button"
+        class="np-theme-toggle"
+        (click)="theme.toggle()"
+        [attr.aria-label]="theme.isDark() ? 'Passer en mode clair' : 'Passer en mode sombre'"
+        [title]="theme.isDark() ? 'Mode clair' : 'Mode sombre'"
+      >
+        <span class="np-toggle-thumb"></span>
+      </button>
+
+      @if (auth.isLoggedIn()) {
+        <a routerLink="/podcasts/create" class="btn-np btn-np-sm">+ Créer</a>
+        <button
+          type="button"
+          class="btn-np-ghost btn-np-sm"
+          (click)="auth.logout()"
+        >Déconnexion</button>
+      } @else {
+        <a routerLink="/login" class="btn-np-ghost btn-np-sm">Connexion</a>
+        <a routerLink="/signup" class="btn-np btn-np-sm">S'inscrire</a>
+      }
+    </div>
+
+  </div>
+</nav>

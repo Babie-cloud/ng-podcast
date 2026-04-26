@@ -4,7 +4,6 @@
   <div class="np-search-hero glass-strong mb-4">
     <h1 class="mb-3">Rechercher un podcast</h1>
     <div class="np-search-bar">
-      <span class="np-search-icon">🔍</span>
       <input
         type="text"
         class="np-search-input"
@@ -14,7 +13,7 @@
         autofocus
       />
       @if (query()) {
-        <button class="np-search-clear" (click)="onSearch('')">✕</button>
+        <button class="np-search-clear" (click)="onSearch('')" aria-label="Effacer">×</button>
       }
     </div>
 
@@ -34,7 +33,6 @@
 
     @if (results().length === 0) {
       <div class="np-empty text-center py-5">
-        <p class="fs-4">😕</p>
         <p class="text-muted">Aucun podcast ne correspond à votre recherche.</p>
       </div>
     }

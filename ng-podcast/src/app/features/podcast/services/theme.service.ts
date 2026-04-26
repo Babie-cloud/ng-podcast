@@ -52,15 +52,13 @@ export class ThemeService {
   }
 
   private applyTheme(isDark: boolean): void {
-    const htmlElement = this.document.documentElement;
+    if (!isPlatformBrowser(this.platformId)) return;
 
-    if (isDark) {
-      htmlElement.setAttribute('data-theme', 'dark');
-      localStorage.setItem(this.STORAGE_KEY, 'dark');
-    } else {
-      htmlElement.removeAttribute('data-theme');
-      localStorage.setItem(this.STORAGE_KEY, 'light');
-    }
+    const htmlElement = this.document.documentElement;
+    const theme: Theme = isDark ? 'dark' : 'light';
+
+    htmlElement.setAttribute('data-theme', theme);
+    localStorage.setItem(this.STORAGE_KEY, theme);
   }
 
   /** Bascule entre light et dark */

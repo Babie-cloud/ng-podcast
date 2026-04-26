@@ -1,108 +1,145 @@
 // src/styles/variables.scss
-/* ── RESET & VARIABLES ── */
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+// ═══════════════════════════════════════════════════════════════
+// VARIABLES — ng-podcast · Palette Café Profond
+// ═══════════════════════════════════════════════════════════════
 
-  :root {
-    --cream:    #F5EFE0;
-    --parch:    #EDE3C8;
-    --sand:     #D4B896;
-    --rust:     #B8572A;
-    --ember:    #C9692F;
-    --copper:   #A0522D;
-    --espresso: #2C1A0E;
-    --ink:      #1A0F07;
-    --smoke:    #6B5744;
-    --mist:     #8E7560;
-    --gold:     #C4962A;
-    --warm-wh:  #FAF6EE;
-    --ff-serif: 'Playfair Display', Georgia, serif;
-    --ff-body:  'Crimson Text', Georgia, serif;
-    --ff-mono:  'DM Mono', monospace;
-  }
+// ─── COULEURS PRIMAIRES ───────────────────────────────────────
+$np-primary:        #8b4513;
+$np-primary-light:  #d4a07a;
+$np-primary-dark:   #3d1a00;
+$np-primary-glow:   rgba(139, 69, 19, 0.40);
+$np-primary-soft:   rgba(139, 69, 19, 0.12);
+$np-primary-medium: rgba(139, 69, 19, 0.25);
 
-  html { scroll-behavior: smooth; }
+// ─── COULEURS SECONDAIRES ─────────────────────────────────────
+$np-secondary:       #c8905a;
+$np-secondary-light: #e8c4a0;
+$np-secondary-dark:  #7a5030;
 
-  body {
-    font-family: var(--ff-body);
-    background: var(--cream);
-    color: var(--espresso);
-    font-size: 18px;
-    line-height: 1.7;
-    overflow-x: hidden;
-  }
+$np-accent:          #d4a07a;
+$np-accent-warm:     #e8b888;
+$np-accent-deep:     #a06040;
 
-  /* ── TEXTURE OVERLAY ── */
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background-image:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 9999;
-    opacity: 0.6;
-  }
+// ─── COULEURS SÉMANTIQUES ─────────────────────────────────────
+$np-success:  #4a9e6a;
+$np-warning:  #c8901a;
+$np-danger:   #c84a3a;
+$np-info:     #4a7a9e;
 
-  /* ── PAGE SYSTEM ── */
-  .page { display: none; min-height: 100vh; animation: fadeIn .4s ease; }
-  .page.active { display: block; }
-  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+// ─── BACKGROUNDS DARK ─────────────────────────────────────────
+$np-bg-dark:           #0f0805;
+$np-bg-dark-secondary: #1a1008;
+$np-bg-dark-tertiary:  #251808;
 
- /* ── UTILITY ── */
- .container { max-width: 1140px; margin: 0 auto; padding: 0 2rem; }
-  .tag {
-    display: inline-block;
-    font-family: var(--ff-mono); font-size: .65rem;
-    letter-spacing: .12em; text-transform: uppercase;
-    background: var(--parch); color: var(--copper);
-    border: 1px solid var(--sand);
-    padding: .2rem .6rem; border-radius: 3px;
-  }
-  .tag.rust { background: var(--rust); color: var(--cream); border-color: var(--rust); }
-  .divider {
-    border: none; border-top: 1px solid var(--sand);
-    margin: 3rem 0; opacity: .5;
-  }
-  .btn-primary {
-    display: inline-flex; align-items: center; gap: .5rem;
-    background: var(--rust); color: var(--cream);
-    font-family: var(--ff-mono); font-size: .75rem; letter-spacing: .1em; text-transform: uppercase;
-    border: none; cursor: pointer; padding: .75rem 1.75rem; border-radius: 4px;
-    transition: background .2s, transform .15s;
-    text-decoration: none;
-  } 
-   .btn-primary:hover { background: var(--ember); transform: translateY(-1px); }
-  .btn-outline {
-    display: inline-flex; align-items: center; gap: .5rem;
-    background: transparent; color: var(--rust);
-    font-family: var(--ff-mono); font-size: .75rem; letter-spacing: .1em; text-transform: uppercase;
-    border: 1px solid var(--rust); cursor: pointer; padding: .7rem 1.6rem; border-radius: 4px;
-    transition: all .2s;
-    text-decoration: none;
-  }
-  .btn-outline:hover { background: var(--rust); color: var(--cream); }
+$np-surface-dark:      rgba(255, 255, 255, 0.055);
+$np-surface-dark-hover: rgba(255, 255, 255, 0.090);
+$np-surface-dark-active: rgba(139, 69, 19, 0.15);
 
-   /* ── WAVEFORM DECORATION ── */
-  .waveform {
-    display: flex; align-items: center; gap: 2px;
-    height: 28px;
-  }
-  .waveform span {
-    display: block; width: 3px; background: var(--sand);
-    border-radius: 2px; animation: wave 1.4s ease-in-out infinite;
-  }
-  .waveform span:nth-child(1)  { height: 8px;  animation-delay: 0s; }
-  .waveform span:nth-child(2)  { height: 18px; animation-delay: .1s; }
-  .waveform span:nth-child(3)  { height: 24px; animation-delay: .2s; }
-  .waveform span:nth-child(4)  { height: 14px; animation-delay: .3s; }
-  .waveform span:nth-child(5)  { height: 20px; animation-delay: .4s; }
-  .waveform span:nth-child(6)  { height: 10px; animation-delay: .5s; }
-  .waveform span:nth-child(7)  { height: 22px; animation-delay: .6s; }
-  .waveform span:nth-child(8)  { height: 16px; animation-delay: .7s; }
-  .waveform span:nth-child(9)  { height: 6px;  animation-delay: .8s; }
-  .waveform span:nth-child(10) { height: 12px; animation-delay: .9s; }
-  @keyframes wave {
-    0%, 100% { transform: scaleY(1); }
-    50%       { transform: scaleY(.4); }
-  }
+// ─── BACKGROUNDS LIGHT ────────────────────────────────────────
+// Beige profond, plus chaud, clairement non-blanc
+$np-bg-light:           #e6d8c2;
+$np-bg-light-secondary: #d6c5ab;
+$np-bg-light-tertiary:  #c4af90;
 
-  
+$np-surface-light:        rgba(245, 236, 220, 0.72);
+$np-surface-light-hover:  rgba(245, 236, 220, 0.92);
+$np-surface-light-active: rgba(139, 69, 19, 0.10);
+
+// ─── TEXTES DARK ──────────────────────────────────────────────
+$np-text-dark:         #f5ece4;
+$np-text-dark-muted:   rgba(245, 236, 228, 0.55);
+$np-text-dark-hint:    rgba(245, 236, 228, 0.30);
+
+// ─── TEXTES LIGHT ─────────────────────────────────────────────
+$np-text-light:        #1a0f05;
+$np-text-light-muted:  rgba(26, 15, 5, 0.55);
+$np-text-light-hint:   rgba(26, 15, 5, 0.30);
+
+// ─── BORDURES DARK ────────────────────────────────────────────
+$np-border-dark:        rgba(255, 255, 255, 0.08);
+$np-border-dark-subtle: rgba(139, 69, 19, 0.30);
+$np-border-dark-strong: rgba(255, 255, 255, 0.16);
+
+// ─── BORDURES LIGHT ───────────────────────────────────────────
+$np-border-light:        rgba(139, 95, 60, 0.20);
+$np-border-light-subtle: rgba(139, 69, 19, 0.12);
+$np-border-light-strong: rgba(139, 69, 19, 0.30);
+
+// ─── PLAYER ───────────────────────────────────────────────────
+$np-player-bg-dark:  rgba(5, 2, 1, 0.96);
+$np-player-bg-light: rgba(15, 8, 3, 0.94);
+
+// ─── NAVBAR ───────────────────────────────────────────────────
+$np-navbar-bg-dark:  rgba(5, 2, 1, 0.88);
+$np-navbar-bg-light: rgba(230, 216, 194, 0.92);
+
+// ─── GLASSMORPHISM ────────────────────────────────────────────
+$np-blur:         blur(16px);
+$np-blur-strong:  blur(24px);
+$np-blur-subtle:  blur(8px);
+
+// ─── RAYONS ───────────────────────────────────────────────────
+$np-radius-xs:  6px;
+$np-radius-sm:  8px;
+$np-radius-md:  14px;
+$np-radius-lg:  20px;
+$np-radius-xl:  28px;
+$np-radius-full: 9999px;
+
+// ─── OMBRES ───────────────────────────────────────────────────
+$np-shadow-sm:   0 2px 12px rgba(139, 69, 19, 0.10);
+$np-shadow-md:   0 8px 32px rgba(139, 69, 19, 0.18);
+$np-shadow-lg:   0 16px 48px rgba(139, 69, 19, 0.25);
+$np-shadow-glow: 0 0 28px rgba(139, 69, 19, 0.45);
+
+$np-shadow-dark-sm:   0 2px 12px rgba(0, 0, 0, 0.35);
+$np-shadow-dark-md:   0 8px 32px rgba(0, 0, 0, 0.45);
+$np-shadow-dark-lg:   0 16px 48px rgba(0, 0, 0, 0.55);
+
+// ─── TRANSITIONS ──────────────────────────────────────────────
+$np-transition:       all 0.20s ease;
+$np-transition-slow:  all 0.35s ease;
+$np-transition-fast:  all 0.12s ease;
+
+// ─── TYPOGRAPHY ───────────────────────────────────────────────
+$np-font-base:    'Inter', system-ui, -apple-system, sans-serif;
+$np-font-display: 'Inter', system-ui, sans-serif;
+$np-font-mono:    'JetBrains Mono', 'Fira Code', monospace;
+
+$np-text-xs:   11px;
+$np-text-sm:   13px;
+$np-text-base: 15px;
+$np-text-md:   17px;
+$np-text-lg:   20px;
+$np-text-xl:   24px;
+$np-text-2xl:  30px;
+$np-text-3xl:  38px;
+
+$np-weight-normal:   400;
+$np-weight-medium:   500;
+$np-weight-semibold: 600;
+$np-weight-bold:     700;
+
+// ─── SPACING ──────────────────────────────────────────────────
+$np-space-xs:  4px;
+$np-space-sm:  8px;
+$np-space-md:  16px;
+$np-space-lg:  24px;
+$np-space-xl:  40px;
+$np-space-2xl: 64px;
+
+// ─── Z-INDEX ──────────────────────────────────────────────────
+$np-z-base:    1;
+$np-z-card:    10;
+$np-z-overlay: 100;
+$np-z-navbar:  1000;
+$np-z-player:  999;
+$np-z-modal:   2000;
+$np-z-toast:   3000;
+
+// ─── BREAKPOINTS ──────────────────────────────────────────────
+$np-bp-sm:  576px;
+$np-bp-md:  768px;
+$np-bp-lg:  992px;
+$np-bp-xl:  1200px;
+$np-bp-2xl: 1400px;

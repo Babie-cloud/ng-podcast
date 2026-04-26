@@ -1,0 +1,82 @@
+@use 'styles/variables' as *;
+
+:host {
+  display: block;
+}
+
+.np-navbar-inner {
+  width: 100%;
+  max-width: $np-bp-xl;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: $np-space-lg;
+}
+
+.np-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: $np-space-sm;
+
+  .np-brand-mark {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: var(--np-gradient);
+    box-shadow: 0 2px 10px var(--np-primary-glow);
+    flex-shrink: 0;
+  }
+
+  .np-brand-name {
+    background: var(--np-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: $np-weight-bold;
+    font-size: $np-text-lg;
+    letter-spacing: -0.01em;
+  }
+}
+
+.np-nav-links {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: $np-space-xs;
+  margin: 0 $np-space-md;
+
+  .np-nav-link.np-nav-active {
+    color: var(--np-primary-light);
+    background: var(--np-primary-soft);
+  }
+}
+
+.np-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: $np-space-sm;
+  flex-shrink: 0;
+}
+
+.btn-np-sm {
+  padding: $np-space-xs $np-space-md;
+  font-size: $np-text-xs;
+  height: 34px;
+}
+
+[data-theme="dark"] .np-theme-toggle .np-toggle-thumb {
+  transform: translateX(22px);
+  background: var(--np-primary-light);
+}
+
+@media (max-width: $np-bp-md) {
+  .np-navbar-inner {
+    gap: $np-space-sm;
+  }
+  .np-nav-links {
+    display: none;
+  }
+  .np-brand-name {
+    display: none;
+  }
+}

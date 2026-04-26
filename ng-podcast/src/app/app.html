@@ -1,48 +1,11 @@
-<nav class="np-navbar">
+<app-header />
 
-  <a class="np-brand" routerLink="/podcasts">◈ ÉtherWave</a>
-
-  <div class="np-nav-links">
-    <a
-      routerLink="/podcasts"
-      routerLinkActive="np-nav-active"
-      [routerLinkActiveOptions]="{exact: true}"
-    >Accueil</a>
-
-    <a
-      routerLink="/podcasts/search"
-      routerLinkActive="np-nav-active"
-    >Recherche</a>
-
-    <a
-      routerLink="/podcasts/mine"
-      routerLinkActive="np-nav-active"
-    >Mes podcasts</a>
-
-    <a
-      routerLink="/podcasts/create"
-      routerLinkActive="np-nav-active"
-      class="btn-np btn-np-sm"
-    >+ Créer</a>
-  </div>
-
-  <button
-    class="np-theme-toggle"
-    (click)="theme.toggle()"
-    [attr.aria-label]="theme.isDark() ? 'Mode clair' : 'Mode sombre'"
-  >
-    {{ theme.isDark() ? '☀️' : '🌙' }}
-  </button>
-
-</nav>
-
-<!-- ── PAGE COURANTE ──────────────────────────────────────────── -->
 <main class="np-main" [class.np-main-with-player]="store.currentEpisode()">
   <router-outlet />
 </main>
 
-<!-- ── PLAYER (affiché seulement si un épisode est chargé) ────── -->
 @if (store.currentEpisode()) {
   <app-player />
-  <app-footer></app-footer>
 }
+
+<app-footer />

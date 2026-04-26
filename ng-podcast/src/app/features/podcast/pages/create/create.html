@@ -1,108 +1,210 @@
-   <div class="container py-4" style="max-width: 680px">
-      <h1 class="mb-4">Créer un podcast</h1>
+<!-- src/app/features/podcast/pages/create/create.html -->
+<div class="np-page np-section">
+  <div class="np-form-wrap">
 
-      <div class="card p-4">
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Titre *</label>
-          <input
-            class="form-control"
-            [class.is-invalid]="isInvalid('title')"
-            placeholder="Le nom de votre podcast"
+    <!-- Breadcrumb -->
+    <div class="np-breadcrumb mb-4">
+      <a routerLink="/podcasts" class="np-breadcrumb-link">Podcasts</a>
+      <span class="np-breadcrumb-sep">›</span>
+      <span>Nouveau podcast</span>
+    </div>
+
+    <h1 class="np-gradient-text mb-1">Créer un podcast</h1>
+    <p class="np-text-muted mb-4">
+      Remplissez les informations et publiez votre premier épisode.
+    </p>
+
+    <!-- Stepper -->
+    <div class="np-stepper mb-4">
+      @for (step of steps; track step.index) {
+        <div class="np-step-item"
+          [class.active]="currentStep() === step.index"
+          [class.done]="currentStep() > step.index">
+          <span class="np-step-dot">
+            {{ currentStep() > step.index ? '✓' : step.index + 1 }}
+          </span>
+          <span class="np-step-label">{{ step.label }}</span>
+        </div>
+      }
+    </div>
+
+    <!-- STEP 0 : Infos -->
+    @if (currentStep() === 0) {
+      <div class="glass-card mb-3">
+        <h5 class="np-card-section-title">Informations générales</h5>
+
+        <div class="np-field">
+          <label class="np-label">Titre *</label>
+          <input class="np-input"
+            [class.np-input-error]="isInvalid('title')"
+            placeholder="Ex : Les chroniques du lundi"
             [formControl]="form.controls.title"
           />
           @if (isInvalid('title')) {
-            <div class="invalid-feedback">Le titre est requis (3 caractères min.)</div>
+            <span class="np-error-msg">Minimum 3 caractères requis.</span>
           }
         </div>
 
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Description *</label>
-          <textarea
-            class="form-control"
-            rows="4"
+        <div class="np-field">
+          <label class="np-label">Description *</label>
+          <textarea class="np-input np-textarea"
+            [class.np-input-error]="isInvalid('description')"
             placeholder="De quoi parle votre podcast ?"
-            [class.is-invalid]="isInvalid('description')"
             [formControl]="form.controls.description"
           ></textarea>
-          @if (isInvalid('description')) {
-            <div class="invalid-feedback">La description est requise (10 caractères min.)</div>
-          }
+          <div class="np-field-meta">
+            @if (isInvalid('description')) {
+              <span class="np-error-msg">Minimum 10 caractères.</span>
+            } @else { <span></span> }
+            <span class="np-text-hint">
+              {{ form.controls.description.value?.length ?? 0 }} / 500
+            </span>
+          </div>
         </div>
 
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Image de couverture</label>
-          <input
-            type="file"
-            class="form-control"
-            accept="image/*"
-            (change)="onCoverChange($event)"
-          />
-          @if (coverPreview()) {
-            <img
-              [src]="coverPreview()"
-              alt="Aperçu"
-              class="mt-2 rounded"
-              style="max-height:160px; object-fit:cover"
-            />
-          }
-        </div>
-
-        <div class="mb-4">
-          <label class="form-label fw-semibold">Premier épisode audio</label>
-          <input
-            type="file"
-            class="form-control"
-            accept="audio/*"
-            (change)="onAudioChange($event)"
-          />
-          @if (audioFile()) {
-            <small class="text-success d-block mt-1">
-              Fichier sélectionné : {{ audioFile()!.name }}
-            </small>
-          }
-        </div>
-
-        @if (store.hasError()) {
-          <div class="alert alert-danger">{{ store.error() }}</div>
-        }
-
-        <div class="d-flex gap-2">
-          <button
-            class="btn btn-primary"
-            [disabled]="form.invalid || store.loading()"
-            (click)="submit()"
-          >
-            @if (store.loading()) {
-              <span class="spinner-border spinner-border-sm me-2"></span>
-              Création en cours...
-            } @else {
-              Créer le podcast
+        <div class="np-field">
+          <label class="np-label">Catégorie</label>
+          <select class="np-input np-select" [formControl]="form.controls.category">
+            <option value="">Sélectionner...</option>
+            @for (cat of categories; track cat) {
+              <option [value]="cat">{{ cat }}</option>
             }
-          </button>
-          <button
-            class="btn btn-outline-secondary"
-            (click)="router.navigate(['/podcasts'])"
-          >
-            Annuler
-          </button>
+          </select>
+        </div>
+
+        <div class="np-field">
+          <label class="np-label">Langue</label>
+          <select class="np-input np-select" [formControl]="form.controls.language">
+            <option value="fr">Français</option>
+            <option value="en">English</option>
+            <option value="es">Español</option>
+          </select>
         </div>
       </div>
 
-      // Ajouter dans le template de create.component.ts
-// juste avant le bouton "Créer mon podcast"
+      <div class="d-flex justify-content-end">
+        <button class="btn-np" [disabled]="step0Invalid()" (click)="nextStep()">
+          Suivant
+        </button>
+      </div>
+    }
 
-@if (store.uploadProgress() > 0 && store.loading()) {
-  <div class="mb-3">
-    <div class="d-flex justify-content-between small text-muted mb-1">
-      <span>Upload en cours...</span>
-      <span>{{ store.uploadProgress() }}%</span>
-    </div>
-    <div class="progress" style="height: 8px">
-      <div
-        class="progress-bar progress-bar-striped progress-bar-animated"
-        [style.width.%]="store.uploadProgress()"
-      ></div>
-    </div>
+    <!-- STEP 1 : Couverture -->
+    @if (currentStep() === 1) {
+      <div class="glass-card mb-3">
+        <h5 class="np-card-section-title">Image de couverture</h5>
+        <div class="np-upload-zone"
+          [class.has-file]="coverPreview()"
+          (click)="coverInput.click()"
+          (dragover)="$event.preventDefault()"
+          (drop)="onCoverDrop($event)">
+          @if (coverPreview()) {
+            <img [src]="coverPreview()!" alt="Aperçu" class="np-cover-preview" />
+            <div class="np-cover-overlay">Changer l'image</div>
+          } @else {
+            <p class="mb-1 fw-semibold">Déposez votre image ici</p>
+            <small class="np-text-hint">JPG, PNG, WebP — 5 Mo max</small>
+          }
+        </div>
+        <input #coverInput type="file" accept="image/*"
+          class="d-none" (change)="onCoverChange($event)" />
+        @if (coverError()) {
+          <div class="np-alert np-alert-danger mt-2">{{ coverError() }}</div>
+        }
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <button class="btn-np-ghost" (click)="prevStep()">Retour</button>
+        <button class="btn-np" (click)="nextStep()">Suivant</button>
+      </div>
+    }
+
+    <!-- STEP 2 : Épisode -->
+    @if (currentStep() === 2) {
+      <div class="glass-card mb-3">
+        <h5 class="np-card-section-title">
+          Premier épisode
+          <span class="np-badge np-badge-muted ms-2">Optionnel</span>
+        </h5>
+
+        <div class="np-field">
+          <label class="np-label">Titre de l'épisode</label>
+          <input class="np-input"
+            placeholder="Ex : Introduction — Bienvenue !"
+            [formControl]="form.controls.episodeTitle"
+          />
+        </div>
+
+        <div class="np-field">
+          <label class="np-label">Fichier audio</label>
+          <div class="np-upload-zone np-upload-audio"
+            [class.has-file]="audioFile()"
+            (click)="audioInput.click()"
+            (dragover)="$event.preventDefault()"
+            (drop)="onAudioDrop($event)">
+            @if (audioFile()) {
+              <div class="np-audio-info">
+                <div>
+                  <p class="mb-0 fw-semibold">{{ audioFile()!.name }}</p>
+                  <small class="np-text-muted">{{ formatSize(audioFile()!.size) }}</small>
+                </div>
+                <button class="btn-np-ghost ms-auto"
+                  (click)="removeAudio($event)">Retirer</button>
+              </div>
+            } @else {
+              <p class="mb-1 fw-semibold">Déposez votre audio ici</p>
+              <small class="np-text-hint">MP3, WAV, OGG — 200 Mo max</small>
+            }
+          </div>
+          <input #audioInput type="file" accept="audio/*"
+            class="d-none" (change)="onAudioChange($event)" />
+        </div>
+      </div>
+
+      <!-- Récap -->
+      <div class="np-recap glass-card mb-3">
+        <h6 class="np-card-section-title">Récapitulatif</h6>
+        <div class="np-recap-grid">
+          <span class="np-text-muted">Titre</span>
+          <strong>{{ form.controls.title.value }}</strong>
+          <span class="np-text-muted">Catégorie</span>
+          <strong>{{ form.controls.category.value || '—' }}</strong>
+          <span class="np-text-muted">Couverture</span>
+          <strong>{{ coverPreview() ? 'Oui' : 'Non' }}</strong>
+          <span class="np-text-muted">Épisode</span>
+          <strong>{{ audioFile()?.name || '—' }}</strong>
+        </div>
+      </div>
+
+      <!-- Progress upload -->
+      @if (store.uploadProgress() > 0 && store.loading()) {
+        <div class="np-progress-wrap mb-3">
+          <div class="d-flex justify-content-between mb-1">
+            <small class="np-text-muted">Upload en cours...</small>
+            <small class="np-text-muted">{{ store.uploadProgress() }}%</small>
+          </div>
+          <div class="np-progress-bar">
+            <div class="np-progress-fill"
+              [style.width.%]="store.uploadProgress()"></div>
+          </div>
+        </div>
+      }
+
+      @if (store.hasError()) {
+        <div class="np-alert np-alert-danger mb-3">{{ store.error() }}</div>
+      }
+
+      <div class="d-flex justify-content-between">
+        <button class="btn-np-ghost" (click)="prevStep()">Retour</button>
+        <button class="btn-np" [disabled]="store.loading()" (click)="submit()">
+          @if (store.loading()) {
+            <span class="np-spinner-sm"></span> Création...
+          } @else {
+            Créer mon podcast
+          }
+        </button>
+      </div>
+    }
+
   </div>
-}
-    </div>
+</div>

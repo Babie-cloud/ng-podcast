@@ -30,7 +30,7 @@
       <label class="form-label fw-semibold">Fichier audio *</label>
       <input type="file" class="form-control" accept="audio/*" (change)="onAudioChange($event)" />
       @if (audioFile()) {
-        <small class="text-success mt-1 d-block">✔ {{ audioFile()!.name }}</small>
+        <small class="text-success mt-1 d-block">{{ audioFile()!.name }}</small>
       }
     </div>
   </div>
@@ -40,20 +40,19 @@
     <h3 class="h6 mb-3">Plateformes de diffusion</h3>
     <div class="np-platforms">
       @for (p of [
-        {id:'spotify',  icon:'🎵', label:'Spotify'},
-        {id:'apple',    icon:'🍎', label:'Apple Podcasts'},
-        {id:'youtube',  icon:'▶',  label:'YouTube'},
-        {id:'deezer',   icon:'🎧', label:'Deezer'},
-        {id:'amazon',   icon:'📻', label:'Amazon Music'},
-        {id:'rss',      icon:'📡', label:'RSS'},
-        {id:'newsletter',icon:'💬',label:'Newsletter'},
+        {id:'spotify',    label:'Spotify'},
+        {id:'apple',      label:'Apple Podcasts'},
+        {id:'youtube',    label:'YouTube'},
+        {id:'deezer',     label:'Deezer'},
+        {id:'amazon',     label:'Amazon Music'},
+        {id:'rss',        label:'RSS'},
+        {id:'newsletter', label:'Newsletter'},
       ]; track p.id) {
         <div
           class="np-platform-item"
           [class.selected]="platforms().includes(p.id)"
           (click)="togglePlatform(p.id)"
         >
-          <div class="np-platform-icon">{{ p.icon }}</div>
           <div class="np-platform-label">{{ p.label }}</div>
         </div>
       }
@@ -101,7 +100,7 @@
       @if (store.loading()) {
         <span class="spinner-border spinner-border-sm me-2"></span>Publication…
       } @else {
-        🚀 Publier l'épisode
+        Publier l'épisode
       }
     </button>
     <a class="btn btn-outline-secondary"

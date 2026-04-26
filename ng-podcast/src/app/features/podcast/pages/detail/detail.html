@@ -1,65 +1,81 @@
- <div class="container py-4">
+<div class="np-page np-section">
 
-      @if (store.loading()) {
-        <div class="d-flex justify-content-center py-5">
-          <div class="spinner-border text-primary" role="status"></div>
+  @if (store.loading()) {
+    <div class="np-loader-wrap">
+      <div class="np-spinner"></div>
+    </div>
+  }
+
+  @if (store.selected(); as podcast) {
+
+    <!-- Header podcast -->
+    <div class="np-detail-hero glass-card mb-4">
+      <div class="np-detail-cover-wrap">
+        <img
+          [src]="podcast.coverUrl"
+          [alt]="podcast.title"
+          class="np-detail-cover"
+        />
+      </div>
+      <div class="np-detail-info">
+        <span class="np-badge np-badge-primary mb-2">Podcast</span>
+        <h1 class="np-detail-title">{{ podcast.title }}</h1>
+        <p class="np-detail-author">par {{ podcast.authorName }}</p>
+        <p class="np-text-muted np-detail-desc">{{ podcast.description }}</p>
+        <div class="d-flex gap-2 flex-wrap mt-3">
+          <span class="np-badge np-badge-muted">
+            {{ podcast.episodes.length }} épisode(s)
+          </span>
+          <span class="np-badge np-badge-muted">
+            {{ podcast.createdAt | date:'dd/MM/yyyy' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Liste épisodes -->
+    <div class="np-section-header mb-3">
+      <h2 class="np-section-title">
+        Épisodes
+        <span class="np-badge np-badge-primary ms-2">
+          {{ podcast.episodes.length }}
+        </span>
+      </h2>
+    </div>
+
+    <div class="np-episode-list">
+      @for (ep of podcast.episodes; track ep.id) {
+        <div class="np-episode-item glass"
+          [class.np-episode-active]="store.currentEpisode()?.id === ep.id">
+          <div class="np-episode-num np-gradient-text">
+            {{ $index + 1 }}
+          </div>
+          <div class="np-episode-info">
+            <p class="np-episode-title">{{ ep.title }}</p>
+            <p class="np-episode-meta">
+              {{ formatDuration(ep.duration) }} —
+              {{ ep.createdAt | date:'dd/MM/yyyy' }}
+            </p>
+          </div>
+          <button
+            class="btn-np-icon"
+            [class.np-playing]="store.currentEpisode()?.id === ep.id && store.isPlaying()"
+            (click)="playEpisode(ep)"
+            [attr.aria-label]="store.currentEpisode()?.id === ep.id && store.isPlaying() ? 'Pause' : 'Lecture'"
+          >
+            {{ store.currentEpisode()?.id === ep.id && store.isPlaying() ? 'Pause' : 'Lire' }}
+          </button>
+        </div>
+      } @empty {
+        <div class="np-empty glass-card">
+          <p class="np-text-muted">Aucun épisode pour ce podcast.</p>
         </div>
       }
+    </div>
 
-      @if (store.selected(); as podcast) {
-        <!-- Header -->
-        <div class="row align-items-center mb-4">
-          <div class="col-auto">
-            <img
-              [src]="podcast.coverUrl"
-              [alt]="podcast.title"
-              class="rounded"
-              width="120" height="120"
-              style="object-fit:cover"
-            />
-          </div>
-          <div class="col">
-            <h1 class="mb-1">{{ podcast.title }}</h1>
-            <p class="text-muted mb-2">par {{ podcast.authorName }}</p>
-            <p>{{ podcast.description }}</p>
-          </div>
-        </div>
-
-        <!-- Liste des épisodes -->
-        <h2 class="h5 mb-3">
-          Épisodes ({{ podcast.episodes.length }})
-        </h2>
-
-        <div class="list-group">
-          @for (ep of podcast.episodes; track ep.id) {
-            <div class="list-group-item d-flex justify-content-between align-items-center">
-              <div>
-                <strong>{{ ep.title }}</strong>
-                <br />
-                <small class="text-muted">
-                  {{ formatDuration(ep.duration) }} —
-                  {{ ep.createdAt | date:'dd/MM/yyyy' }}
-                </small>
-              </div>
-              <button
-                class="btn btn-sm"
-                [class.btn-primary]="store.currentEpisode()?.id !== ep.id"
-                [class.btn-success]="store.currentEpisode()?.id === ep.id"
-                (click)="playEpisode(ep)"
-              >
-                {{ store.currentEpisode()?.id === ep.id && store.isPlaying()
-                    ? 'En cours'
-                    : 'Écouter' }}
-              </button>
-            </div>
-          } @empty {
-            <p class="text-muted">Aucun épisode pour ce podcast.</p>
-          }
-        </div>
-
-        <a routerLink="/podcasts" class="btn btn-outline-secondary mt-4">
-          Retour à la liste
-        </a>
-      }
+    <a routerLink="/podcasts" class="btn-np-ghost mt-4 d-inline-flex">
+      Retour aux podcasts
+    </a>
+  }
 
 </div>

@@ -1,42 +1,45 @@
-<!-- src/app/features/podcast/components/podcast-card/podcast-card.html -->
 <article class="np-podcast-card">
 
-  <!-- Cover + overlay play -->
-  <div class="np-card-cover-wrap">
-    <img
-      [src]="podcast().coverUrl"
-      [alt]="podcast().title"
-      class="np-card-cover"
-      loading="lazy"
-    />
-    <div class="np-card-overlay" (click)="onPlayLatest()">
-      <button class="np-play-fab" aria-label="Écouter">
-        @if (isCurrentlyPlaying()) {
-          <span>⏸</span>
-        } @else {
-          <span>▶</span>
-        }
+  <div class="np-cover-wrap">
+    <a [routerLink]="['/podcasts', podcast.id]">
+      <img
+        [src]="podcast.coverUrl"
+        [alt]="podcast.title"
+        loading="lazy"
+      />
+    </a>
+    <div class="np-cover-overlay">
+      <button
+        class="np-cover-play"
+        (click)="firstEpisode && onPlay(firstEpisode)"
+        [disabled]="!firstEpisode"
+        [attr.aria-label]="isCurrentlyPlaying ? 'Pause' : 'Lecture'"
+      >
+        {{ isCurrentlyPlaying ? 'Pause' : 'Lecture' }}
       </button>
     </div>
   </div>
 
-  <!-- Body -->
   <div class="np-card-body">
-    <p class="np-card-ep-count">
-      {{ podcast().episodes.length }}
-      {{ podcast().episodes.length > 1 ? 'épisodes' : 'épisode' }}
+    <span class="np-badge np-badge-primary mb-2">
+      {{ podcast.episodes.length }}
+      {{ podcast.episodes.length > 1 ? 'épisodes' : 'épisode' }}
+    </span>
+
+    <h3 class="np-card-title">{{ podcast.title }}</h3>
+    <p class="np-card-author">par {{ podcast.authorName }}</p>
+    <p class="np-card-desc">{{ podcast.description }}</p>
+    <p class="np-card-meta">
+      {{ podcast.createdAt | date:'dd/MM/yyyy' }}
     </p>
-    <h3 class="np-card-title">{{ podcast().title }}</h3>
-    <p class="np-card-author">par {{ podcast().authorName }}</p>
-    <p class="np-card-desc">{{ podcast().description }}</p>
 
     <div class="np-card-actions">
-      <a class="btn-np btn-np-sm" [routerLink]="['/podcasts', podcast().id]">
+      <a class="btn-np" [routerLink]="['/podcasts', podcast.id]">
         Voir les épisodes
       </a>
-      @if (latestEpisode()) {
-        <button class="btn-np-outline btn-np-sm" (click)="onPlayLatest()">
-          {{ isCurrentlyPlaying() ? '⏸ Pause' : '▶ Dernier ép.' }}
+      @if (firstEpisode) {
+        <button class="btn-np-outline" (click)="onPlay(firstEpisode)">
+          {{ isCurrentlyPlaying ? 'Pause' : 'Écouter' }}
         </button>
       }
     </div>

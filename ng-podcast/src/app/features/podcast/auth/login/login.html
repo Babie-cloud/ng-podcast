@@ -1,25 +1,71 @@
-  <div class="min-h-screen flex items-center justify-center bg-slate-50">
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
-        <h2 class="text-2xl font-bold mb-6 text-center text-slate-800">Connexion</h2>
-        
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-slate-700">Email</label>
-            <input formControlName="email" type="email" class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
-          </div>
+<div class="np-auth-wrap">
+  <div class="np-auth-card glass-strong">
 
-          <div>
-            <label class="block text-sm font-medium text-slate-700">Mot de passe</label>
-            <input formControlName="password" type="password" class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
-          </div>
-        </div>
-
-        <button type="submit" [disabled]="loginForm.invalid" class="w-full mt-8 bg-indigo-600 text-white py-2 rounded-lg font-bold disabled:bg-slate-300 transition">
-          Se connecter
-        </button>
-
-        <p class="mt-4 text-center text-sm text-slate-600">
-          Pas encore de compte ? <a class="text-indigo-600 font-medium cursor-pointer">S'inscrire</a>
-        </p>
-      </form>
+    <div class="np-auth-logo">
+      <span class="np-gradient-text">ng-podcast</span>
     </div>
+
+    <h2 class="np-auth-title">Bon retour</h2>
+    <p class="np-text-muted np-auth-subtitle">
+      Connectez-vous pour accéder à votre espace créatif.
+    </p>
+
+    <div class="np-field">
+      <label class="np-label">Email</label>
+      <input class="np-input" type="email"
+        placeholder="votre@email.com"
+        [formControl]="loginForm.controls.email"
+      />
+    </div>
+
+    <div class="np-field">
+      <label class="np-label">Mot de passe</label>
+      <div class="np-input-password">
+        <input class="np-input"
+          [type]="showPassword ? 'text' : 'password'"
+          placeholder="••••••••"
+          [formControl]="loginForm.controls.password"
+        />
+        <button type="button" class="np-input-eye"
+          (click)="showPassword = !showPassword"
+          [attr.aria-label]="showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'">
+          {{ showPassword ? 'Masquer' : 'Afficher' }}
+        </button>
+      </div>
+    </div>
+
+    <div class="np-auth-options">
+      <label class="np-checkbox-label">
+        <input type="checkbox" style="accent-color:var(--np-primary)">
+        Se souvenir de moi
+      </label>
+      <a routerLink="/resetpassword" class="np-auth-link">
+        Mot de passe oublié ?
+      </a>
+    </div>
+
+    @if (error()) {
+      <div class="np-alert np-alert-danger">{{ error() }}</div>
+    }
+
+    <button class="btn-np np-auth-submit"
+      [disabled]="loginForm.invalid || loading()"
+      (click)="onSubmit()">
+      @if (loading()) {
+        <span class="np-spinner-sm"></span> Connexion...
+      } @else {
+        Se connecter
+      }
+    </button>
+
+    <div class="np-auth-separator">
+      <span>ou</span>
+    </div>
+
+    <p class="np-auth-footer">
+      Pas encore de compte ?
+      <a routerLink="/signup" class="np-auth-link">S'inscrire</a>
+    </p>
+
+  </div>
+</div>

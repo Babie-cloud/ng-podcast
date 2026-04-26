@@ -1,22 +1,135 @@
 // src/styles/theme.scss
+// ═══════════════════════════════════════════════════════════════
+// THEME — dark / light mode via data-theme attribute
+// ═══════════════════════════════════════════════════════════════
+@use 'variables' as *;
 
+// ─── CUSTOM PROPERTIES COMMUNES ──────────────────────────────
+:root {
+  // Rayons
+  --np-radius-xs:   #{$np-radius-xs};
+  --np-radius-sm:   #{$np-radius-sm};
+  --np-radius-md:   #{$np-radius-md};
+  --np-radius-lg:   #{$np-radius-lg};
+  --np-radius-xl:   #{$np-radius-xl};
+  --np-radius-full: #{$np-radius-full};
+
+  // Couleurs primaires (identiques dans les deux modes)
+  --np-primary:        #{$np-primary};
+  --np-primary-light:  #{$np-primary-light};
+  --np-primary-dark:   #{$np-primary-dark};
+  --np-primary-glow:   #{$np-primary-glow};
+  --np-primary-soft:   #{$np-primary-soft};
+  --np-primary-medium: #{$np-primary-medium};
+
+  --np-secondary:       #{$np-secondary};
+  --np-secondary-light: #{$np-secondary-light};
+  --np-accent:          #{$np-accent};
+
+  // Sémantiques
+  --np-success: #{$np-success};
+  --np-warning: #{$np-warning};
+  --np-danger:  #{$np-danger};
+  --np-info:    #{$np-info};
+
+  // Glass
+  --np-blur:        #{$np-blur};
+  --np-blur-strong: #{$np-blur-strong};
+  --np-blur-subtle: #{$np-blur-subtle};
+
+  // Transitions
+  --np-transition:      #{$np-transition};
+  --np-transition-slow: #{$np-transition-slow};
+  --np-transition-fast: #{$np-transition-fast};
+}
+
+// ─── DARK MODE (défaut) ───────────────────────────────────────
+:root,
 [data-theme="dark"] {
-  --np-bg: #1c140f;
-  --np-bg-secondary: #2a1f18;
-  --np-surface: rgba(255, 255, 255, 0.07);
-  --np-surface-hover: rgba(255, 255, 255, 0.13);
+  // Backgrounds
+  --np-bg:           #{$np-bg-dark};
+  --np-bg-secondary: #{$np-bg-dark-secondary};
+  --np-bg-tertiary:  #{$np-bg-dark-tertiary};
 
-  --np-text: #f5e8d3;
-  --np-text-muted: rgba(245, 232, 211, 0.65);
-  --np-text-hint: rgba(245, 232, 211, 0.38);
+  // Surfaces glass
+  --np-surface:        #{$np-surface-dark};
+  --np-surface-hover:  #{$np-surface-dark-hover};
+  --np-surface-active: #{$np-surface-dark-active};
 
-  --np-border: rgba(245, 232, 211, 0.12);
-  --np-border-subtle: rgba(139, 69, 19, 0.35);
+  // Textes
+  --np-text:       #{$np-text-dark};
+  --np-text-muted: #{$np-text-dark-muted};
+  --np-text-hint:  #{$np-text-dark-hint};
 
-  --np-player-bg: rgba(20, 12, 8, 0.96);
+  // Bordures
+  --np-border:        #{$np-border-dark};
+  --np-border-subtle: #{$np-border-dark-subtle};
+  --np-border-strong: #{$np-border-dark-strong};
 
-  --np-shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.35);
-  --np-shadow-md: 0 10px 30px rgba(0, 0, 0, 0.45);
-  --np-shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.55);
-  --np-shadow-glow: 0 0 28px rgba(193, 122, 78, 0.45);
+  // Ombres
+  --np-shadow-sm: #{$np-shadow-dark-sm};
+  --np-shadow-md: #{$np-shadow-dark-md};
+  --np-shadow-lg: #{$np-shadow-dark-lg};
+
+  // Composants
+  --np-navbar-bg: #{$np-navbar-bg-dark};
+  --np-player-bg: #{$np-player-bg-dark};
+
+  // Overlay image au hover
+  --np-overlay: rgba(139, 69, 19, 0.35);
+
+  // Gradient brand
+  --np-gradient: linear-gradient(135deg, #{$np-primary-light}, #{$np-primary});
+}
+
+// ─── LIGHT MODE ───────────────────────────────────────────────
+[data-theme="light"] {
+  // Backgrounds
+  --np-bg:           #{$np-bg-light};
+  --np-bg-secondary: #{$np-bg-light-secondary};
+  --np-bg-tertiary:  #{$np-bg-light-tertiary};
+
+  // Surfaces glass
+  --np-surface:        #{$np-surface-light};
+  --np-surface-hover:  #{$np-surface-light-hover};
+  --np-surface-active: #{$np-surface-light-active};
+
+  // Textes
+  --np-text:       #{$np-text-light};
+  --np-text-muted: #{$np-text-light-muted};
+  --np-text-hint:  #{$np-text-light-hint};
+
+  // Bordures
+  --np-border:        #{$np-border-light};
+  --np-border-subtle: #{$np-border-light-subtle};
+  --np-border-strong: #{$np-border-light-strong};
+
+  // Ombres
+  --np-shadow-sm: #{$np-shadow-sm};
+  --np-shadow-md: #{$np-shadow-md};
+  --np-shadow-lg: #{$np-shadow-lg};
+
+  // Composants
+  --np-navbar-bg: #{$np-navbar-bg-light};
+  --np-player-bg: #{$np-player-bg-light};
+
+  // Overlay image au hover
+  --np-overlay: rgba(139, 69, 19, 0.28);
+
+  // Gradient brand
+  --np-gradient: linear-gradient(135deg, #{$np-primary}, #{$np-primary-dark});
+}
+
+// ─── TRANSITIONS FLUIDES entre modes ─────────────────────────
+body,
+.glass,
+.glass-card,
+.glass-strong,
+.np-navbar,
+.np-player {
+  transition:
+    background-color  0.3s ease,
+    border-color      0.3s ease,
+    color             0.3s ease,
+    box-shadow        0.3s ease;
 }
