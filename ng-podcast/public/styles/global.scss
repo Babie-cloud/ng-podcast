@@ -652,6 +652,28 @@ body {
 .np-nav-links  { display: flex; align-items: center; gap: $np-space-xs; flex: 1; margin: 0 $np-space-lg; }
 .np-nav-actions { display: flex; align-items: center; gap: $np-space-md; }
 
+// ─── Landing extras ───────────────────────────────────────
+.np-feature-cta {
+  display:      inline-block;
+  margin-top:   $np-space-md;
+  font-size:    $np-text-sm;
+  font-weight:  $np-weight-medium;
+  color:        var(--np-primary-light);
+}
+
+.np-login-banner {
+  display:      flex;
+  align-items:  center;
+  justify-content: space-between;
+  flex-wrap:    wrap;
+  gap:          $np-space-md;
+  padding:      $np-space-lg $np-space-xl;
+  border:       1px solid var(--np-border-subtle);
+  border-left:  4px solid var(--np-primary);
+
+  p { color: var(--np-text-muted); }
+}
+
 // Footer
 .np-footer { padding: $np-space-2xl 0 $np-space-lg; margin-top: $np-space-2xl; border-top: 1px solid var(--np-border); }
 .np-footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 2fr; gap: $np-space-xl; margin-bottom: $np-space-xl; @media (max-width: 768px) { grid-template-columns: 1fr 1fr; } }

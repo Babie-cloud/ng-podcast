@@ -1,0 +1,20 @@
+// src/app/shared/pages/navbar/navbar.scss
+.np-theme-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+// Responsive — cacher les liens sur mobile
+@media (max-width: 768px) {
+  .np-nav-links {
+    display: none;
+  }
+
+  .np-nav-actions {
+    gap: 8px;
+
+    .btn-np-ghost {
+      display: none; // Déconnexion cachée sur mobile
+    }
+  }
+}

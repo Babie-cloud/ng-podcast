@@ -1,6 +1,8 @@
-import { Component, signal } from '@angular/core';
+// src/app/features/podcast/auth/login/login.ts
+import { Component, signal, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -10,18 +12,20 @@ import { RouterLink } from '@angular/router';
   styleUrl: './login.scss',
 })
 export class Login {
-  private fb = new FormBuilder();
+  private fb      = new FormBuilder();
+  private router  = inject(Router);
+  readonly auth   = inject(AuthService);
 
   showPassword = false;
   readonly loading = signal(false);
-  readonly error = signal<string | null>(null);
+  readonly error   = signal<string | null>(null);
 
   loginForm = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
+    email:    ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
   });
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;
@@ -30,8 +34,19 @@ export class Login {
     this.error.set(null);
     this.loading.set(true);
 
-    // TODO: brancher l'appel réel à l'API d'authentification
-    console.log('Login attempt:', this.loginForm.value);
-    this.loading.set(false);
+    try {
+      const { email, password } = this.loginForm.getRawValue();
+      await this.auth.login({ email: email!, password: password! });
+
+      //  Redirige vers returnUrl si présent, sinon vers /podcasts
+      const params  = new URLSearchParams(window.location.search);
+      const returnUrl = params.get('returnUrl') ?? '/podcasts';
+      this.router.navigateByUrl(returnUrl);
+
+    } catch (e: any) {
+      this.error.set(e?.error?.message ?? 'Email ou mot de passe incorrect.');
+    } finally {
+      this.loading.set(false);
+    }
   }
 }

@@ -1,58 +1,54 @@
 // src/app/app.routes.ts
 import { Routes } from '@angular/router';
-import { Landingpage } from './features/podcast/auth/landingpage/landingpage';
-import { Login } from './features/podcast/auth/login/login';
-import { Signin } from './features/podcast/auth/signin/signin';
-import { Resetpassword } from './features/podcast/auth/resetpassword/resetpassword';
+import { authGuard } from './features/core/guard/auth.guard';
 
 export const routes: Routes = [
-
-  // ─── Page principale : redirige vers /podcasts ──────────────
+  // ─── Landing (publique) ─────────────────────────────────
   {
-    path: './podcasts',
-    redirectTo: 'podcasts',
-    pathMatch: 'full'
+    path: '',
+    loadComponent: () =>
+      import('./features/podcast/auth/landingpage/landingpage')
+        .then(m => m.Landingpage)
   },
 
-  // ─── Module Podcast ─────────────────────────────────────────
+  // ─── Auth (publiques) ────────────────────────────────────
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./features/podcast/auth/login/login')
+        .then(m => m.Login)
+  },
+  {
+    path: 'signup',
+    loadComponent: () =>
+      import('./features/podcast/auth/signin/signin')
+        .then(m => m.Signin)
+  },
+  {
+    path: 'resetpassword',
+    loadComponent: () =>
+      import('./features/podcast/auth/resetpassword/resetpassword')
+        .then(m => m.Resetpassword)
+  },
+
+  // ─── Search (publique — visible sans connexion) ──────────
+  {
+    path: 'search',
+    loadComponent: () =>
+      import('./features/podcast/pages/search/search')
+        .then(m => m.Search)
+  },
+
+  // ─── Podcasts (protégé) ──────────────────────────────────
   {
     path: 'podcasts',
+    canActivate: [authGuard],      // 🔒 connexion requise
     loadChildren: () =>
       import('./features/podcast/podcast.routes')
         .then(m => m.PODCAST_ROUTES)
   },
 
-  { path: '', component: Landingpage },
-  { path: 'login', component: Login },
-  { path: 'signup', component: Signin },
-  { path: 'resetpassword', component: Resetpassword },
-
-
-  // ─── (à venir) Module Écriture ──────────────────────────────
-  // {
-  //   path: 'writing',
-  //   loadChildren: () =>
-  //     import('./features/writing/writing.routes')
-  //       .then(m => m.WRITING_ROUTES)
-  // },
-
-  // ─── (à venir) Module Storytelling ──────────────────────────
-  // {
-  //   path: 'storytelling',
-  //   loadChildren: () =>
-  //     import('./features/storytelling/storytelling.routes')
-  //       .then(m => m.STORYTELLING_ROUTES)
-  // },
-
-  // ─── (à venir) Auth ─────────────────────────────────────────
-  // {
-  //   path: 'auth',
-  //   loadChildren: () =>
-  //     import('./features/auth/auth.routes')
-  //       .then(m => m.AUTH_ROUTES)
-  // },
-
-  // ─── Page 404 ───────────────────────────────────────────────
+  // ─── 404 ─────────────────────────────────────────────────
   {
     path: '**',
     loadComponent: () =>
