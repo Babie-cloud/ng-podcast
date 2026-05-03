@@ -1,44 +1,65 @@
-# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
-
-# Compiled output
+# ══════════════════════════════════════════════
+# ANGULAR — Frontend
+# ══════════════════════════════════════════════
 /dist
 /tmp
 /out-tsc
 /bazel-out
-
-# Node
 /node_modules
+/.angular/cache
 npm-debug.log
 yarn-error.log
+.sass-cache/
+/coverage
+/typings
+__screenshots__/
 
-# IDEs and editors
+# Environnements Angular (contiennent apiUrl, clés...)
+src/environments/environment.ts
+src/environments/environment.development.ts
+src/environments/environment.prod.ts
+
+# ══════════════════════════════════════════════
+# SPRING BOOT — Backend
+# ══════════════════════════════════════════════
+target/
+*.jar
+*.war
+*.class
+
+# Fichiers de config sensibles
+src/main/resources/application.properties
+src/main/resources/application.yml
+src/main/resources/application-dev.properties
+src/main/resources/application-prod.properties
+
+# ══════════════════════════════════════════════
+# VARIABLES D'ENVIRONNEMENT
+# ══════════════════════════════════════════════
+.env
+.env.local
+.env.development
+.env.production
+.env.*
+
+# ══════════════════════════════════════════════
+# IDEs et éditeurs
+# ══════════════════════════════════════════════
 .idea/
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
-
-# Visual Studio Code
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-!.vscode/mcp.json
+.project
+.classpath
+.settings/
+*.sublime-workspace
 .history/*
 
-# Miscellaneous
-/.angular/cache
-.sass-cache/
-/connect.lock
-/coverage
-/libpeerconnection.log
-testem.log
-/typings
-__screenshots__/
-
-# System files
+# ══════════════════════════════════════════════
+# Système
+# ══════════════════════════════════════════════
 .DS_Store
 Thumbs.db
+*.log
