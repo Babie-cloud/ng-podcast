@@ -1,11 +1,10 @@
-// ══════════════════════════════════════════════════════════
-// src/app/core/services/auth.service.ts
-// ══════════════════════════════════════════════════════════
+// src/app/features/podcast/services/auth.service.ts
 import { Injectable, signal, computed, inject, PLATFORM_ID } from '@angular/core';
-import { HttpClient }    from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
 import { firstValueFrom } from 'rxjs';
-import { environment }   from '../../../../environments/environment';
+import { Router } from '@angular/router';
+import { environment } from '../../../../environments/environment';
 
 export interface AuthUser {
   id:       string;
@@ -15,8 +14,16 @@ export interface AuthUser {
 }
 
 interface LoginPayload    { email: string; password: string; }
-interface RegisterPayload { email: string; password: string; username: string; }
-interface AuthResponse    { token: string; user: AuthUser; }
+interface RegisterPayload {
+  name:     string;
+  prenom:   string;
+  email:    string;
+  password: string;
+}
+interface AuthResponse {
+  token: string;
+  user:  AuthUser;
+}
 
 const TOKEN_KEY = 'np_jwt';
 
@@ -25,45 +32,87 @@ export class AuthService {
 
   private readonly http       = inject(HttpClient);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly router     = inject(Router);
   private readonly base       = `${environment.apiUrl}/auth`;
 
-  // ─── État réactif ──────────────────────────────────────────────────────────
-  private readonly _user  = signal<AuthUser | null>(null);
-  private readonly _token = signal<string | null>(null);
+  // ─── State ────────────────────────────────────────────────
+  private readonly _user    = signal<AuthUser | null>(null);
+  private readonly _token   = signal<string | null>(null);
+  private readonly _loading = signal(false);
+  private readonly _error   = signal<string | null>(null);
 
-  readonly user      = this._user.asReadonly();
-  readonly token     = this._token.asReadonly();
-  readonly isLogged  = computed(() => !!this._token());
-  readonly isAdmin   = computed(() => this._user()?.role === 'ADMIN');
+  readonly user     = this._user.asReadonly();
+  readonly token    = this._token.asReadonly();
+  readonly loading  = this._loading.asReadonly();
+  readonly error    = this._error.asReadonly();
+  readonly isLogged = computed(() => !!this._token());
+  readonly isAdmin  = computed(() => this._user()?.role === 'ADMIN');
 
   constructor() {
-    // Rehydrate depuis localStorage au démarrage
+    // Rehydrate token au démarrage
     if (isPlatformBrowser(this.platformId)) {
       const stored = localStorage.getItem(TOKEN_KEY);
       if (stored) {
         this._token.set(stored);
+        // Récupère le profil sans bloquer
         this.fetchMe().catch(() => this.logout());
       }
     }
   }
 
-  // ─── Login ────────────────────────────────────────────────────────────────
+  // ─── Login → POST /auth/login ─────────────────────────────
   async login(payload: LoginPayload): Promise<void> {
-    const res = await firstValueFrom(
-      this.http.post<AuthResponse>(`${this.base}/login`, payload)
-    );
-    this.saveSession(res);
+    this._loading.set(true);
+    this._error.set(null);
+    try {
+      const res = await firstValueFrom(
+        this.http.post<AuthResponse>(`${this.base}/login`, payload)
+      );
+      this.saveSession(res);
+    } catch (e: any) {
+      const msg = e?.error?.message ?? 'Email ou mot de passe incorrect.';
+      this._error.set(msg);
+      throw e;
+    } finally {
+      this._loading.set(false);
+    }
   }
 
-  // ─── Register ────────────────────────────────────────────────────────────
+  // ─── Register → POST /auth/register ──────────────────────
   async register(payload: RegisterPayload): Promise<void> {
-    const res = await firstValueFrom(
-      this.http.post<AuthResponse>(`${this.base}/register`, payload)
-    );
-    this.saveSession(res);
+    this._loading.set(true);
+    this._error.set(null);
+    try {
+      const res = await firstValueFrom(
+        this.http.post<AuthResponse>(`${this.base}/register`, payload)
+      );
+      this.saveSession(res);
+    } catch (e: any) {
+      const msg = e?.error?.message ?? 'Erreur lors de l\'inscription.';
+      this._error.set(msg);
+      throw e;
+    } finally {
+      this._loading.set(false);
+    }
   }
 
-  // ─── Récupère le profil depuis l'API (avec le token stocké) ───────────────
+  // ─── Reset password → POST /auth/reset-password ──────────
+  async resetPassword(email: string): Promise<void> {
+    this._loading.set(true);
+    this._error.set(null);
+    try {
+      await firstValueFrom(
+        this.http.post<void>(`${this.base}/reset-password`, { email })
+      );
+    } catch (e: any) {
+      this._error.set(e?.error?.message ?? 'Erreur lors de la réinitialisation.');
+      throw e;
+    } finally {
+      this._loading.set(false);
+    }
+  }
+
+  // ─── GET /users/me ────────────────────────────────────────
   async fetchMe(): Promise<void> {
     const user = await firstValueFrom(
       this.http.get<AuthUser>(`${environment.apiUrl}/users/me`)
@@ -71,16 +120,17 @@ export class AuthService {
     this._user.set(user);
   }
 
-  // ─── Logout ───────────────────────────────────────────────────────────────
+  // ─── Logout ───────────────────────────────────────────────
   logout(): void {
     this._token.set(null);
     this._user.set(null);
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem(TOKEN_KEY);
     }
+    this.router.navigate(['/']);
   }
 
-  // ─── Utilitaire interne ────────────────────────────────────────────────────
+  // ─── Interne ──────────────────────────────────────────────
   private saveSession(res: AuthResponse): void {
     this._token.set(res.token);
     this._user.set(res.user);
@@ -89,4 +139,3 @@ export class AuthService {
     }
   }
 }
-

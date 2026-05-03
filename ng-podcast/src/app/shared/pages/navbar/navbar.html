@@ -1,95 +1,126 @@
 <!-- src/app/shared/pages/navbar/navbar.html -->
 <nav class="np-navbar">
 
-  <!-- Logo — toujours visible -->
-  <a routerLink="/" class="np-brand">
-    <span class="np-brand-icon">🎙</span>
+  <!-- Logo -->
+  <a routerLink="/" class="np-brand" (click)="closeMenu()">
     ng-podcast
   </a>
 
-  <!-- ─── CONNECTÉ : liens complets ─────────────────────── -->
+  <!-- ─── CONNECTÉ : liens desktop ───────────────────────── -->
   @if (auth.isLogged()) {
     <div class="np-nav-links">
       <a routerLink="/podcasts"
          routerLinkActive="active"
-         class="np-nav-link">
-         Podcasts
-      </a>
+         class="np-nav-link"> Podcasts</a>
       <a routerLink="/search"
          routerLinkActive="active"
-         class="np-nav-link">
-         Rechercher
-      </a>
+         class="np-nav-link"> Rechercher</a>
       <a routerLink="/writing"
          routerLinkActive="active"
-         class="np-nav-link">
-         Écriture
-      </a>
+         class="np-nav-link"> Écriture</a>
       <a routerLink="/storytelling"
          routerLinkActive="active"
-         class="np-nav-link">
-         Storytelling
-      </a>
+         class="np-nav-link"> Storytelling</a>
     </div>
-
-    <div class="np-nav-actions">
-      <!-- Toggle dark/light -->
-      <button class="np-theme-toggle"
-        [class.dark]="theme.isDark()"
-        (click)="theme.toggle()"
-        [title]="theme.isDark() ? 'Mode clair' : 'Mode sombre'">
-        <span class="np-toggle-thumb"
-          [class.dark]="theme.isDark()">
-        </span>
-      </button>
-      <span class="np-theme-icon">
-        {{ theme.isDark() ? '' : '' }}
-      </span>
-
-      <!-- Mon espace -->
-      <a routerLink="/podcasts/my-podcasts"
-         class="btn-np-outline">
-        Mon espace
-      </a>
-
-      <!-- Déconnexion -->
-      <button class="btn-np-ghost" (click)="logout()">
-        Déconnexion
-      </button>
-    </div>
-
-  <!-- ─── NON CONNECTÉ : navbar minimale ────────────────── -->
   } @else {
     <div class="np-nav-links">
       <a routerLink="/"
          routerLinkActive="active"
          [routerLinkActiveOptions]="{ exact: true }"
-         class="np-nav-link">
-        Accueil
-      </a>
-    </div>
-
-    <div class="np-nav-actions">
-      <!-- Toggle dark/light -->
-      <button class="np-theme-toggle"
-        [class.dark]="theme.isDark()"
-        (click)="theme.toggle()"
-        [title]="theme.isDark() ? 'Mode clair' : 'Mode sombre'">
-        <span class="np-toggle-thumb"
-          [class.dark]="theme.isDark()">
-        </span>
-      </button>
-      <span class="np-theme-icon">
-        {{ theme.isDark() ? '' : '' }}
-      </span>
-
-      <a routerLink="/login" class="btn-np-outline">
-        Connexion
-      </a>
-      <a routerLink="/signup" class="btn-np">
-        S'inscrire
-      </a>
+         class="np-nav-link">Accueil</a>
     </div>
   }
 
+  <div class="np-nav-actions">
+    <!-- Toggle dark/light -->
+    <button class="np-theme-toggle"
+      [class.dark]="theme.isDark()"
+      (click)="theme.toggle()">
+      <span class="np-toggle-thumb" [class.dark]="theme.isDark()"></span>
+    </button>
+    <span class="np-theme-icon np-hide-mobile">
+      {{ theme.isDark() ? '' : '' }}
+    </span>
+
+    @if (auth.isLogged()) {
+      <a routerLink="/podcasts/my-podcasts"
+         class="btn-np-outline np-hide-mobile">
+        Mon espace
+      </a>
+      <button class="btn-np-ghost np-hide-mobile" (click)="logout()">
+        Déconnexion
+      </button>
+    } @else {
+      <a routerLink="/login" class="btn-np-outline np-hide-mobile">
+        Connexion
+      </a>
+      <a routerLink="/signup" class="btn-np np-hide-mobile">
+        S'inscrire
+      </a>
+    }
+
+    <!-- Hamburger — visible uniquement sur mobile -->
+    <button class="np-hamburger"
+      [class.open]="menuOpen()"
+      (click)="toggleMenu()"
+      aria-label="Menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+
 </nav>
+
+<!-- ─── MENU MOBILE ──────────────────────────────────────── -->
+<div class="np-mobile-menu" [class.open]="menuOpen()">
+
+  @if (auth.isLogged()) {
+    <a routerLink="/podcasts"
+       routerLinkActive="active"
+       class="np-mobile-link"
+       (click)="closeMenu()"> Podcasts</a>
+    <a routerLink="/search"
+       routerLinkActive="active"
+       class="np-mobile-link"
+       (click)="closeMenu()"> Rechercher</a>
+    <a routerLink="/writing"
+       routerLinkActive="active"
+       class="np-mobile-link"
+       (click)="closeMenu()"> Écriture</a>
+    <a routerLink="/storytelling"
+       routerLinkActive="active"
+       class="np-mobile-link"
+       (click)="closeMenu()"> Storytelling</a>
+
+    <div class="np-mobile-divider"></div>
+
+    <a routerLink="/podcasts/my-podcasts"
+       class="np-mobile-link"
+       (click)="closeMenu()"> Mon espace</a>
+    <button class="np-mobile-link"
+      style="text-align:left;cursor:pointer;border:none;background:none;color:var(--np-danger)"
+      (click)="logout()">
+       Déconnexion
+    </button>
+
+  } @else {
+    <a routerLink="/"
+       class="np-mobile-link"
+       (click)="closeMenu()"> Accueil</a>
+
+    <div class="np-mobile-divider"></div>
+
+    <a routerLink="/login"
+       class="np-mobile-link"
+       (click)="closeMenu()"> Connexion</a>
+    <a routerLink="/signup"
+       class="btn-np"
+       style="text-align:center"
+       (click)="closeMenu()">Créer un compte</a>
+  }
+
+  <!-- Toggle thème dans le menu mobile -->
+ 
+
+</div>
