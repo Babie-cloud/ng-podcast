@@ -43,7 +43,7 @@
     </span>
 
     @if (auth.isLogged()) {
-      <a routerLink="/podcasts/my-podcasts"
+      <a routerLink="/podcasts/mine"
          class="btn-np-outline np-hide-mobile">
         Mon espace
       </a>
@@ -95,7 +95,7 @@
 
     <div class="np-mobile-divider"></div>
 
-    <a routerLink="/podcasts/my-podcasts"
+    <a routerLink="/podcasts/mine"
        class="np-mobile-link"
        (click)="closeMenu()"> Mon espace</a>
     <button class="np-mobile-link"
@@ -120,7 +120,5 @@
        (click)="closeMenu()">Créer un compte</a>
   }
 
-  <!-- Toggle thème dans le menu mobile -->
- 
 
 </div>
