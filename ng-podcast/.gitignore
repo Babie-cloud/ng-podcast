@@ -14,10 +14,10 @@ yarn-error.log
 /typings
 __screenshots__/
 
-# Environnements Angular (contiennent apiUrl, clés...)
+# Environnements Angular locaux / secrets (apiUrl machine, clés…)
+# environment.prod.ts est versionné avec un placeholder ; surchargez-le au déploiement ou via votre pipeline.
 src/environments/environment.ts
 src/environments/environment.development.ts
-src/environments/environment.prod.ts
 
 # ══════════════════════════════════════════════
 # SPRING BOOT — Backend

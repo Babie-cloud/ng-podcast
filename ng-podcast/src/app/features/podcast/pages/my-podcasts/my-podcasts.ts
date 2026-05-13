@@ -14,7 +14,7 @@ export class MyPodcasts implements OnInit {
   readonly store = inject(PodcastStore);
 
   ngOnInit() {
-    this.store.loadAll();
+    this.store.loadMine();
   }
 
   confirmDelete(id: string, title: string) {
