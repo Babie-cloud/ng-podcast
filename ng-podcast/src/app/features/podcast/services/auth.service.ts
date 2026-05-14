@@ -5,6 +5,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { firstValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
+import { SSR_API_BASE_URL } from '../../core/tokens/ssr-api-base-url.token';
 
 export interface AuthUser {
   id:       string;
@@ -47,7 +48,9 @@ export class AuthService {
   private readonly http       = inject(HttpClient);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly router     = inject(Router);
-  private readonly base       = `${environment.apiUrl}/auth`;
+  private readonly apiRoot =
+    inject(SSR_API_BASE_URL, { optional: true }) ?? environment.apiUrl;
+  private readonly base       = `${this.apiRoot}/auth`;
 
   // ─── State ────────────────────────────────────────────────
   private readonly _user    = signal<AuthUser | null>(null);
@@ -130,7 +133,7 @@ export class AuthService {
   // ─── GET /users/me ────────────────────────────────────────
   async fetchMe(): Promise<void> {
     const user = await firstValueFrom(
-      this.http.get<AuthUser>(`${environment.apiUrl}/users/me`)
+      this.http.get<AuthUser>(`${this.apiRoot}/users/me`)
     );
     this._user.set(user);
   }

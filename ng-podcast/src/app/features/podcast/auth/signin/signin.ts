@@ -51,7 +51,7 @@ export class Signin {
         email:    email!,
         password: password!
       });
-      this.router.navigate(['/podcasts']);
+      this.router.navigate(['/dashboard']);
     } catch (e: any) {
       this.error.set(
         e?.error?.message ?? 'Erreur lors de l\'inscription.'

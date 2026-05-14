@@ -38,9 +38,9 @@ export class Login {
       const { email, password } = this.loginForm.getRawValue();
       await this.auth.login({ email: email!, password: password! });
 
-      //  Redirige vers returnUrl si présent, sinon vers /podcasts
-      const params  = new URLSearchParams(window.location.search);
-      const returnUrl = params.get('returnUrl') ?? '/podcasts';
+      // Redirige vers returnUrl si présent, sinon tableau de bord
+      const params = new URLSearchParams(window.location.search);
+      const returnUrl = params.get('returnUrl') ?? '/dashboard';
       this.router.navigateByUrl(returnUrl);
 
     } catch (e: any) {

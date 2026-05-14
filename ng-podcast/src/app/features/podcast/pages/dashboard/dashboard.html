@@ -1,0 +1,35 @@
+<div class="np-page np-section">
+  <div class="np-hero glass-card mb-5">
+    <p class="np-hero-eyebrow">Tableau de bord</p>
+    <h1 class="np-gradient-text">Bonjour, {{ displayName() }}</h1>
+    <p class="np-hero-desc">
+      Gérez vos podcasts, publiez du contenu et explorez la communauté depuis cet espace.
+    </p>
+    @if (auth.user(); as u) {
+      <p class="np-dashboard-meta mb-0">
+        <span>{{ u.email }}</span>
+        @if (u.role === 'ADMIN') {
+          <span class="np-dashboard-badge">Admin</span>
+        }
+      </p>
+    }
+  </div>
+
+  <div class="np-stats-row mb-5">
+    <div class="np-stat glass-card">
+      <span class="np-stat-num np-gradient-text">{{ store.podcastCount() }}</span>
+      <span class="np-stat-lbl">Mes podcasts</span>
+    </div>
+  </div>
+
+  <div class="np-section-header mb-3">
+    <span class="np-section-label">Raccourcis</span>
+  </div>
+
+  <div class="np-dashboard-actions">
+    <a routerLink="/podcasts/mine" class="btn-np">Mes podcasts</a>
+    <a routerLink="/podcasts/create" class="btn-np-outline">Créer un podcast</a>
+    <a routerLink="/podcasts" class="btn-np-outline">Fil public</a>
+    <a routerLink="/search" class="btn-np-outline">Rechercher</a>
+  </div>
+</div>

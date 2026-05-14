@@ -43,7 +43,8 @@
     </span>
 
     @if (auth.isLogged()) {
-      <a routerLink="/podcasts/mine"
+      <a routerLink="/dashboard"
+         routerLinkActive="active"
          class="btn-np-outline np-hide-mobile">
         Mon espace
       </a>
@@ -95,7 +96,8 @@
 
     <div class="np-mobile-divider"></div>
 
-    <a routerLink="/podcasts/mine"
+    <a routerLink="/dashboard"
+       routerLinkActive="active"
        class="np-mobile-link"
        (click)="closeMenu()"> Mon espace</a>
     <button class="np-mobile-link"

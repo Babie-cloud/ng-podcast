@@ -65,6 +65,15 @@ export const routes: Routes = [
     },
   },
 
+  // ─── Tableau de bord (connecté) ──────────────────────────
+  {
+    path: 'dashboard',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/podcast/pages/dashboard/dashboard')
+        .then(m => m.Dashboard),
+  },
+
   // ─── Podcasts (protégé) ──────────────────────────────────
   {
     path: 'podcasts',

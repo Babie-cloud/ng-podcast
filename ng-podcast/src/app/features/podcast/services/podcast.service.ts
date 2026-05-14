@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../../environments/environment';
+import { SSR_API_BASE_URL } from '../../core/tokens/ssr-api-base-url.token';
 import { Podcast, Episode } from '../models/podcast.model';
 import { CreatePodcastPayload } from './podcast.service.types';
 
@@ -34,7 +35,9 @@ interface PodcastDetailApiDto extends PodcastSummaryApiDto {
 @Injectable({ providedIn: 'root' })
 export class PodcastService {
   private readonly http = inject(HttpClient);
-  private readonly base = `${environment.apiUrl}/api/podcasts`;
+  private readonly apiRoot =
+    inject(SSR_API_BASE_URL, { optional: true }) ?? environment.apiUrl;
+  private readonly base = `${this.apiRoot}/api/podcasts`;
 
   async getAll(): Promise<Podcast[]> {
     const rows = await firstValueFrom(this.http.get<PodcastSummaryApiDto[]>(this.base));
