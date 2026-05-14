@@ -1,6 +1,6 @@
 // src/app/features/podcast/services/auth.service.ts
 import { Injectable, signal, computed, inject, PLATFORM_ID } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
 import { firstValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
@@ -26,6 +26,20 @@ interface AuthResponse {
 }
 
 const TOKEN_KEY = 'np_jwt';
+
+function readApiErrorDetail(err: unknown, fallback: string): string {
+  if (err instanceof HttpErrorResponse) {
+    const body = err.error as { detail?: unknown; message?: unknown } | null;
+    if (body?.detail !== undefined && body.detail !== null && `${body.detail}`.trim() !== '') {
+      return String(body.detail);
+    }
+    if (typeof body?.message === 'string' && body.message) {
+      return body.message;
+    }
+    if (err.message) return err.message;
+  }
+  return fallback;
+}
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -69,8 +83,8 @@ export class AuthService {
         this.http.post<AuthResponse>(`${this.base}/login`, payload)
       );
       this.saveSession(res);
-    } catch (e: any) {
-      const msg = e?.error?.message ?? 'Email ou mot de passe incorrect.';
+    } catch (e: unknown) {
+      const msg = readApiErrorDetail(e, 'Email ou mot de passe incorrect.');
       this._error.set(msg);
       throw e;
     } finally {
@@ -87,8 +101,8 @@ export class AuthService {
         this.http.post<AuthResponse>(`${this.base}/register`, payload)
       );
       this.saveSession(res);
-    } catch (e: any) {
-      const msg = e?.error?.message ?? 'Erreur lors de l\'inscription.';
+    } catch (e: unknown) {
+      const msg = readApiErrorDetail(e, 'Erreur lors de l\'inscription.');
       this._error.set(msg);
       throw e;
     } finally {
@@ -104,8 +118,9 @@ export class AuthService {
       await firstValueFrom(
         this.http.post<void>(`${this.base}/reset-password`, { email })
       );
-    } catch (e: any) {
-      this._error.set(e?.error?.message ?? 'Erreur lors de la réinitialisation.');
+    } catch (e: unknown) {
+      const msg = readApiErrorDetail(e, 'Erreur lors de la réinitialisation.');
+      this._error.set(msg);
       throw e;
     } finally {
       this._loading.set(false);

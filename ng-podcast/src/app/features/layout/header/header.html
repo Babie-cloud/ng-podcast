@@ -20,7 +20,7 @@
         class="np-nav-link"
       >Rechercher</a>
 
-      @if (auth.isLoggedIn()) {
+      @if (auth.isLogged()) {
         <a
           routerLink="/podcasts/mine"
           routerLinkActive="np-nav-active"
@@ -40,7 +40,7 @@
         <span class="np-toggle-thumb"></span>
       </button>
 
-      @if (auth.isLoggedIn()) {
+      @if (auth.isLogged()) {
         <a routerLink="/podcasts/create" class="btn-np btn-np-sm">+ Créer</a>
         <button
           type="button"

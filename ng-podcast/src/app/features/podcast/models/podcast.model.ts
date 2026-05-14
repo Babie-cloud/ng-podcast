@@ -8,6 +8,7 @@ export interface Podcast {
   authorName: string;
   episodes: Episode[];
   createdAt: Date;
+  status?: string;
 }
 
 export interface Episode {

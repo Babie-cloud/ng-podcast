@@ -1,20 +1,16 @@
-// core/interceptors/auth.interceptor.ts
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { AuthStore } from '../../../features/podcast/store/auth.store';
+import { AuthService } from '../../podcast/services/auth.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const auth  = inject(AuthStore);
+  const auth = inject(AuthService);
   const token = auth.token();
- //const auth  = inject(AuthService);
-  //const token = auth.token();
+
   if (!token) return next(req);
 
   return next(
     req.clone({
-      setHeaders: { Authorization: `Bearer ${token}` }
+      setHeaders: { Authorization: `Bearer ${token}` },
     })
   );
-  // return next(cloned);
 };
-

@@ -190,6 +190,10 @@
         </div>
       }
 
+      @if (episodeError()) {
+        <div class="np-alert np-alert-danger mb-3">{{ episodeError() }}</div>
+      }
+
       @if (store.hasError()) {
         <div class="np-alert np-alert-danger mb-3">{{ store.error() }}</div>
       }

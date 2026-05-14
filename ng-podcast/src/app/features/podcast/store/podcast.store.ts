@@ -7,6 +7,7 @@ import {
   patchState,
 } from '@ngrx/signals';
 import { computed, inject } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { PodcastService } from '../services/podcast.service';
 import { Podcast, Episode } from '../models/podcast.model';
 
@@ -78,26 +79,45 @@ export const PodcastStore = signalStore(
     },
 
  
-    async create(payload: { title: string; description: string; coverFile?: File; audioFile?: File }): Promise<void> {
+    async create(payload: {
+      title: string;
+      description: string;
+      coverFile?: File;
+      category?: string;
+      language?: string;
+    }): Promise<string | null> {
       patchState(store, { loading: true, error: null, uploadProgress: 0 });
-
-      const coverUrl = payload.coverFile ? URL.createObjectURL(payload.coverFile) : undefined;
-
-      service.create({
-        title:       payload.title,
-        description: payload.description,
-        coverFile:   coverUrl,
-      }).subscribe({
-        next: (progress) => {
-          patchState(store, { uploadProgress: progress.percent });
-          if (progress.done) {
-            patchState(store, { loading: false, uploadProgress: 0 });
+      try {
+        const podcast = await service.createHttp({
+          title: payload.title,
+          description: payload.description,
+          coverFile: payload.coverFile,
+          category: payload.category,
+          language: payload.language,
+        });
+        patchState(store, {
+          loading: false,
+          uploadProgress: 0,
+          podcasts: [podcast, ...store.podcasts()],
+        });
+        return podcast.id;
+      } catch (e: unknown) {
+        let message = 'Erreur lors de la création';
+        if (e instanceof HttpErrorResponse) {
+          const body = e.error as { detail?: string; message?: string } | undefined;
+          if (body?.detail) {
+            message = body.detail;
+          } else if (body?.message) {
+            message = body.message;
+          } else if (e.message) {
+            message = e.message;
           }
-        },
-        error: (e) => {
-          patchState(store, { error: e.message ?? 'Erreur upload', loading: false, uploadProgress: 0 });
-        },
-      });
+        } else if (e instanceof Error) {
+          message = e.message;
+        }
+        patchState(store, { error: message, loading: false, uploadProgress: 0 });
+        return null;
+      }
     },
 
     async delete(id: string): Promise<void> {

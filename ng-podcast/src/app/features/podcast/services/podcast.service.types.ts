@@ -11,7 +11,7 @@ export interface CreatePodcastPayload {
   description: string;
   category?:   string;
   language?:   string;
-  coverFile?:  string;
+  coverFile?:  File;
   episode?: {
     title:     string;
     audioFile: File;

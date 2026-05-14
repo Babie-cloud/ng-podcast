@@ -1,6 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-resetpassword',
@@ -10,6 +11,8 @@ import { RouterLink } from '@angular/router';
   styleUrl: './resetpassword.scss',
 })
 export class Resetpassword {
+  private readonly auth = inject(AuthService);
+
   readonly email = new FormControl('', {
     nonNullable: true,
     validators: [Validators.required, Validators.email],
@@ -28,10 +31,25 @@ export class Resetpassword {
     this.error.set(null);
     this.loading.set(true);
 
-    // TODO: brancher l'appel réel à l'API de reset password
-    setTimeout(() => {
-      this.loading.set(false);
-      this.sent.set(true);
-    }, 600);
+    this.auth.resetPassword(this.email.value).then(
+      () => {
+        this.loading.set(false);
+        this.sent.set(true);
+      },
+      (e: unknown) => {
+        this.loading.set(false);
+        let msg = 'Erreur lors de la réinitialisation.';
+        if (
+          typeof e === 'object' &&
+          e !== null &&
+          'error' in e &&
+          typeof (e as { error?: { detail?: string } }).error === 'object'
+        ) {
+          const detail = (e as { error?: { detail?: string } }).error?.detail;
+          if (detail) msg = detail;
+        }
+        this.error.set(msg);
+      }
+    );
   }
 }

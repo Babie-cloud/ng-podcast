@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ThemeService } from '../../podcast/services/theme.service';
-import { AuthStore } from '../../podcast/store/auth.store';
+import { AuthService } from '../../podcast/services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -12,5 +12,5 @@ import { AuthStore } from '../../podcast/store/auth.store';
 })
 export class Header {
   readonly theme = inject(ThemeService);
-  readonly auth = inject(AuthStore);
+  readonly auth = inject(AuthService);
 }

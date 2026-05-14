@@ -3,6 +3,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { PodcastStore } from '../../store/podcast.store';
+import { PodcastService } from '../../services/podcast.service';
 
 @Component({
   selector: 'app-publish',
@@ -11,28 +12,30 @@ import { PodcastStore } from '../../store/podcast.store';
   templateUrl: './publish.html',
 })
 export class Publish implements OnInit {
-  // readonly = accessible depuis le template (pas private !)
-  readonly store     = inject(PodcastStore);
-  readonly router    = inject(Router);
+  readonly store = inject(PodcastStore);
+  readonly router = inject(Router);
   readonly podcastId = signal<string>('');
 
   private readonly route = inject(ActivatedRoute);
-  private readonly fb    = inject(FormBuilder);
+  private readonly fb = inject(FormBuilder);
+  private readonly podcastService = inject(PodcastService);
 
   audioFile = signal<File | null>(null);
   platforms = signal<string[]>(['spotify', 'apple', 'youtube']);
+  saving = signal(false);
+  errorMsg = signal<string | null>(null);
 
   form = this.fb.group({
-    title:       ['', [Validators.required, Validators.minLength(3)]],
+    title: ['', [Validators.required, Validators.minLength(3)]],
     description: ['', Validators.required],
-    publishNow:  [true],
+    publishNow: [true],
     scheduledAt: [null as string | null],
   });
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id') ?? '';
     this.podcastId.set(id);
-    if (id) this.store.loadOne(id);
+    if (id) void this.store.loadOne(id);
   }
 
   onAudioChange(event: Event): void {
@@ -43,9 +46,7 @@ export class Publish implements OnInit {
   togglePlatform(p: string): void {
     const current = this.platforms();
     this.platforms.set(
-      current.includes(p)
-        ? current.filter((x: string) => x !== p)
-        : [...current, p]
+      current.includes(p) ? current.filter((x: string) => x !== p) : [...current, p]
     );
   }
 
@@ -54,8 +55,29 @@ export class Publish implements OnInit {
       this.form.markAllAsTouched();
       return;
     }
-    // TODO : appeler le service d'upload d'épisode → Spring Boot
-    // await this.episodeService.publish(this.podcastId(), this.form.value, this.audioFile()!)
-    this.router.navigate(['/podcasts', this.podcastId()]);
+
+    const id = this.podcastId();
+    if (!id) return;
+
+    this.errorMsg.set(null);
+    this.saving.set(true);
+    try {
+      const vals = this.form.getRawValue();
+      await this.podcastService.addEpisode(id, {
+        title: vals.title!,
+        description: vals.description ?? '',
+        publishNow: vals.publishNow !== false,
+        audio: this.audioFile()!,
+      });
+      await this.store.loadOne(id);
+      await this.router.navigate(['/podcasts', id]);
+    } catch (err: unknown) {
+      let message = "Impossible d'enregistrer l'épisode.";
+      const e = err as { error?: { detail?: string; message?: string }; message?: string };
+      message = e.error?.detail ?? e.error?.message ?? e.message ?? message;
+      this.errorMsg.set(message);
+    } finally {
+      this.saving.set(false);
+    }
   }
 }

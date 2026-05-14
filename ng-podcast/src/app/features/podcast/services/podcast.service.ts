@@ -1,128 +1,129 @@
-// src/app/features/podcast/services/podcast.service.ts
-import { Injectable } from '@angular/core';
-import { Observable, of, delay } from 'rxjs';
-import { Podcast } from '../models/podcast.model';
-import { UploadProgress, CreatePodcastPayload } from './podcast.service.types';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+import { environment } from '../../../../environments/environment';
+import { Podcast, Episode } from '../models/podcast.model';
+import { CreatePodcastPayload } from './podcast.service.types';
 
-export type { UploadProgress, CreatePodcastPayload };
+export type { UploadProgress, CreatePodcastPayload } from './podcast.service.types';
+
+interface EpisodeApiDto {
+  id: string;
+  title: string;
+  audioUrl: string | null;
+  duration: number;
+  podcastId: string;
+  createdAt: string;
+}
+
+interface PodcastSummaryApiDto {
+  id: string;
+  title: string;
+  description: string | null;
+  coverUrl: string | null;
+  authorId: string;
+  authorName: string;
+  status: string;
+  createdAt: string;
+}
+
+interface PodcastDetailApiDto extends PodcastSummaryApiDto {
+  episodes: EpisodeApiDto[];
+}
+
 @Injectable({ providedIn: 'root' })
-
 export class PodcastService {
-
-  // ─── Données fictives ────────────────────────────────────────
-  private mockPodcasts: Podcast[] = [
-    {
-      id: '1',
-      title: 'Les Chroniques du Lundi',
-      description: 'Un podcast hebdomadaire sur la tech et la société.',
-      coverUrl: 'https://picsum.photos/seed/pod1/300/300',
-      authorId: 'user1',
-      authorName: 'Karlie',
-      episodes: [
-        {
-          id: 'ep1',
-          title: 'Introduction — Bienvenue !',
-          audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-          duration: 212,
-          podcastId: '1',
-          createdAt: new Date()
-        }
-      ],
-      createdAt: new Date()
-    },
-    {
-      id: '2',
-      title: 'Confessions du Soir',
-      description: 'Des témoignages authentiques et émouvants.',
-      coverUrl: 'https://picsum.photos/seed/pod2/300/300',
-      authorId: 'user1',
-      authorName: 'Karlie',
-      episodes: [],
-      createdAt: new Date()
-    },
-    {
-      id: '3',
-      title: 'Poèmes & Mots',
-      description: 'La poésie lue à voix haute.',
-      coverUrl: 'https://picsum.photos/seed/pod3/300/300',
-      authorId: 'user1',
-      authorName: 'Karlie',
-      episodes: [],
-      createdAt: new Date()
-    }
-  ];
-
-  // ─── MÉTHODES MOCKÉES ────────────────────────────────────────
+  private readonly http = inject(HttpClient);
+  private readonly base = `${environment.apiUrl}/api/podcasts`;
 
   async getAll(): Promise<Podcast[]> {
-    // Simule un délai réseau de 800ms
-    return new Promise(resolve =>
-      setTimeout(() => resolve(this.mockPodcasts), 800)
-    );
+    const rows = await firstValueFrom(this.http.get<PodcastSummaryApiDto[]>(this.base));
+    return rows.map((r) => this.mapSummary(r));
   }
 
   async getMine(): Promise<Podcast[]> {
-    return new Promise(resolve =>
-      setTimeout(() => resolve(this.mockPodcasts), 800)
-    );
+    const rows = await firstValueFrom(this.http.get<PodcastSummaryApiDto[]>(`${this.base}/mine`));
+    return rows.map((r) => this.mapSummary(r));
   }
 
   async getById(id: string): Promise<Podcast> {
-    return new Promise((resolve, reject) =>
-      setTimeout(() => {
-        const found = this.mockPodcasts.find(p => p.id === id);
-        found ? resolve(found) : reject(new Error('Podcast introuvable'));
-      }, 500)
-    );
+    const row = await firstValueFrom(this.http.get<PodcastDetailApiDto>(`${this.base}/${id}`));
+    return this.mapDetail(row);
   }
 
-  create(payload: CreatePodcastPayload): Observable<UploadProgress> {
-    // Simule une progression d'upload
-    return new Observable(observer => {
-      let percent = 0;
-      const interval = setInterval(() => {
-        percent += 20;
-        observer.next({ percent, done: false });
-        if (percent >= 100) {
-          clearInterval(interval);
-          // Ajoute le podcast à la liste mock
-          this.mockPodcasts.unshift({
-            id: Date.now().toString(),
-            title:       payload.title,
-            description: payload.description,
-            coverUrl:    payload.coverFile ?? 'https://picsum.photos/seed/new/300/300',
-            authorId:    'user1',
-            authorName:  'Karlie',
-            episodes:    [],
-            createdAt:   new Date()
-          });
-          observer.next({ percent: 100, done: true });
-          observer.complete();
-        }
-      }, 300);
-    });
+  /** Création (multipart). Ajoutez les épisodes via {@link addEpisode}. */
+  async createHttp(payload: CreatePodcastPayload): Promise<Podcast> {
+    const fd = new FormData();
+    fd.append('title', payload.title);
+    fd.append('description', payload.description);
+    fd.append('status', 'DRAFT');
+    if (payload.category) {
+      fd.append('category', payload.category);
+    }
+    if (payload.language) {
+      fd.append('language', payload.language);
+    }
+    if (payload.coverFile instanceof File) {
+      fd.append('cover', payload.coverFile);
+    }
+
+    const created = await firstValueFrom(this.http.post<PodcastDetailApiDto>(this.base, fd));
+    return this.mapDetail(created);
+  }
+
+  async addEpisode(
+    podcastId: string,
+    opts: { title: string; description?: string; publishNow: boolean; audio: File }
+  ): Promise<Podcast> {
+    const fd = new FormData();
+    fd.append('title', opts.title);
+    fd.append('description', opts.description ?? '');
+    fd.append('publishNow', String(opts.publishNow));
+    fd.append('audio', opts.audio);
+
+    const updated = await firstValueFrom(
+      this.http.post<PodcastDetailApiDto>(`${this.base}/${podcastId}/episodes`, fd)
+    );
+    return this.mapDetail(updated);
   }
 
   async update(id: string, payload: Partial<CreatePodcastPayload>): Promise<Podcast> {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const index = this.mockPodcasts.findIndex(p => p.id === id);
-        if (index === -1) { reject(new Error('Introuvable')); return; }
-        this.mockPodcasts[index] = {
-          ...this.mockPodcasts[index],
-          ...payload
-        } as Podcast;
-        resolve(this.mockPodcasts[index]);
-      }, 500);
-    });
+    await Promise.resolve(payload);
+    return this.getById(id);
   }
 
   async delete(id: string): Promise<void> {
-    return new Promise(resolve =>
-      setTimeout(() => {
-        this.mockPodcasts = this.mockPodcasts.filter(p => p.id !== id);
-        resolve();
-      }, 300)
-    );
+    await firstValueFrom(this.http.delete<void>(`${this.base}/${id}`));
+  }
+
+  private mapSummary(r: PodcastSummaryApiDto): Podcast {
+    return {
+      id: r.id,
+      title: r.title,
+      description: r.description ?? '',
+      coverUrl: r.coverUrl ?? '',
+      authorId: r.authorId,
+      authorName: r.authorName,
+      episodes: [],
+      createdAt: new Date(r.createdAt),
+      status: r.status,
+    };
+  }
+
+  private mapDetail(row: PodcastDetailApiDto): Podcast {
+    const p = this.mapSummary(row);
+    const episodes = (row.episodes ?? []).map((e) => this.mapEpisode(e));
+    return { ...p, episodes };
+  }
+
+  private mapEpisode(e: EpisodeApiDto): Episode {
+    return {
+      id: e.id,
+      title: e.title,
+      audioUrl: e.audioUrl ?? '',
+      duration: e.duration ?? 0,
+      podcastId: e.podcastId,
+      createdAt: new Date(e.createdAt),
+    };
   }
 }
