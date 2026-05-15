@@ -64,16 +64,28 @@ export class AuthService {
   readonly isLogged = computed(() => !!this._token());
   readonly isAdmin  = computed(() => this._user()?.role === 'ADMIN');
 
+  /** Résolu après vérif du JWT stocké (browser) ; évite les appels /mine avec jeton invalide avant logout. */
+  private readonly authHydrated: Promise<void>;
+
   constructor() {
-    // Rehydrate token au démarrage
-    if (isPlatformBrowser(this.platformId)) {
-      const stored = localStorage.getItem(AUTH_JWT_STORAGE_KEY);
-      if (stored) {
-        this._token.set(stored);
-        // Récupère le profil sans bloquer
-        this.fetchMe().catch(() => this.logout());
-      }
+    if (!isPlatformBrowser(this.platformId)) {
+      this.authHydrated = Promise.resolve();
+      return;
     }
+    const stored = localStorage.getItem(AUTH_JWT_STORAGE_KEY);
+    if (!stored) {
+      this.authHydrated = Promise.resolve();
+      return;
+    }
+    this._token.set(stored);
+    this.authHydrated = this.fetchMe()
+      .catch(() => this.logout())
+      .then(() => undefined);
+  }
+
+  /** À attendre depuis authGuard avant toute route protégée (dashboard, etc.). */
+  whenAuthHydrated(): Promise<void> {
+    return this.authHydrated;
   }
 
   // ─── Login → POST /auth/login ─────────────────────────────

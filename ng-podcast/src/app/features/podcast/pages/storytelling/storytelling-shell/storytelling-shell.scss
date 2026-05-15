@@ -1,0 +1,26 @@
+.np-subnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: 0.65rem 1rem;
+}
+
+.np-subnav-link {
+  color: var(--np-text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--np-radius-sm);
+  transition: var(--np-transition);
+
+  &:hover {
+    color: var(--np-primary-light);
+    background: var(--np-primary-soft);
+  }
+
+  &.active {
+    color: var(--np-primary-light);
+    background: color-mix(in srgb, var(--np-accent, #6366f1) 22%, transparent);
+  }
+}

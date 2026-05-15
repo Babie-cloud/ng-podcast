@@ -1,0 +1,65 @@
+<div class="np-page np-section" style="max-width: 720px">
+  <div class="np-section-header mb-4">
+    <div>
+      <span class="np-section-label">Podcast</span>
+      <h2 class="np-section-title">Modifier les <em>informations</em></h2>
+    </div>
+    <a [routerLink]="['/podcasts', podcastId()]" class="btn-np-ghost">Annuler</a>
+  </div>
+
+  @if (store.hasError()) {
+    <div class="np-alert np-alert-danger mb-3">{{ store.error() }}</div>
+  }
+
+  @if (!store.selected() && store.loading()) {
+    <div class="np-loader-wrap">
+      <div class="np-spinner"></div>
+      <p class="np-text-muted mt-3">Chargement…</p>
+    </div>
+  }
+
+  @if (store.selected(); as p) {
+    <p class="np-text-muted small mb-3">
+      Visibilité du podcast :
+      <strong>{{ p.status === 'PUBLISHED' ? 'Public' : 'Brouillon (visible par vous)' }}</strong>
+      — les épisodes en brouillon restent cachés du public.
+    </p>
+
+    <form class="glass-card" [formGroup]="form" (ngSubmit)="submit()">
+      <div class="mb-3">
+        <label class="form-label" for="pe-title">Titre</label>
+        <input id="pe-title" type="text" class="np-input w-100" formControlName="title" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="pe-desc">Description</label>
+        <textarea id="pe-desc" class="np-input w-100" rows="5" formControlName="description"></textarea>
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="pe-cat">Catégorie</label>
+        <select id="pe-cat" class="np-input w-100" formControlName="category">
+          <option value="">—</option>
+          @for (c of categories; track c) {
+            <option [value]="c">{{ c }}</option>
+          }
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="pe-lang">Langue</label>
+        <input id="pe-lang" type="text" class="np-input w-100" formControlName="language" maxlength="10" />
+      </div>
+      <div class="mb-4">
+        <label class="form-label" for="pe-status">Statut</label>
+        <select id="pe-status" class="np-input w-100" formControlName="status">
+          <option value="DRAFT">Brouillon</option>
+          <option value="PUBLISHED">Publié</option>
+        </select>
+      </div>
+      <div class="d-flex gap-2 flex-wrap">
+        <button type="submit" class="btn-np" [disabled]="store.loading()">
+          {{ store.loading() ? 'Enregistrement…' : 'Enregistrer' }}
+        </button>
+        <a [routerLink]="['/podcasts', p.id]" class="btn-np-outline">Fermer</a>
+      </div>
+    </form>
+  }
+</div>

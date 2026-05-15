@@ -39,30 +39,20 @@ export const routes: Routes = [
         .then(m => m.Search)
   },
 
-  // ─── Écriture / Storytelling (protégé — même périmètre que la navbar) ──
+  // ─── Écriture / Storytelling (protégé pour création — fil public dans les enfants) ──
   {
     path: 'writing',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./shared/pages/feature-placeholder/feature-placeholder')
-        .then(m => m.FeaturePlaceholder),
-    data: {
-      title: 'Écriture',
-      message:
-        'L\'interface sera reliée à l\'API /api/writings dans une prochaine étape.',
-    },
+    loadChildren: () =>
+      import('./features/podcast/pages/writing/writing.routes').then(
+        (m) => m.WRITING_ROUTES
+      ),
   },
   {
     path: 'storytelling',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./shared/pages/feature-placeholder/feature-placeholder')
-        .then(m => m.FeaturePlaceholder),
-    data: {
-      title: 'Storytelling',
-      message:
-        'L\'interface sera reliée à l\'API /api/storytellings dans une prochaine étape.',
-    },
+    loadChildren: () =>
+      import('./features/podcast/pages/storytelling/storytelling.routes').then(
+        (m) => m.STORYTELLING_ROUTES
+      ),
   },
 
   // ─── Tableau de bord (connecté) ──────────────────────────

@@ -1,0 +1,27 @@
+<div class="np-page np-section">
+  <div class="np-hero glass-card mb-4">
+    <p class="np-hero-eyebrow">Écriture</p>
+    <h1 class="np-gradient-text">Poèmes & textes</h1>
+    <p class="np-hero-desc mb-0">
+      Publiez vos écrits ou parcourez les textes publiés par la communauté.
+    </p>
+  </div>
+
+  <nav class="np-subnav glass-card mb-4" aria-label="Écriture">
+    <a
+      routerLink="/writing"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="np-subnav-link"
+      >Découvrir</a
+    >
+    <a routerLink="/writing/mine" routerLinkActive="active" class="np-subnav-link"
+      >Mes textes</a
+    >
+    <a routerLink="/writing/create" routerLinkActive="active" class="np-subnav-link"
+      >Nouveau</a
+    >
+  </nav>
+
+  <router-outlet />
+</div>

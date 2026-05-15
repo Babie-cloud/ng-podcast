@@ -8,12 +8,27 @@ import { CreatePodcastPayload } from './podcast.service.types';
 
 export type { UploadProgress, CreatePodcastPayload } from './podcast.service.types';
 
+export interface PodcastPatchPayload {
+  title?: string;
+  description?: string;
+  status?: string;
+  category?: string;
+  language?: string;
+}
+
+export interface EpisodePatchPayload {
+  publishNow?: boolean;
+  title?: string;
+  description?: string;
+}
+
 interface EpisodeApiDto {
   id: string;
   title: string;
   audioUrl: string | null;
   duration: number;
   podcastId: string;
+  status?: string;
   createdAt: string;
 }
 
@@ -26,6 +41,8 @@ interface PodcastSummaryApiDto {
   authorName: string;
   status: string;
   createdAt: string;
+  category?: string | null;
+  language?: string | null;
 }
 
 interface PodcastDetailApiDto extends PodcastSummaryApiDto {
@@ -74,6 +91,13 @@ export class PodcastService {
     return this.mapDetail(created);
   }
 
+  async patchPodcast(id: string, payload: PodcastPatchPayload): Promise<Podcast> {
+    const row = await firstValueFrom(
+      this.http.patch<PodcastDetailApiDto>(`${this.base}/${id}`, payload)
+    );
+    return this.mapDetail(row);
+  }
+
   async addEpisode(
     podcastId: string,
     opts: { title: string; description?: string; publishNow: boolean; audio: File }
@@ -88,6 +112,26 @@ export class PodcastService {
       this.http.post<PodcastDetailApiDto>(`${this.base}/${podcastId}/episodes`, fd)
     );
     return this.mapDetail(updated);
+  }
+
+  async patchEpisode(
+    podcastId: string,
+    episodeId: string,
+    payload: EpisodePatchPayload
+  ): Promise<Podcast> {
+    const row = await firstValueFrom(
+      this.http.patch<PodcastDetailApiDto>(
+        `${this.base}/${podcastId}/episodes/${episodeId}`,
+        payload
+      )
+    );
+    return this.mapDetail(row);
+  }
+
+  async deleteEpisode(podcastId: string, episodeId: string): Promise<void> {
+    await firstValueFrom(
+      this.http.delete<void>(`${this.base}/${podcastId}/episodes/${episodeId}`)
+    );
   }
 
   async update(id: string, payload: Partial<CreatePodcastPayload>): Promise<Podcast> {
@@ -110,6 +154,8 @@ export class PodcastService {
       episodes: [],
       createdAt: new Date(r.createdAt),
       status: r.status,
+      category: r.category ?? undefined,
+      language: r.language ?? undefined,
     };
   }
 
@@ -127,6 +173,7 @@ export class PodcastService {
       duration: e.duration ?? 0,
       podcastId: e.podcastId,
       createdAt: new Date(e.createdAt),
+      status: e.status ?? 'DRAFT',
     };
   }
 }

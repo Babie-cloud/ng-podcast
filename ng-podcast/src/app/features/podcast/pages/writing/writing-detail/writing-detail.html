@@ -1,0 +1,48 @@
+@if (store.hasError() && !store.selected()) {
+  <div class="np-alert np-alert-danger mb-3">{{ store.error() }}</div>
+  <a routerLink="/writing" class="btn-np-outline">Retour</a>
+} @else if (store.loading() && !store.selected()) {
+  <div class="np-loader-wrap">
+    <div class="np-spinner"></div>
+    <p class="np-text-muted mt-3">Chargement…</p>
+  </div>
+} @else if (store.selected(); as w) {
+  <div class="np-section-header mb-3 flex-wrap gap-2">
+    <a routerLink="/writing" class="btn-np-ghost btn-np-sm">← Retour</a>
+    <div class="ms-auto d-flex flex-wrap gap-2">
+      @if (canManage) {
+        <a [routerLink]="['/writing', w.id, 'edit']" class="btn-np-outline btn-np-sm">Modifier</a>
+        <button type="button" class="btn-np-ghost btn-np-sm np-btn-danger" (click)="remove()">
+          Supprimer
+        </button>
+      }
+    </div>
+  </div>
+
+  <div
+    class="glass-card mb-3 np-visibility-banner"
+    [class.public]="w.status === 'PUBLISHED'"
+    [class.private]="w.status !== 'PUBLISHED'"
+  >
+    @if (w.status === 'PUBLISHED') {
+      <strong>Public</strong>
+      <span> — ce texte apparaît dans la liste « Découvrir ».</span>
+    } @else {
+      <strong>Brouillon (privé)</strong>
+      <span> — seul vous pouvez le consulter tant qu'il n'est pas publié.</span>
+    }
+  </div>
+
+  <article class="glass-card">
+    <div class="d-flex flex-wrap gap-2 mb-3 align-items-center">
+      <span class="np-tag-pill">{{ w.type }}</span>
+      <span class="np-tag-pill">{{ w.status }}</span>
+      <span class="np-text-hint ms-auto" style="font-size: 13px">{{ w.views }} vues</span>
+    </div>
+    <h1 class="h3 np-gradient-text mb-2">{{ w.title }}</h1>
+    <p class="np-text-muted mb-4">
+      Par {{ w.authorName }} · {{ w.createdAt | date: 'medium' }}
+    </p>
+    <div class="writing-body">{{ w.content }}</div>
+  </article>
+}

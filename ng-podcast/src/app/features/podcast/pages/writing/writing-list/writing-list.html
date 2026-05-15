@@ -1,0 +1,59 @@
+<div class="np-section-header mb-3">
+  <div>
+    <span class="np-section-label">Public</span>
+    <h2 class="np-section-title">Textes <em>publiés</em></h2>
+  </div>
+</div>
+
+<div class="d-flex flex-wrap gap-2 mb-4 align-items-center">
+  <input
+    type="search"
+    class="np-input"
+    style="max-width: 320px; flex: 1 1 200px"
+    placeholder="Rechercher par titre…"
+    [value]="query()"
+    (input)="query.set($any($event.target).value)"
+    (keydown.enter)="search()"
+  />
+  <button type="button" class="btn-np-outline btn-np-sm" (click)="search()">
+    Rechercher
+  </button>
+</div>
+
+@if (store.hasError()) {
+  <div class="np-alert np-alert-danger mb-3">{{ store.error() }}</div>
+}
+
+@if (store.loading()) {
+  <div class="np-loader-wrap">
+    <div class="np-spinner"></div>
+    <p class="np-text-muted mt-3">Chargement…</p>
+  </div>
+}
+
+<div class="np-grid-3">
+  @for (w of store.published(); track w.id) {
+    <article class="glass-card">
+      <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+        <span class="np-tag-pill">{{ w.type }}</span>
+        <span class="np-text-hint" style="font-size: 12px">{{ w.views }} vues</span>
+      </div>
+      <h3 class="h6 mb-2">
+        <a routerLink="/writing/{{ w.id }}" class="text-decoration-none">{{ w.title }}</a>
+      </h3>
+      <p class="np-text-muted mb-2" style="font-size: 13px">
+        Par {{ w.authorName }} · {{ w.createdAt | date: 'mediumDate' }}
+      </p>
+      <p class="mb-0 np-text-muted" style="font-size: 14px; line-clamp: 3">
+        {{ w.content | slice: 0 : 220
+        }}{{ w.content.length > 220 ? '…' : '' }}
+      </p>
+    </article>
+  } @empty {
+    @if (!store.loading()) {
+      <div class="glass-card np-empty">
+        <p>Aucun texte publié pour le moment.</p>
+      </div>
+    }
+  }
+</div>

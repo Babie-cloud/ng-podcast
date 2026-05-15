@@ -4,11 +4,12 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { PodcastStore } from '../../store/podcast.store';
 import { PodcastService } from '../../services/podcast.service';
+import { AudioRecorder } from '../../components/audio-recorder/audio-recorder';
 
 @Component({
   selector: 'app-publish',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, AudioRecorder],
   templateUrl: './publish.html',
 })
 export class Publish implements OnInit {
@@ -21,6 +22,7 @@ export class Publish implements OnInit {
   private readonly podcastService = inject(PodcastService);
 
   audioFile = signal<File | null>(null);
+  recordedFile = signal<File | null>(null);
   platforms = signal<string[]>(['spotify', 'apple', 'youtube']);
   saving = signal(false);
   errorMsg = signal<string | null>(null);
@@ -40,7 +42,17 @@ export class Publish implements OnInit {
 
   onAudioChange(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) this.audioFile.set(file);
+    if (file) {
+      this.audioFile.set(file);
+      this.recordedFile.set(null);
+    }
+  }
+
+  onRecorded(file: File | null): void {
+    this.recordedFile.set(file);
+    if (file) {
+      this.audioFile.set(null);
+    }
   }
 
   togglePlatform(p: string): void {
@@ -50,8 +62,13 @@ export class Publish implements OnInit {
     );
   }
 
+  pickedAudio(): File | null {
+    return this.audioFile() ?? this.recordedFile();
+  }
+
   async submit(): Promise<void> {
-    if (this.form.invalid || !this.audioFile()) {
+    const audio = this.pickedAudio();
+    if (this.form.invalid || !audio) {
       this.form.markAllAsTouched();
       return;
     }
@@ -67,7 +84,7 @@ export class Publish implements OnInit {
         title: vals.title!,
         description: vals.description ?? '',
         publishNow: vals.publishNow !== false,
-        audio: this.audioFile()!,
+        audio,
       });
       await this.store.loadOne(id);
       await this.router.navigate(['/podcasts', id]);

@@ -3,7 +3,7 @@
     <p class="np-hero-eyebrow">Tableau de bord</p>
     <h1 class="np-gradient-text">Bonjour, {{ displayName() }}</h1>
     <p class="np-hero-desc">
-      Gérez vos podcasts, publiez du contenu et explorez la communauté depuis cet espace.
+      Gérez vos podcasts, textes et témoignages, ou explorez la communauté depuis cet espace.
     </p>
     @if (auth.user(); as u) {
       <p class="np-dashboard-meta mb-0">
@@ -20,16 +20,69 @@
       <span class="np-stat-num np-gradient-text">{{ store.podcastCount() }}</span>
       <span class="np-stat-lbl">Mes podcasts</span>
     </div>
+    <div class="np-stat glass-card">
+      <span class="np-stat-num np-gradient-text">{{ writings.mineCount() }}</span>
+      <span class="np-stat-lbl">Mes textes</span>
+    </div>
+    <div class="np-stat glass-card">
+      <span class="np-stat-num np-gradient-text">{{ stories.mineCount() }}</span>
+      <span class="np-stat-lbl">Mes histoires</span>
+    </div>
   </div>
 
   <div class="np-section-header mb-3">
     <span class="np-section-label">Raccourcis</span>
+    <h2 class="np-section-title mb-0">Tout votre <em>univers</em></h2>
+  </div>
+
+  <div class="np-dashboard-grid mb-5">
+    <a routerLink="/podcasts/mine" class="np-dash-tile glass-card">
+      <span class="np-dash-tile-title">Mes podcasts</span>
+      <span class="np-dash-tile-desc">Éditer ou publier vos séries audio.</span>
+    </a>
+    <a routerLink="/podcasts/create" class="np-dash-tile glass-card">
+      <span class="np-dash-tile-title">Nouveau podcast</span>
+      <span class="np-dash-tile-desc">Créer une émission et ajouter des épisodes.</span>
+    </a>
+    <a routerLink="/podcasts" class="np-dash-tile glass-card">
+      <span class="np-dash-tile-title">Fil podcasts</span>
+      <span class="np-dash-tile-desc">Voir tous les podcasts disponibles.</span>
+    </a>
+    <a routerLink="/writing/mine" class="np-dash-tile glass-card">
+      <span class="np-dash-tile-title">Mes textes</span>
+      <span class="np-dash-tile-desc">Poèmes et écrits reliés à votre compte.</span>
+    </a>
+    <a routerLink="/writing/create" class="np-dash-tile glass-card">
+      <span class="np-dash-tile-title">Nouveau texte</span>
+      <span class="np-dash-tile-desc">Rédiger et publier un écrit.</span>
+    </a>
+    <a routerLink="/writing" class="np-dash-tile glass-card">
+      <span class="np-dash-tile-title">Découvrir les écrits</span>
+      <span class="np-dash-tile-desc">Parcourir les textes publiés.</span>
+    </a>
+    <a routerLink="/storytelling/mine" class="np-dash-tile glass-card">
+      <span class="np-dash-tile-title">Mes histoires</span>
+      <span class="np-dash-tile-desc">Témoignages et storytelling privés ou publiés.</span>
+    </a>
+    <a routerLink="/storytelling/create" class="np-dash-tile glass-card">
+      <span class="np-dash-tile-title">Nouvelle histoire</span>
+      <span class="np-dash-tile-desc">Partager un témoignage.</span>
+    </a>
+    <a routerLink="/storytelling" class="np-dash-tile glass-card">
+      <span class="np-dash-tile-title">Découvrir le storytelling</span>
+      <span class="np-dash-tile-desc">Lire les histoires de la communauté.</span>
+    </a>
+    <a routerLink="/search" class="np-dash-tile glass-card">
+      <span class="np-dash-tile-title">Rechercher</span>
+      <span class="np-dash-tile-desc">Trouver du contenu audio.</span>
+    </a>
   </div>
 
   <div class="np-dashboard-actions">
+    <span class="np-text-muted" style="font-size: 14px">Liens rapides :</span>
     <a routerLink="/podcasts/mine" class="btn-np">Mes podcasts</a>
-    <a routerLink="/podcasts/create" class="btn-np-outline">Créer un podcast</a>
-    <a routerLink="/podcasts" class="btn-np-outline">Fil public</a>
+    <a routerLink="/writing" class="btn-np-outline">Écriture</a>
+    <a routerLink="/storytelling" class="btn-np-outline">Storytelling</a>
     <a routerLink="/search" class="btn-np-outline">Rechercher</a>
   </div>
 </div>

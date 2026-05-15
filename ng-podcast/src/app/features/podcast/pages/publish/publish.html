@@ -33,6 +33,13 @@
         <small class="text-success mt-1 d-block">{{ audioFile()!.name }}</small>
       }
     </div>
+    <div class="mt-3 pt-3 border-top border-secondary-subtle">
+      <label class="form-label fw-semibold">Ou enregistrer depuis le micro</label>
+      <app-audio-recorder (fileReady)="onRecorded($event)" />
+      @if (recordedFile()) {
+        <small class="text-success mt-1 d-block">{{ recordedFile()!.name }}</small>
+      }
+    </div>
   </div>
 
   <!-- Plateformes -->
@@ -98,7 +105,7 @@
   <div class="d-flex gap-2">
     <button
       class="btn-np"
-      [disabled]="form.invalid || !audioFile() || saving()"
+      [disabled]="form.invalid || !pickedAudio() || saving()"
       (click)="submit()"
     >
       @if (saving()) {

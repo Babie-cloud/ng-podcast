@@ -1,0 +1,21 @@
+.writing-body {
+  white-space: pre-wrap;
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+
+.np-visibility-banner {
+  padding: 0.85rem 1rem;
+  font-size: 0.92rem;
+  border-radius: var(--np-radius-md);
+
+  &.public {
+    border: 1px solid color-mix(in srgb, var(--np-primary, #6366f1) 35%, var(--np-border));
+    background: color-mix(in srgb, var(--np-primary-soft, rgba(99, 102, 241, 0.15)) 80%, transparent);
+  }
+
+  &.private {
+    border: 1px solid var(--np-border);
+    opacity: 0.95;
+  }
+}

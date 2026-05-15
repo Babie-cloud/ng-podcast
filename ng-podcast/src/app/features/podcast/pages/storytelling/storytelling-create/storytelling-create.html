@@ -1,0 +1,61 @@
+<div class="np-section-header mb-4">
+  <div>
+    <span class="np-section-label">Création</span>
+    <h2 class="np-section-title">Nouvelle <em>histoire</em></h2>
+  </div>
+  <a routerLink="/storytelling/mine" class="btn-np-ghost">Mes histoires</a>
+</div>
+
+@if (store.hasError()) {
+  <div class="np-alert np-alert-danger mb-3">{{ store.error() }}</div>
+}
+
+<form class="glass-card" style="max-width: 720px" [formGroup]="form" (ngSubmit)="submit()">
+  <div class="mb-3">
+    <label class="form-label" for="s-title">Titre</label>
+    <input id="s-title" type="text" class="np-input w-100" formControlName="title" />
+    @if (form.controls.title.invalid && form.controls.title.touched) {
+      <p class="text-danger small mb-0 mt-1">Titre requis (2–200 caractères).</p>
+    }
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label" for="s-type">Type</label>
+    <select id="s-type" class="np-input w-100" formControlName="type">
+      @for (t of types; track t) {
+        <option [value]="t">{{ t }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label" for="s-status">Visibilité</label>
+    <select id="s-status" class="np-input w-100" formControlName="status">
+      <option value="DRAFT">Brouillon</option>
+      <option value="PUBLISHED">Publié</option>
+    </select>
+  </div>
+
+  <div class="mb-3 form-check">
+    <input id="s-anon" type="checkbox" class="form-check-input" formControlName="anonymous" />
+    <label class="form-check-label" for="s-anon">Publier anonymement</label>
+  </div>
+
+  <div class="mb-4">
+    <label class="form-label" for="s-content">Contenu</label>
+    <textarea
+      id="s-content"
+      class="np-input w-100"
+      rows="12"
+      formControlName="content"
+      placeholder="Votre témoignage…"
+    ></textarea>
+  </div>
+
+  <div class="d-flex gap-2 flex-wrap">
+    <button type="submit" class="btn-np" [disabled]="store.loading()">
+      {{ store.loading() ? 'Envoi…' : 'Enregistrer' }}
+    </button>
+    <a routerLink="/storytelling" class="btn-np-outline">Annuler</a>
+  </div>
+</form>

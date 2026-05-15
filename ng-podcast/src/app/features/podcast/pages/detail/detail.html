@@ -22,7 +22,14 @@
         <h1 class="np-detail-title">{{ podcast.title }}</h1>
         <p class="np-detail-author">par {{ podcast.authorName }}</p>
         <p class="np-text-muted np-detail-desc">{{ podcast.description }}</p>
-        <div class="d-flex gap-2 flex-wrap mt-3">
+        <div class="d-flex gap-2 flex-wrap mt-3 align-items-center">
+          <span
+            class="np-badge"
+            [class.np-badge-primary]="podcast.status === 'PUBLISHED'"
+            [class.np-badge-muted]="podcast.status !== 'PUBLISHED'"
+          >
+            {{ podcast.status === 'PUBLISHED' ? 'Podcast public' : 'Podcast brouillon (privé)' }}
+          </span>
           <span class="np-badge np-badge-muted">
             {{ podcast.episodes.length }} épisode(s)
           </span>
@@ -30,6 +37,16 @@
             {{ podcast.createdAt | date:'dd/MM/yyyy' }}
           </span>
         </div>
+        @if (isOwner(podcast)) {
+          <div class="d-flex flex-wrap gap-2 mt-3">
+            <a [routerLink]="['/podcasts', podcast.id, 'edit']" class="btn-np-outline btn-np-sm">
+              Modifier le podcast
+            </a>
+            <a [routerLink]="['/podcasts', podcast.id, 'publish']" class="btn-np btn-np-sm">
+              Ajouter un épisode
+            </a>
+          </div>
+        }
       </div>
     </div>
 
@@ -41,6 +58,11 @@
           {{ podcast.episodes.length }}
         </span>
       </h2>
+      @if (isOwner(podcast)) {
+        <p class="np-text-muted small mb-0">
+          Les épisodes en <strong>brouillon</strong> ne sont visibles que par vous ; publiez-les pour les auditeurs.
+        </p>
+      }
     </div>
 
     <div class="np-episode-list">
@@ -50,25 +72,60 @@
           <div class="np-episode-num np-gradient-text">
             {{ $index + 1 }}
           </div>
-          <div class="np-episode-info">
-            <p class="np-episode-title">{{ ep.title }}</p>
-            <p class="np-episode-meta">
-              {{ formatDuration(ep.duration) }} —
-              {{ ep.createdAt | date:'dd/MM/yyyy' }}
-            </p>
+          <div class="np-episode-info flex-grow-1">
+            <p class="np-episode-title mb-1">{{ ep.title }}</p>
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+              <span
+                class="np-badge"
+                [class.np-badge-primary]="episodeStatus(ep) === 'PUBLISHED'"
+                [class.np-badge-muted]="episodeStatus(ep) !== 'PUBLISHED'"
+              >
+                {{ episodeStatus(ep) === 'PUBLISHED' ? 'Public' : 'Brouillon' }}
+              </span>
+              <p class="np-episode-meta mb-0">
+                {{ formatDuration(ep.duration) }} —
+                {{ ep.createdAt | date:'dd/MM/yyyy' }}
+              </p>
+            </div>
           </div>
-          <button
-            class="btn-np-icon"
-            [class.np-playing]="store.currentEpisode()?.id === ep.id && store.isPlaying()"
-            (click)="playEpisode(ep)"
-            [attr.aria-label]="store.currentEpisode()?.id === ep.id && store.isPlaying() ? 'Pause' : 'Lecture'"
-          >
-            {{ store.currentEpisode()?.id === ep.id && store.isPlaying() ? 'Pause' : 'Lire' }}
-          </button>
+          <div class="d-flex flex-wrap gap-2 align-items-center justify-content-end">
+            @if (ep.audioUrl) {
+              <button
+                type="button"
+                class="btn-np-icon"
+                [class.np-playing]="store.currentEpisode()?.id === ep.id && store.isPlaying()"
+                (click)="playEpisode(ep)"
+                [attr.aria-label]="store.currentEpisode()?.id === ep.id && store.isPlaying() ? 'Pause' : 'Lecture'"
+              >
+                {{ store.currentEpisode()?.id === ep.id && store.isPlaying() ? 'Pause' : 'Écouter' }}
+              </button>
+            }
+            @if (isOwner(podcast)) {
+              <button
+                type="button"
+                class="btn-np-outline btn-np-sm"
+                (click)="toggleEpisodePublish(podcast.id, ep)"
+              >
+                {{ episodeStatus(ep) === 'PUBLISHED' ? 'Repasser en brouillon' : 'Publier' }}
+              </button>
+              <button
+                type="button"
+                class="btn-np-ghost btn-np-sm np-btn-danger"
+                (click)="deleteEpisode(podcast.id, ep)"
+              >
+                Supprimer
+              </button>
+            }
+          </div>
         </div>
       } @empty {
         <div class="np-empty glass-card">
           <p class="np-text-muted">Aucun épisode pour ce podcast.</p>
+          @if (isOwner(podcast)) {
+            <a [routerLink]="['/podcasts', podcast.id, 'publish']" class="btn-np mt-2">
+              Ajouter un épisode
+            </a>
+          }
         </div>
       }
     </div>

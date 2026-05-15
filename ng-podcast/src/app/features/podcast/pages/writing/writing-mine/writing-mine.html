@@ -1,0 +1,51 @@
+<div class="np-section-header mb-4">
+  <div>
+    <span class="np-section-label">Mon espace</span>
+    <h2 class="np-section-title">Mes <em>textes</em></h2>
+  </div>
+  <a routerLink="/writing/create" class="btn-np">+ Nouveau</a>
+</div>
+
+@if (store.hasError()) {
+  <div class="np-alert np-alert-danger mb-3">{{ store.error() }}</div>
+}
+
+@if (store.loading()) {
+  <div class="np-loader-wrap">
+    <div class="np-spinner"></div>
+    <p class="np-text-muted mt-3">Chargement…</p>
+  </div>
+}
+
+<div class="np-grid-3">
+  @for (w of store.mine(); track w.id) {
+    <article class="glass-card">
+      <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+        <span class="np-tag-pill">{{ w.type }}</span>
+        <span
+          class="np-tag-pill"
+          >{{ w.status }}</span
+        >
+      </div>
+      <h3 class="h6 mb-2">
+        <a routerLink="/writing/{{ w.id }}" class="text-decoration-none">{{ w.title }}</a>
+      </h3>
+      <p class="np-text-muted mb-3" style="font-size: 13px">
+        {{ w.createdAt | date: 'medium' }}
+      </p>
+      <div class="d-flex gap-2 flex-wrap">
+        <a routerLink="/writing/{{ w.id }}" class="btn-np-outline btn-np-sm">Ouvrir</a>
+        <button type="button" class="btn-np-ghost btn-np-sm np-btn-danger" (click)="confirmDelete(w.id, w.title)">
+          Supprimer
+        </button>
+      </div>
+    </article>
+  } @empty {
+    @if (!store.loading()) {
+      <div class="glass-card np-empty">
+        <p>Vous n’avez pas encore de texte.</p>
+        <a routerLink="/writing/create" class="btn-np mt-2">Créer le premier</a>
+      </div>
+    }
+  }
+</div>

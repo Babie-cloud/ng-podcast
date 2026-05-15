@@ -9,6 +9,8 @@ export interface Podcast {
   episodes: Episode[];
   createdAt: Date;
   status?: string;
+  category?: string;
+  language?: string;
 }
 
 export interface Episode {
@@ -18,6 +20,8 @@ export interface Episode {
   duration: number; // en secondes
   podcastId: string;
   createdAt: Date;
+  /** DRAFT ou PUBLISHED — les brouillons ne sont visibles que par le créateur (filtrés côté API). */
+  status?: string;
 }
 
 export interface PlayerState {

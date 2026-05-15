@@ -2,6 +2,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { PodcastStore } from '../../store/podcast.store';
+import { WritingStore } from '../../store/writing.store';
+import { StorytellingStore } from '../../store/storytelling.store';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,9 +15,15 @@ import { PodcastStore } from '../../store/podcast.store';
 export class Dashboard implements OnInit {
   readonly auth = inject(AuthService);
   readonly store = inject(PodcastStore);
+  readonly writings = inject(WritingStore);
+  readonly stories = inject(StorytellingStore);
 
   ngOnInit(): void {
-    void this.store.loadMine();
+    void Promise.all([
+      this.store.loadMine(),
+      this.writings.loadMine(),
+      this.stories.loadMine(),
+    ]);
   }
 
   displayName(): string {

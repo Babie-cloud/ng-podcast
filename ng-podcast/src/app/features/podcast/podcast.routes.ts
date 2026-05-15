@@ -27,14 +27,20 @@ export const PODCAST_ROUTES: Routes = [
       import('./pages/create/create').then(m => m.Create),
   },
   {
-    path: ':id',
+    path: ':id/edit',
+    canActivate: [authGuard],
     loadComponent: () =>
-      import('./pages/detail/detail').then(m => m.Detail),
+      import('./pages/podcast-edit/podcast-edit').then(m => m.PodcastEdit),
   },
   {
     path: ':id/publish',
     canActivate: [authGuard],
     loadComponent: () =>
       import('./pages/publish/publish').then(m => m.Publish),
+  },
+  {
+    path: ':id',
+    loadComponent: () =>
+      import('./pages/detail/detail').then(m => m.Detail),
   },
 ];

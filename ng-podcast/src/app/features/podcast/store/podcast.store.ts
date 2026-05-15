@@ -8,7 +8,11 @@ import {
 } from '@ngrx/signals';
 import { computed, inject } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { PodcastService } from '../services/podcast.service';
+import {
+  PodcastService,
+  PodcastPatchPayload,
+  EpisodePatchPayload,
+} from '../services/podcast.service';
 import { Podcast, Episode } from '../models/podcast.model';
 
 interface PodcastState {
@@ -132,6 +136,68 @@ export const PodcastStore = signalStore(
         });
       } catch (e: any) {
         patchState(store, { error: e.message ?? 'Erreur suppression', loading: false });
+      }
+    },
+
+    async patchPodcastMeta(id: string, payload: PodcastPatchPayload): Promise<boolean> {
+      patchState(store, { loading: true, error: null });
+      try {
+        const podcast = await service.patchPodcast(id, payload);
+        patchState(store, {
+          podcasts: store.podcasts().map((p) => (p.id === id ? podcast : p)),
+          selected: store.selected()?.id === id ? podcast : store.selected(),
+          loading: false,
+        });
+        return true;
+      } catch (e: unknown) {
+        patchState(store, {
+          error: e instanceof HttpErrorResponse ? e.message : 'Mise à jour impossible',
+          loading: false,
+        });
+        return false;
+      }
+    },
+
+    async patchEpisode(podcastId: string, episodeId: string, payload: EpisodePatchPayload): Promise<boolean> {
+      patchState(store, { loading: true, error: null });
+      try {
+        const podcast = await service.patchEpisode(podcastId, episodeId, payload);
+        patchState(store, {
+          podcasts: store.podcasts().map((p) => (p.id === podcastId ? podcast : p)),
+          selected: store.selected()?.id === podcastId ? podcast : store.selected(),
+          loading: false,
+        });
+        return true;
+      } catch (e: unknown) {
+        patchState(store, {
+          error: e instanceof HttpErrorResponse ? e.message : 'Mise à jour épisode impossible',
+          loading: false,
+        });
+        return false;
+      }
+    },
+
+    async deleteEpisode(podcastId: string, episodeId: string): Promise<boolean> {
+      patchState(store, { loading: true, error: null });
+      try {
+        await service.deleteEpisode(podcastId, episodeId);
+        const podcast = await service.getById(podcastId);
+        patchState(store, {
+          podcasts: store.podcasts().map((p) => (p.id === podcastId ? podcast : p)),
+          selected: store.selected()?.id === podcastId ? podcast : store.selected(),
+          loading: false,
+        });
+        const playing = store.currentEpisode()?.id === episodeId;
+        if (playing) {
+          patchState(store, { currentEpisode: null, isPlaying: false });
+        }
+        return true;
+      } catch (e: unknown) {
+        patchState(store, {
+          error: e instanceof HttpErrorResponse ? e.message : 'Suppression épisode impossible',
+          loading: false,
+        });
+        return false;
       }
     },
 
