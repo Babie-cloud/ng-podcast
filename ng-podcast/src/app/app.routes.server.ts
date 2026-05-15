@@ -4,6 +4,7 @@ import { RenderMode, ServerRoute } from '@angular/ssr';
 export const serverRoutes: ServerRoute[] = [
   {
     path: '**',
-    renderMode: RenderMode.Server,
-  }
+    // Évite les HttpClient/fetch pendant le rendu serveur (CORS / réseau différent du navigateur).
+    renderMode: RenderMode.Client,
+  },
 ];

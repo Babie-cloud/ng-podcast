@@ -6,6 +6,7 @@ import { firstValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { SSR_API_BASE_URL } from '../../core/tokens/ssr-api-base-url.token';
+import { AUTH_JWT_STORAGE_KEY } from '../../core/constants/auth-storage';
 
 export interface AuthUser {
   id:       string;
@@ -25,8 +26,6 @@ interface AuthResponse {
   token: string;
   user:  AuthUser;
 }
-
-const TOKEN_KEY = 'np_jwt';
 
 function readApiErrorDetail(err: unknown, fallback: string): string {
   if (err instanceof HttpErrorResponse) {
@@ -68,7 +67,7 @@ export class AuthService {
   constructor() {
     // Rehydrate token au démarrage
     if (isPlatformBrowser(this.platformId)) {
-      const stored = localStorage.getItem(TOKEN_KEY);
+      const stored = localStorage.getItem(AUTH_JWT_STORAGE_KEY);
       if (stored) {
         this._token.set(stored);
         // Récupère le profil sans bloquer
@@ -143,7 +142,7 @@ export class AuthService {
     this._token.set(null);
     this._user.set(null);
     if (isPlatformBrowser(this.platformId)) {
-      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(AUTH_JWT_STORAGE_KEY);
     }
     this.router.navigate(['/']);
   }
@@ -153,7 +152,7 @@ export class AuthService {
     this._token.set(res.token);
     this._user.set(res.user);
     if (isPlatformBrowser(this.platformId)) {
-      localStorage.setItem(TOKEN_KEY, res.token);
+      localStorage.setItem(AUTH_JWT_STORAGE_KEY, res.token);
     }
   }
 }
