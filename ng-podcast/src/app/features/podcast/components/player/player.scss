@@ -41,7 +41,7 @@
 
     .player-time {
       font-size: 11px;
-      color: rgba(245, 232, 211, 0.5);
+      color: var(--np-player-muted);
       font-variant-numeric: tabular-nums;
       margin: 0;
     }
@@ -63,7 +63,7 @@
     .seek-bar {
       position: relative;
       height: 4px;
-      background: rgba(245, 232, 211, 0.12);
+      background: var(--np-player-seek-track);
       border-radius: 2px;
       cursor: pointer;
       transition: height .15s;
@@ -78,7 +78,7 @@
     .seek-buffered {
       position: absolute;
       top: 0; left: 0; bottom: 0;
-      background: rgba(245, 232, 211, 0.15);
+      background: var(--np-player-seek-buffered);
       border-radius: 2px;
       pointer-events: none;
       transition: width .3s linear;
@@ -121,7 +121,7 @@
     .ctrl-btn {
       background: transparent;
       border: none;
-      color: rgba(245, 232, 211, 0.75);
+      color: var(--np-player-ctrl-icon);
       cursor: pointer;
       padding: .35rem .6rem;
       border-radius: var(--np-radius-sm);
@@ -131,7 +131,7 @@
       white-space: nowrap;
 
       &:hover {
-        background: rgba(245, 232, 211, 0.1);
+        background: var(--np-player-ctrl-hover-bg);
         color: var(--np-beige);
       }
     }
@@ -156,9 +156,9 @@
     }
 
     .rate-select {
-      background: rgba(245, 232, 211, 0.08);
-      border: 1px solid rgba(245, 232, 211, 0.15);
-      color: rgba(245, 232, 211, 0.75);
+      background: var(--np-player-rate-bg);
+      border: 1px solid var(--np-player-rate-border);
+      color: var(--np-player-ctrl-icon);
       border-radius: var(--np-radius-sm);
       padding: .3rem .5rem;
       font-size: 12px;
@@ -168,7 +168,7 @@
 
       &:hover { border-color: var(--np-primary); }
 
-      option { background: #2a1f18; }
+      option { background: var(--np-player-rate-option-bg); }
     }
 
     .volume-ctrl {
@@ -181,7 +181,7 @@
         width: 72px;
         height: 3px;
         border-radius: 2px;
-        background: rgba(245, 232, 211, 0.2);
+        background: var(--np-player-volume-track);
         outline: none;
         cursor: pointer;
 

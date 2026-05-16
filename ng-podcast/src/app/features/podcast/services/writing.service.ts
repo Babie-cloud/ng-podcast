@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { JwtTokenBridge } from '../../core/services/jwt-token-bridge';
+import { AuthService } from './auth.service';
 import { SSR_API_BASE_URL } from '../../core/tokens/ssr-api-base-url.token';
 import { Writing } from '../models/writing.model';
 
@@ -39,14 +39,14 @@ export type UpdateWritingPayload = CreateWritingPayload;
 @Injectable({ providedIn: 'root' })
 export class WritingService {
   private readonly http = inject(HttpClient);
-  private readonly jwtBridge = inject(JwtTokenBridge);
+  private readonly auth = inject(AuthService);
   private readonly apiRoot =
     inject(SSR_API_BASE_URL, { optional: true }) ?? environment.apiUrl;
   private readonly base = `${this.apiRoot}/api/writings`;
 
   /** Garantit le Bearer même si l’intercepteur Http n’est pas enregistré (double envoi évité côté intercepteur si déjà présent). */
   private bearerOpts(): { headers?: HttpHeaders } {
-    const t = this.jwtBridge.current()?.trim();
+    const t = this.auth.effectiveAccessToken()?.trim();
     if (!t) return {};
     return {
       headers: new HttpHeaders({ Authorization: `Bearer ${t}` }),

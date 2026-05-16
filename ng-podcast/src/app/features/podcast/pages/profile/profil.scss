@@ -1,0 +1,88 @@
+.profil-page {
+  max-width: 1080px;
+  margin-inline: auto;
+}
+
+.profil-layout {
+  display: grid;
+  gap: 1rem;
+  align-items: start;
+
+  @media (min-width: 900px) {
+    grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr);
+  }
+}
+
+.profil-card {
+  padding: 1.5rem;
+  border-radius: var(--np-radius-lg, 16px);
+}
+
+.profil-card-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0 0 1.25rem;
+  letter-spacing: 0.02em;
+}
+
+.profil-dl {
+  margin: 0;
+}
+
+.profil-row {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--np-border, rgba(139, 69, 19, 0.16)) 60%, transparent);
+
+  &:first-of-type {
+    padding-top: 0;
+  }
+
+  &:last-of-type {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+}
+
+.profil-row dt {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--np-text-muted, rgba(47, 31, 20, 0.55));
+  margin: 0;
+}
+
+.profil-row dd {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.profil-muted {
+  color: var(--np-text-muted, rgba(47, 31, 20, 0.55));
+}
+
+.profil-role {
+  font-size: 0.875rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--np-accent, #6366f1) 18%, transparent);
+
+  &-admin {
+    background: color-mix(in srgb, #f59e0b 22%, transparent);
+  }
+}
+
+.profil-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+
+  .btn-np,
+  .btn-np-outline {
+    text-align: center;
+    justify-content: center;
+  }
+}

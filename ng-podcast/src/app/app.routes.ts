@@ -64,6 +64,22 @@ export const routes: Routes = [
         .then(m => m.Dashboard),
   },
 
+  {
+    path: 'profil',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/podcast/pages/profile/profil').then((m) => m.Profil),
+  },
+
+  {
+    path: 'settings',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/podcast/pages/settings/settings-hub').then(
+        (m) => m.SettingsHub,
+      ),
+  },
+
   // ─── Podcasts (protégé) ──────────────────────────────────
   {
     path: 'podcasts',

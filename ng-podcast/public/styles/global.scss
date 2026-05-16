@@ -21,6 +21,24 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+[data-theme="light"] body {
+  background-color: var(--np-bg);
+  background-image:
+    radial-gradient(ellipse 900px 520px at 8% -10%, rgba(212, 160, 122, 0.22), transparent 58%),
+    radial-gradient(ellipse 760px 440px at 100% 0%, rgba(139, 69, 19, 0.09), transparent 52%);
+  background-attachment: fixed;
+}
+
+// ─── Bootstrap : texte atténué = variables thème (clair / sombre)
+body .text-muted,
+body small.text-muted {
+  color: var(--np-text-muted) !important;
+}
+
+body .text-secondary {
+  color: var(--np-text-muted) !important;
+}
+
 // ─── GLASSMORPHISM ────────────────────────────────────────────
 .glass {
   background:              var(--np-surface);
@@ -486,14 +504,14 @@ body {
   position:                sticky;
   bottom:                  0;
   z-index:                 $np-z-player;
-  color:                   #fff;
+  color:                   var(--np-beige);
   display:                 grid;
   grid-template-columns:   220px 1fr auto;
   align-items:             center;
   gap:                     $np-space-lg;
 
   .np-player-title  { font-size: $np-text-sm; font-weight: $np-weight-medium; margin: 0; }
-  .np-player-author { font-size: $np-text-xs; color: rgba(255,255,255,0.40); margin: 0; }
+  .np-player-author { font-size: $np-text-xs; color: var(--np-player-muted); margin: 0; }
 
   .np-player-center {
     display:        flex;
@@ -509,7 +527,7 @@ body {
 
   .np-seek-bar {
     height:        4px;
-    background:    rgba(255, 255, 255, 0.10);
+    background:    var(--np-player-seek-track);
     border-radius: var(--np-radius-full);
     cursor:        pointer;
     position:      relative;
@@ -523,7 +541,7 @@ body {
       pointer-events: none;
     }
 
-    .np-seek-buffered { background: rgba(255, 255, 255, 0.15); }
+    .np-seek-buffered { background: var(--np-player-seek-buffered); }
     .np-seek-progress { background: var(--np-primary); }
   }
 
@@ -531,9 +549,9 @@ body {
   .np-player-error  { color: #{$np-danger}; font-size: $np-text-xs; text-align: center; grid-column: 1 / -1; }
   .np-volume-slider { width: 80px; accent-color: var(--np-primary); cursor: pointer; }
   .np-rate-select {
-    background:    rgba(255, 255, 255, 0.08);
-    border:        1px solid rgba(255, 255, 255, 0.12);
-    color:         #fff;
+    background:    var(--np-player-rate-bg);
+    border:        1px solid var(--np-player-rate-border);
+    color:         var(--np-beige);
     border-radius: var(--np-radius-xs);
     padding:       3px $np-space-sm;
     font-size:     $np-text-xs;

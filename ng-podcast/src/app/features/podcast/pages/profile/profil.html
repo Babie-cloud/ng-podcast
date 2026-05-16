@@ -1,0 +1,72 @@
+<div class="np-page np-section profil-page">
+  <header class="np-hero glass-card mb-4">
+    <p class="np-hero-eyebrow">Compte</p>
+    <h1 class="np-gradient-text">Mon profil</h1>
+    <p class="np-hero-desc mb-0">
+      Infos publiées sur votre pseudo, votre rôle et votre identité de connexion. Les autres réglages
+      auront leur propre espace.
+    </p>
+  </header>
+
+  @if (auth.user(); as u) {
+    <div class="profil-layout">
+      <section class="glass-card profil-card profil-main">
+        <h2 class="profil-card-title">Identité</h2>
+        <dl class="profil-dl">
+          <div class="profil-row">
+            <dt>Nom affiché</dt>
+            <dd>{{ displayName() }}</dd>
+          </div>
+          <div class="profil-row">
+            <dt>Pseudo public</dt>
+            <dd>{{ u.username }}</dd>
+          </div>
+          @if (u.prenom || u.name) {
+            <div class="profil-row">
+              <dt>Nom légal</dt>
+              <dd>
+                @if (u.prenom && u.name) {
+                  {{ u.prenom }} {{ u.name }}
+                } @else {
+                  {{ u.prenom || u.name }}
+                }
+              </dd>
+            </div>
+          }
+          <div class="profil-row">
+            <dt>Email de connexion</dt>
+            <dd class="profil-muted">{{ u.email }}</dd>
+          </div>
+          <div class="profil-row">
+            <dt>Rôle</dt>
+            <dd>
+              @if (u.role === 'ADMIN') {
+                <span class="profil-role profil-role-admin">Administrateur</span>
+              } @else {
+                <span class="profil-role">Créateur</span>
+              }
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      <aside class="glass-card profil-card profil-aside">
+        <h2 class="profil-card-title">Raccourcis</h2>
+        <p class="profil-muted small mb-4">
+          Accéder rapidement à vos contenus ou aux réglages généraux de l&apos;application.
+        </p>
+        <nav class="profil-actions">
+          <a routerLink="/dashboard" class="btn-np">Tableau de bord</a>
+          <a routerLink="/settings" class="btn-np-outline">Paramètres</a>
+          <a routerLink="/podcasts/mine" class="btn-np-outline">Mes podcasts</a>
+          <a routerLink="/writing/mine" class="btn-np-outline">Mes textes</a>
+          <a routerLink="/storytelling/mine" class="btn-np-outline">Mes histoires</a>
+        </nav>
+      </aside>
+    </div>
+  } @else {
+    <div class="glass-card profil-card profil-loading">
+      <p class="mb-0 profil-muted">Chargement du profil...</p>
+    </div>
+  }
+</div>

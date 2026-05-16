@@ -10,6 +10,7 @@ import { Podcast }      from '../../models/podcast.model';
   standalone: true,
   imports: [FormsModule, PodcastCard],
   templateUrl: './search.html',
+  styleUrl: './search.scss',
 })
 export class Search implements OnInit {
   // readonly pour que le template Angular y accède (pas private !)

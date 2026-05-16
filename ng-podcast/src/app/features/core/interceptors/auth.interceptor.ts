@@ -1,22 +1,21 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { JwtTokenBridge } from '../services/jwt-token-bridge';
+import { AuthService } from '../../podcast/services/auth.service';
 
 /**
- * Pas d’inject(AuthService) ici → boucle HttpClient ↔ AuthService.
- * Le Bearer vient du {@link JwtTokenBridge}, synchronisé avec AuthService.login / logout.
+ * Bearer via {@link AuthService#effectiveAccessToken} pour aligner signal et stockage navigateur.
  */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const platformId = inject(PLATFORM_ID);
   if (!isPlatformBrowser(platformId)) {
     return next(req);
   }
-  const bridge = inject(JwtTokenBridge);
+  const auth = inject(AuthService);
   if (req.headers.has('Authorization')) {
     return next(req);
   }
-  const token = bridge.current();
+  const token = auth.effectiveAccessToken();
   if (!token) {
     return next(req);
   }

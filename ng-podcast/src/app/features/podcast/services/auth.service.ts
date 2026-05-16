@@ -65,8 +65,30 @@ export class AuthService {
   readonly token    = this._token.asReadonly();
   readonly loading  = this._loading.asReadonly();
   readonly error    = this._error.asReadonly();
-  readonly isLogged = computed(() => !!this._token());
+  readonly isLogged = computed(() => {
+    if (this._token()?.trim()) return true;
+    if (!isPlatformBrowser(this.platformId)) return false;
+    return !!(this.jwtBridge.current()?.trim());
+  });
   readonly isAdmin  = computed(() => this._user()?.role === 'ADMIN');
+
+  /**
+   * Jeton pour l’en-tête Authorization : unifie le signal en mémoire et le pont
+   * (localStorage). Évite les 403 où le front croit encore connecté sans envoyer Bearer.
+   */
+  effectiveAccessToken(): string | null {
+    if (!isPlatformBrowser(this.platformId)) return null;
+    let fromSignal = this._token()?.trim() ?? '';
+    let fromBridge = this.jwtBridge.current()?.trim() ?? '';
+    if (fromSignal && !fromBridge) {
+      this.jwtBridge.remember(fromSignal);
+    } else if (fromBridge && !fromSignal) {
+      this._token.set(fromBridge);
+      fromSignal = fromBridge;
+    }
+    const t = fromSignal.trim() || fromBridge.trim();
+    return t ? t : null;
+  }
 
   /** Résolu après vérif du JWT stocké (browser) ; évite les appels /mine avec jeton invalide avant logout. */
   private readonly authHydrated: Promise<void>;

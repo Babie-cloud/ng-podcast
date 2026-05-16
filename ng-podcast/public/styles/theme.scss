@@ -80,6 +80,18 @@
 
   // Gradient brand
   --np-gradient: linear-gradient(135deg, #{$np-primary-light}, #{$np-primary});
+
+  // Lecteur (barre fixe `.player-bar` + tokens partagés)
+  --np-beige: #f5ebe3;
+  --np-player-muted: rgba(245, 235, 227, 0.52);
+  --np-player-seek-track: rgba(245, 232, 211, 0.14);
+  --np-player-seek-buffered: rgba(245, 232, 211, 0.2);
+  --np-player-ctrl-icon: rgba(245, 232, 211, 0.78);
+  --np-player-ctrl-hover-bg: rgba(245, 232, 211, 0.1);
+  --np-player-rate-bg: rgba(245, 232, 211, 0.08);
+  --np-player-rate-border: rgba(245, 232, 211, 0.16);
+  --np-player-volume-track: rgba(245, 232, 211, 0.22);
+  --np-player-rate-option-bg: #2a1f18;
 }
 
 // ─── LIGHT MODE ───────────────────────────────────────────────
@@ -113,11 +125,26 @@
   --np-navbar-bg: #{$np-navbar-bg-light};
   --np-player-bg: #{$np-player-bg-light};
 
-  // Overlay image au hover
-  --np-overlay: rgba(139, 69, 19, 0.28);
+  // Accent doré léger — même emphase café que les surfaces hover du dark
+  --np-primary-soft: rgba(139, 69, 19, 0.10);
 
-  // Gradient brand
-  --np-gradient: linear-gradient(135deg, #{$np-primary}, #{$np-primary-dark});
+  // Overlay cartes — identique philosophie au dark (bronzage doré)
+  --np-overlay: rgba(139, 69, 19, 0.26);
+
+  // Gradient brand — même axe que le mode sombre (cohérence marque café)
+  --np-gradient: linear-gradient(135deg, #{$np-primary-light}, #{$np-primary});
+
+  // Lecteur : crème chaude + typo brun doré comme le corps de page (miroir du dark)
+  --np-beige: #{$np-text-light};
+  --np-player-muted: rgba(47, 31, 20, 0.52);
+  --np-player-seek-track: rgba(139, 69, 19, 0.14);
+  --np-player-seek-buffered: rgba(139, 69, 19, 0.22);
+  --np-player-ctrl-icon: rgba(47, 31, 20, 0.72);
+  --np-player-ctrl-hover-bg: rgba(139, 69, 19, 0.12);
+  --np-player-rate-bg: rgba(139, 69, 19, 0.07);
+  --np-player-rate-border: rgba(139, 69, 19, 0.18);
+  --np-player-volume-track: rgba(139, 69, 19, 0.2);
+  --np-player-rate-option-bg: #{$np-surface-light};
 }
 
 // ─── TRANSITIONS FLUIDES entre modes ─────────────────────────
@@ -126,7 +153,8 @@ body,
 .glass-card,
 .glass-strong,
 .np-navbar,
-.np-player {
+.np-player,
+.player-bar {
   transition:
     background-color  0.3s ease,
     border-color      0.3s ease,

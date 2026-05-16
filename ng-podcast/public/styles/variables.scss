@@ -36,14 +36,15 @@ $np-surface-dark-hover: rgba(255, 255, 255, 0.090);
 $np-surface-dark-active: rgba(139, 69, 19, 0.15);
 
 // ─── BACKGROUNDS LIGHT ────────────────────────────────────────
-// Beige profond, plus chaud, clairement non-blanc
-$np-bg-light:           #e6d8c2;
-$np-bg-light-secondary: #d6c5ab;
-$np-bg-light-tertiary:  #c4af90;
+// Même ambiance « café doré » que le dark : papier chaud, sable, biscuit (pas gris-vert).
+$np-bg-light:           #ccbca8;
+$np-bg-light-secondary: #e8dbca;
+$np-bg-light-tertiary:  #decfbb;
 
-$np-surface-light:        rgba(245, 236, 220, 0.72);
-$np-surface-light-hover:  rgba(245, 236, 220, 0.92);
-$np-surface-light-active: rgba(139, 69, 19, 0.10);
+// Surfaces type crème / vélin — un peu plus claires que le fond pour le relief
+$np-surface-light:       rgba(255, 250, 242, 0.94);
+$np-surface-light-hover: rgba(255, 253, 248, 0.99);
+$np-surface-light-active: rgba(139, 69, 19, 0.14);
 
 // ─── TEXTES DARK ──────────────────────────────────────────────
 $np-text-dark:         #f5ece4;
@@ -51,9 +52,10 @@ $np-text-dark-muted:   rgba(245, 236, 228, 0.55);
 $np-text-dark-hint:    rgba(245, 236, 228, 0.30);
 
 // ─── TEXTES LIGHT ─────────────────────────────────────────────
-$np-text-light:        #1a0f05;
-$np-text-light-muted:  rgba(26, 15, 5, 0.55);
-$np-text-light-hint:   rgba(26, 15, 5, 0.30);
+// Brun espresso chaud — prolonge les tons du mode sombre en version jour.
+$np-text-light:        #2f1f14;
+$np-text-light-muted:  rgba(47, 31, 20, 0.62);
+$np-text-light-hint:   rgba(47, 31, 20, 0.36);
 
 // ─── BORDURES DARK ────────────────────────────────────────────
 $np-border-dark:        rgba(255, 255, 255, 0.08);
@@ -61,17 +63,17 @@ $np-border-dark-subtle: rgba(139, 69, 19, 0.30);
 $np-border-dark-strong: rgba(255, 255, 255, 0.16);
 
 // ─── BORDURES LIGHT ───────────────────────────────────────────
-$np-border-light:        rgba(139, 95, 60, 0.20);
-$np-border-light-subtle: rgba(139, 69, 19, 0.12);
-$np-border-light-strong: rgba(139, 69, 19, 0.30);
+$np-border-light:        rgba(139, 69, 19, 0.18);
+$np-border-light-subtle: rgba(139, 69, 19, 0.10);
+$np-border-light-strong: rgba(61, 26, 0, 0.28);
 
 // ─── PLAYER ───────────────────────────────────────────────────
 $np-player-bg-dark:  rgba(5, 2, 1, 0.96);
-$np-player-bg-light: rgba(15, 8, 3, 0.94);
+$np-player-bg-light: rgba(252, 246, 236, 0.94);
 
 // ─── NAVBAR ───────────────────────────────────────────────────
 $np-navbar-bg-dark:  rgba(5, 2, 1, 0.88);
-$np-navbar-bg-light: rgba(230, 216, 194, 0.92);
+$np-navbar-bg-light: rgba(250, 242, 230, 0.88);
 
 // ─── GLASSMORPHISM ────────────────────────────────────────────
 $np-blur:         blur(16px);
@@ -87,9 +89,9 @@ $np-radius-xl:  28px;
 $np-radius-full: 9999px;
 
 // ─── OMBRES ───────────────────────────────────────────────────
-$np-shadow-sm:   0 2px 12px rgba(139, 69, 19, 0.10);
-$np-shadow-md:   0 8px 32px rgba(139, 69, 19, 0.18);
-$np-shadow-lg:   0 16px 48px rgba(139, 69, 19, 0.25);
+$np-shadow-sm:   0 1px 2px rgba(61, 26, 0, 0.04), 0 8px 22px rgba(139, 69, 19, 0.08);
+$np-shadow-md:   0 4px 10px rgba(61, 26, 0, 0.05), 0 16px 40px rgba(139, 69, 19, 0.11);
+$np-shadow-lg:   0 10px 26px rgba(61, 26, 0, 0.06), 0 28px 56px rgba(139, 69, 19, 0.14);
 $np-shadow-glow: 0 0 28px rgba(139, 69, 19, 0.45);
 
 $np-shadow-dark-sm:   0 2px 12px rgba(0, 0, 0, 0.35);
