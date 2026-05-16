@@ -6,12 +6,12 @@
       Gérez vos podcasts, textes et témoignages, ou explorez la communauté depuis cet espace.
     </p>
     @if (auth.user(); as u) {
-      <p class="np-dashboard-meta mb-0">
-        <span>{{ u.email }}</span>
-        @if (u.role === 'ADMIN') {
+      @if (u.role === 'ADMIN') {
+        <p class="np-dashboard-meta mb-0">
           <span class="np-dashboard-badge">Admin</span>
-        }
-      </p>
+        </p>
+      }
+      <p class="np-text-muted small mb-0 mt-2" style="opacity: 0.85">Compte : {{ u.email }}</p>
     }
   </div>
 

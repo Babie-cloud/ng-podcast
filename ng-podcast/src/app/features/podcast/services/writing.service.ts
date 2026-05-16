@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../../environments/environment';
+import { JwtTokenBridge } from '../../core/services/jwt-token-bridge';
 import { SSR_API_BASE_URL } from '../../core/tokens/ssr-api-base-url.token';
 import { Writing } from '../models/writing.model';
 
@@ -14,8 +15,10 @@ interface WritingApiDto {
   coverUrl: string | null;
   status: string;
   views: number;
-  authorId: string;
+  authorId: string | null;
   authorName: string;
+  anonymousAuthor?: boolean | null;
+  podcastCategory?: string | null;
   createdAt: string;
 }
 
@@ -24,8 +27,10 @@ export interface CreateWritingPayload {
   content: string;
   type?: string;
   status?: string;
-  audioUrl?: string;
-  coverUrl?: string;
+  audioUrl?: string | null;
+  coverUrl?: string | null;
+  anonymousAuthor?: boolean;
+  podcastCategory?: string | null;
 }
 
 /** Aligné sur le corps PUT backend {@code UpdateWritingRequest}. */
@@ -34,9 +39,19 @@ export type UpdateWritingPayload = CreateWritingPayload;
 @Injectable({ providedIn: 'root' })
 export class WritingService {
   private readonly http = inject(HttpClient);
+  private readonly jwtBridge = inject(JwtTokenBridge);
   private readonly apiRoot =
     inject(SSR_API_BASE_URL, { optional: true }) ?? environment.apiUrl;
   private readonly base = `${this.apiRoot}/api/writings`;
+
+  /** Garantit le Bearer même si l’intercepteur Http n’est pas enregistré (double envoi évité côté intercepteur si déjà présent). */
+  private bearerOpts(): { headers?: HttpHeaders } {
+    const t = this.jwtBridge.current()?.trim();
+    if (!t) return {};
+    return {
+      headers: new HttpHeaders({ Authorization: `Bearer ${t}` }),
+    };
+  }
 
   async listPublished(q?: string): Promise<Writing[]> {
     let params = new HttpParams();
@@ -50,12 +65,16 @@ export class WritingService {
   }
 
   async listMine(): Promise<Writing[]> {
-    const rows = await firstValueFrom(this.http.get<WritingApiDto[]>(`${this.base}/mine`));
+    const rows = await firstValueFrom(
+      this.http.get<WritingApiDto[]>(`${this.base}/mine`, this.bearerOpts())
+    );
     return rows.map((r) => this.mapRow(r));
   }
 
   async getById(id: string): Promise<Writing> {
-    const row = await firstValueFrom(this.http.get<WritingApiDto>(`${this.base}/${id}`));
+    const row = await firstValueFrom(
+      this.http.get<WritingApiDto>(`${this.base}/${id}`, this.bearerOpts())
+    );
     return this.mapRow(row);
   }
 
@@ -66,9 +85,12 @@ export class WritingService {
         content: payload.content,
         type: payload.type,
         status: payload.status,
-        audioUrl: payload.audioUrl,
-        coverUrl: payload.coverUrl,
-      })
+        audioUrl: payload.audioUrl ?? null,
+        coverUrl: payload.coverUrl ?? null,
+        anonymousAuthor: payload.anonymousAuthor === true,
+        podcastCategory:
+          payload.podcastCategory?.trim() ? payload.podcastCategory.trim() : null,
+      }, this.bearerOpts())
     );
     return this.mapRow(row);
   }
@@ -80,15 +102,18 @@ export class WritingService {
         content: payload.content,
         type: payload.type,
         status: payload.status,
-        audioUrl: payload.audioUrl,
-        coverUrl: payload.coverUrl,
-      })
+        audioUrl: payload.audioUrl ?? null,
+        coverUrl: payload.coverUrl ?? null,
+        anonymousAuthor: !!payload.anonymousAuthor,
+        podcastCategory:
+          payload.podcastCategory?.trim() ? payload.podcastCategory.trim() : null,
+      }, this.bearerOpts())
     );
     return this.mapRow(row);
   }
 
   async delete(id: string): Promise<void> {
-    await firstValueFrom(this.http.delete<void>(`${this.base}/${id}`));
+    await firstValueFrom(this.http.delete<void>(`${this.base}/${id}`, this.bearerOpts()));
   }
 
   private mapRow(r: WritingApiDto): Writing {
@@ -103,6 +128,8 @@ export class WritingService {
       views: r.views ?? 0,
       authorId: r.authorId,
       authorName: r.authorName,
+      anonymousAuthor: !!r.anonymousAuthor,
+      podcastCategory: r.podcastCategory ?? null,
       createdAt: new Date(r.createdAt),
     };
   }

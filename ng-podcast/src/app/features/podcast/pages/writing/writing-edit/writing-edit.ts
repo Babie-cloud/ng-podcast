@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { WritingStore } from '../../../store/writing.store';
+import { PODCAST_CONTENT_THEMES, WRITING_TYPE_OPTIONS } from '../../../constants/content-taxonomy';
 
 @Component({
   selector: 'app-writing-edit',
@@ -15,7 +16,8 @@ export class WritingEdit implements OnInit {
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
 
-  readonly types = ['POEM', 'STORY', 'ESSAY', 'JOURNAL'];
+  readonly typeOptions = WRITING_TYPE_OPTIONS;
+  readonly podcastThemes = PODCAST_CONTENT_THEMES;
   readonly id = signal<string>('');
 
   form = this.fb.nonNullable.group({
@@ -23,6 +25,10 @@ export class WritingEdit implements OnInit {
     content: ['', [Validators.required, Validators.minLength(5)]],
     type: ['POEM'],
     status: ['DRAFT' as 'DRAFT' | 'PUBLISHED'],
+    audioUrl: [''],
+    coverUrl: [''],
+    anonymousAuthor: [false],
+    podcastCategory: [''],
   });
 
   async ngOnInit(): Promise<void> {
@@ -37,6 +43,10 @@ export class WritingEdit implements OnInit {
       content: w.content,
       type: w.type,
       status: w.status === 'PUBLISHED' ? 'PUBLISHED' : 'DRAFT',
+      audioUrl: w.audioUrl ?? '',
+      coverUrl: w.coverUrl ?? '',
+      anonymousAuthor: w.anonymousAuthor,
+      podcastCategory: w.podcastCategory ?? '',
     });
   }
 
@@ -47,11 +57,19 @@ export class WritingEdit implements OnInit {
     if (!rawId) return;
 
     const v = this.form.getRawValue();
+    const audio = v.audioUrl.trim();
+    const cover = v.coverUrl.trim();
+    const category = v.podcastCategory.trim();
+
     const ok = await this.store.update(rawId, {
       title: v.title,
       content: v.content,
       type: v.type,
       status: v.status,
+      ...(audio !== '' ? { audioUrl: audio } : { audioUrl: null }),
+      ...(cover !== '' ? { coverUrl: cover } : { coverUrl: null }),
+      anonymousAuthor: v.anonymousAuthor,
+      podcastCategory: category !== '' ? category : null,
     });
     if (ok) {
       await this.router.navigate(['/writing', rawId]);

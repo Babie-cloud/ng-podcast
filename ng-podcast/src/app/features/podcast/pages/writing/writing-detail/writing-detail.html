@@ -35,11 +35,30 @@
 
   <article class="glass-card">
     <div class="d-flex flex-wrap gap-2 mb-3 align-items-center">
-      <span class="np-tag-pill">{{ w.type }}</span>
+      <span class="np-tag-pill">{{ labelType(w.type) }}</span>
       <span class="np-tag-pill">{{ w.status }}</span>
+      @if (w.podcastCategory) {
+        <span class="np-tag-pill">{{ w.podcastCategory }}</span>
+      }
+      @if (w.anonymousAuthor && canManage) {
+        <span class="np-tag-pill">Anonyme pour le public</span>
+      }
       <span class="np-text-hint ms-auto" style="font-size: 13px">{{ w.views }} vues</span>
     </div>
     <h1 class="h3 np-gradient-text mb-2">{{ w.title }}</h1>
+    @if (w.coverUrl) {
+      <figure class="mb-4 rounded overflow-hidden" style="max-height: 360px">
+        <img class="img-fluid w-100 object-fit-cover" [src]="w.coverUrl!" [attr.alt]="'Couverture : ' + w.title" loading="lazy" />
+      </figure>
+    }
+
+    @if (w.audioUrl) {
+      <div class="mb-4 np-writing-audio">
+        <p class="np-text-muted small mb-2">Écouter</p>
+        <audio class="np-audio-native w-100" controls preload="metadata" [src]="w.audioUrl"></audio>
+      </div>
+    }
+
     <p class="np-text-muted mb-4">
       Par {{ w.authorName }} · {{ w.createdAt | date: 'medium' }}
     </p>

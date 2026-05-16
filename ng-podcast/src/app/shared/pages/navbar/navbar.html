@@ -45,12 +45,63 @@
     @if (auth.isLogged()) {
       <a routerLink="/dashboard"
          routerLinkActive="active"
-         class="btn-np-outline np-hide-mobile">
+         class="btn-np-outline np-hide-mobile"
+         (click)="closeProfileMenu()">
         Mon espace
       </a>
-      <button class="btn-np-ghost np-hide-mobile" (click)="logout()">
-        Déconnexion
-      </button>
+
+      <div class="np-profile-wrap">
+        <button
+          type="button"
+          class="np-profile-trigger"
+          (click)="toggleProfileMenu($event)"
+          [attr.aria-expanded]="profileMenuOpen()"
+          aria-label="Réglages et profil utilisateur">
+          <i class="fa-solid fa-user-circle" aria-hidden="true"></i>
+        </button>
+
+        @if (profileMenuOpen()) {
+          <div class="np-profile-menu glass-card" role="menu">
+            @if (auth.user(); as u) {
+              <div class="np-profile-menu-heading">
+                <span class="np-profile-menu-name">{{ profileTitle() }}</span>
+                @if (u.role === 'ADMIN') {
+                  <span class="np-dashboard-badge mt-2 d-inline-block">Admin</span>
+                }
+              </div>
+              <hr class="np-profile-menu-rule" />
+
+              <p class="np-profile-menu-section-label">Réglages rapides</p>
+              <a routerLink="/dashboard" role="menuitem" class="np-profile-menu-row" (click)="closeProfileMenu()">
+                <i class="fa-solid fa-chart-line me-2" aria-hidden="true"></i>
+                Tableau de bord
+              </a>
+              <a routerLink="/podcasts/mine" role="menuitem" class="np-profile-menu-row" (click)="closeProfileMenu()">
+                <i class="fa-solid fa-microphone-lines me-2" aria-hidden="true"></i>
+                Mes podcasts
+              </a>
+              <a routerLink="/writing/mine" role="menuitem" class="np-profile-menu-row" (click)="closeProfileMenu()">
+                <i class="fa-solid fa-pen-nib me-2" aria-hidden="true"></i>
+                Mes textes
+              </a>
+              <a routerLink="/storytelling/mine" role="menuitem" class="np-profile-menu-row" (click)="closeProfileMenu()">
+                <i class="fa-solid fa-book-bookmark me-2" aria-hidden="true"></i>
+                Mes histoires
+              </a>
+
+              <p class="np-profile-menu-hint mb-3">
+                Thème&nbsp;: utiliser la bascule lunette/brume à côté du profil.
+              </p>
+
+              <hr class="np-profile-menu-rule" />
+              <button type="button" class="np-profile-menu-signout np-btn-danger" (click)="logout()">
+                <i class="fa-solid fa-right-from-bracket me-2" aria-hidden="true"></i>
+                Déconnexion
+              </button>
+            }
+          </div>
+        )}
+      </div>
     } @else {
       <a routerLink="/login" class="btn-np-outline np-hide-mobile">
         Connexion
@@ -100,8 +151,10 @@
        routerLinkActive="active"
        class="np-mobile-link"
        (click)="closeMenu()"> Mon espace</a>
-    <button class="np-mobile-link"
-      style="text-align:left;cursor:pointer;border:none;background:none;color:var(--np-danger)"
+    <a routerLink="/podcasts/mine" class="np-mobile-link" (click)="closeMenu()"> Mes podcasts</a>
+    <a routerLink="/writing/mine" class="np-mobile-link" (click)="closeMenu()"> Mes textes</a>
+    <a routerLink="/storytelling/mine" class="np-mobile-link" (click)="closeMenu()"> Mes histoires</a>
+    <button class="np-mobile-link np-mobile-signout-btn"
       (click)="logout()">
        Déconnexion
     </button>

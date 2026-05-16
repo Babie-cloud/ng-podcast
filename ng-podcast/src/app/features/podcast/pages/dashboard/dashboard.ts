@@ -29,6 +29,13 @@ export class Dashboard implements OnInit {
   displayName(): string {
     const u = this.auth.user();
     if (!u) return 'Créateur';
-    return u.username?.trim() ? u.username : u.email;
+    const pseudo = u.username?.trim();
+    if (pseudo) return pseudo;
+    const p = u.prenom?.trim();
+    if (p) return p;
+    const n = u.name?.trim();
+    if (n) return n;
+    return u.email;
   }
+
 }

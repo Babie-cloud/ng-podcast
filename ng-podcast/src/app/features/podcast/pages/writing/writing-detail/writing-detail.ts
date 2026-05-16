@@ -3,6 +3,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { WritingStore } from '../../../store/writing.store';
 import { AuthService } from '../../../services/auth.service';
+import { writingTypeLabel } from '../../../constants/content-taxonomy';
 
 @Component({
   selector: 'app-writing-detail',
@@ -29,7 +30,11 @@ export class WritingDetail implements OnInit, OnDestroy {
   get canManage(): boolean {
     const u = this.auth.user();
     const w = this.store.selected();
-    return !!u && !!w && w.authorId === u.id;
+    return !!u && !!w && w.authorId != null && w.authorId === u.id;
+  }
+
+  labelType(code: string): string {
+    return writingTypeLabel(code);
   }
 
   async remove(): Promise<void> {

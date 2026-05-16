@@ -4,12 +4,13 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { PodcastStore } from '../../store/podcast.store';
 import { PodcastService } from '../../services/podcast.service';
+import { PODCAST_CONTENT_THEMES } from '../../constants/content-taxonomy';
 
 @Component({
   selector: 'app-podcast-create',
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
-  template: `./create.html`,
+  templateUrl: './create.html',
   styleUrls: ['./create.scss'],
 })
 export class Create {
@@ -24,9 +25,7 @@ export class Create {
     { index: 2, label: 'Épisode' },
   ];
 
-  readonly categories = [
-    'Tech', 'Société', 'Poésie', 'Culture', 'Témoignages', 'Confessions', 'Autre',
-  ];
+  readonly categories = [...PODCAST_CONTENT_THEMES];
 
   coverPreview = signal<string | null>(null);
   coverFile = signal<File | null>(null);

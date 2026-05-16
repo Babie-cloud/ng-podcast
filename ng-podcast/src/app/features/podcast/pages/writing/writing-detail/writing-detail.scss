@@ -4,6 +4,11 @@
   line-height: 1.75;
 }
 
+.np-audio-native {
+  border-radius: var(--np-radius-md, 12px);
+  max-height: 54px;
+}
+
 .np-visibility-banner {
   padding: 0.85rem 1rem;
   font-size: 0.92rem;

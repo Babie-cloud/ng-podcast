@@ -35,8 +35,18 @@
     <div class="mb-3">
       <label class="form-label" for="we-type">Type</label>
       <select id="we-type" class="np-input w-100" formControlName="type">
-        @for (t of types; track t) {
-          <option [value]="t">{{ t }}</option>
+        @for (t of typeOptions; track t.value) {
+          <option [value]="t.value">{{ t.label }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="we-theme">Thématique podcast (optionnel)</label>
+      <select id="we-theme" class="np-input w-100" formControlName="podcastCategory">
+        <option value="">— Sans thème précis —</option>
+        @for (theme of podcastThemes; track theme) {
+          <option [value]="theme">{{ theme }}</option>
         }
       </select>
     </div>
@@ -45,8 +55,40 @@
       <label class="form-label" for="we-status">Visibilité</label>
       <select id="we-status" class="np-input w-100" formControlName="status">
         <option value="DRAFT">Brouillon (privé)</option>
-        <option value="PUBLISHED">Publié (visible par tous)</option>
+        <option value="PUBLISHED">Publié (visible par tous dans « Découvrir »)</option>
       </select>
+    </div>
+
+    <div class="mb-3 glass-card p-3">
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="we-anonymous"
+          formControlName="anonymousAuthor"
+        />
+        <label class="form-check-label" for="we-anonymous">
+          Publication <strong>sans pseudo</strong> (affiché comme « Anonyme » lorsque le texte est public).
+        </label>
+      </div>
+      <p class="small np-text-muted mb-0 mt-2">Vous restez propriétaire du contenu comme d'habitude.</p>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="we-audio">URL fichier audio (optionnel)</label>
+      <input
+        id="we-audio"
+        type="url"
+        class="np-input w-100"
+        formControlName="audioUrl"
+        placeholder="https://…"
+        autocomplete="off"
+      />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="we-cover">URL image de couverture (optionnel)</label>
+      <input id="we-cover" type="url" class="np-input w-100" formControlName="coverUrl" placeholder="https://…" />
     </div>
 
     <div class="mb-4">

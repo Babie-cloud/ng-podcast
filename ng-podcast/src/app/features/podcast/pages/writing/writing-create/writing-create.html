@@ -22,8 +22,18 @@
   <div class="mb-3">
     <label class="form-label" for="w-type">Type</label>
     <select id="w-type" class="np-input w-100" formControlName="type">
-      @for (t of types; track t) {
-        <option [value]="t">{{ t }}</option>
+      @for (t of typeOptions; track t.value) {
+        <option [value]="t.value">{{ t.label }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label" for="w-theme">Thématique podcast (optionnel)</label>
+    <select id="w-theme" class="np-input w-100" formControlName="podcastCategory">
+      <option value="">— Sans thème précis —</option>
+      @for (theme of podcastThemes; track theme) {
+        <option [value]="theme">{{ theme }}</option>
       }
     </select>
   </div>
@@ -31,9 +41,44 @@
   <div class="mb-3">
     <label class="form-label" for="w-status">Visibilité</label>
     <select id="w-status" class="np-input w-100" formControlName="status">
-      <option value="DRAFT">Brouillon</option>
-      <option value="PUBLISHED">Publié</option>
+      <option value="DRAFT">Brouillon — privé, visible seulement par vous</option>
+      <option value="PUBLISHED">Publié — visible dans « Découvrir »</option>
     </select>
+  </div>
+
+  <div class="mb-3 glass-card p-3">
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        id="w-anonymous"
+        formControlName="anonymousAuthor"
+      />
+      <label class="form-check-label" for="w-anonymous">
+        Publiée <strong>sans afficher mon pseudo</strong> (lecteurs voient « Anonyme » lorsque le texte est public).
+      </label>
+    </div>
+    <p class="small np-text-muted mb-0 mt-2">
+      Vous conservez toujours la gestion du texte sur « Mes écrits » ; seul le nom affiché est masqué.
+    </p>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label" for="w-audio">URL fichier audio (optionnel)</label>
+    <input
+      id="w-audio"
+      type="url"
+      class="np-input w-100"
+      formControlName="audioUrl"
+      placeholder="https://…"
+      autocomplete="off"
+    />
+    <span class="small np-text-muted">Lecture sur la page du texte après enregistrement.</span>
+  </div>
+
+  <div class="mb-4">
+    <label class="form-label" for="w-cover">URL image de couverture (optionnel)</label>
+    <input id="w-cover" type="url" class="np-input w-100" formControlName="coverUrl" placeholder="https://…" />
   </div>
 
   <div class="mb-4">

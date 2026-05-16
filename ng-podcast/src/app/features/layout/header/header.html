@@ -41,12 +41,44 @@
       </button>
 
       @if (auth.isLogged()) {
-        <a routerLink="/podcasts/create" class="btn-np btn-np-sm">+ Créer</a>
-        <button
-          type="button"
-          class="btn-np-ghost btn-np-sm"
-          (click)="auth.logout()"
-        >Déconnexion</button>
+        <a routerLink="/podcasts/create" class="btn-np btn-np-sm" (click)="closeProfileMenu()">+ Créer</a>
+        <a routerLink="/dashboard" class="btn-np-outline btn-np-sm" (click)="closeProfileMenu()">Tableau de bord</a>
+
+        <div class="np-profile-wrap">
+          <button
+            type="button"
+            class="np-profile-trigger"
+            (click)="toggleProfileMenu($event)"
+            [attr.aria-expanded]="profileMenuOpen()"
+            aria-label="Réglages et profil utilisateur"
+          >
+            <i class="fa-solid fa-user-circle" aria-hidden="true"></i>
+          </button>
+
+          @if (profileMenuOpen()) {
+            <div class="np-profile-menu glass-card">
+              @if (auth.user(); as u) {
+                <div class="np-profile-menu-heading">
+                  <span class="np-profile-menu-name">{{ profileTitle() }}</span>
+                  @if (u.role === 'ADMIN') {
+                    <span class="np-dashboard-badge mt-2 d-inline-block">Admin</span>
+                  }
+                </div>
+                <hr class="np-profile-menu-rule" />
+                <a routerLink="/podcasts/mine" class="np-profile-menu-row" (click)="closeProfileMenu()">
+                  Mes podcasts</a>
+                <a routerLink="/writing/mine" class="np-profile-menu-row" (click)="closeProfileMenu()">
+                  Mes textes</a>
+                <a routerLink="/storytelling/mine" class="np-profile-menu-row" (click)="closeProfileMenu()">
+                  Mes histoires</a>
+                <hr class="np-profile-menu-rule" />
+                <button type="button" class="np-profile-menu-signout np-btn-danger" (click)="logout()">
+                  <i class="fa-solid fa-right-from-bracket me-2"></i>Déconnexion
+                </button>
+              }
+            </div>
+          )}
+        </div>
       } @else {
         <a routerLink="/login" class="btn-np-ghost btn-np-sm">Connexion</a>
         <a routerLink="/signup" class="btn-np btn-np-sm">S'inscrire</a>

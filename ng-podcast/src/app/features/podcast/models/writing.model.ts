@@ -7,7 +7,9 @@ export interface Writing {
   coverUrl: string | null;
   status: string;
   views: number;
-  authorId: string;
+  authorId: string | null;
   authorName: string;
+  anonymousAuthor: boolean;
+  podcastCategory?: string | null;
   createdAt: Date;
 }

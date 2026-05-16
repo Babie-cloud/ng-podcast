@@ -4,6 +4,106 @@
   line-height: 1;
 }
 
+.np-profile-wrap {
+  position: relative;
+}
+
+.np-profile-trigger {
+  border: none;
+  background: var(--np-primary-soft, rgba(99, 102, 241, 0.12));
+  color: inherit;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  cursor: pointer;
+  font-size: 22px;
+
+  &:hover {
+    opacity: 0.9;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  }
+}
+
+.np-profile-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  min-width: 280px;
+  padding: 0.75rem 0.95rem;
+  border-radius: 14px;
+  z-index: 1200;
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.22),
+    0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.np-profile-menu-heading {
+  padding: 0.15rem 0 0;
+}
+
+.np-profile-menu-name {
+  font-weight: 650;
+  display: block;
+  font-size: 1rem;
+  word-break: break-word;
+}
+
+.np-profile-menu-rule {
+  margin: 0.65rem 0;
+  opacity: 0.35;
+  border-width: 0 0 1px;
+}
+
+.np-profile-menu-section-label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.72;
+  margin-bottom: 0.35rem;
+}
+
+.np-profile-menu-row {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 0.45rem 0.05rem;
+  border-radius: 8px;
+  color: inherit;
+  font-size: 0.95rem;
+
+  &:hover {
+    background: var(--np-primary-soft, rgba(99, 102, 241, 0.12));
+  }
+}
+
+.np-profile-menu-hint {
+  font-size: 0.8rem;
+  opacity: 0.75;
+  margin-top: 0.85rem;
+  line-height: 1.4;
+}
+
+.np-profile-menu-signout {
+  width: 100%;
+  border-radius: 10px;
+  border: none;
+  padding: 0.58rem;
+  cursor: pointer;
+  font-weight: 600;
+  background: transparent;
+}
+
+.np-mobile-signout-btn.np-mobile-signout-btn {
+  text-align: left;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: var(--np-danger);
+}
+
 // Responsive — cacher les liens sur mobile
 @media (max-width: 768px) {
   .np-nav-links {
@@ -12,9 +112,5 @@
 
   .np-nav-actions {
     gap: 8px;
-
-    .btn-np-ghost {
-      display: none; // Déconnexion cachée sur mobile
-    }
   }
 }

@@ -6,13 +6,16 @@ import { firstValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { SSR_API_BASE_URL } from '../../core/tokens/ssr-api-base-url.token';
-import { AUTH_JWT_STORAGE_KEY } from '../../core/constants/auth-storage';
+import { JwtTokenBridge } from '../../core/services/jwt-token-bridge';
 
 export interface AuthUser {
-  id:       string;
-  email:    string;
+  id: string;
+  email: string;
+  /** Pseudo / nom affiché (≠ identifiant de connexion, qui reste l'email). */
   username: string;
-  role:     'USER' | 'ADMIN';
+  role: 'USER' | 'ADMIN';
+  name?: string;
+  prenom?: string;
 }
 
 interface LoginPayload    { email: string; password: string; }
@@ -47,6 +50,7 @@ export class AuthService {
   private readonly http       = inject(HttpClient);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly router     = inject(Router);
+  private readonly jwtBridge  = inject(JwtTokenBridge);
   private readonly apiRoot =
     inject(SSR_API_BASE_URL, { optional: true }) ?? environment.apiUrl;
   private readonly base       = `${this.apiRoot}/auth`;
@@ -72,7 +76,7 @@ export class AuthService {
       this.authHydrated = Promise.resolve();
       return;
     }
-    const stored = localStorage.getItem(AUTH_JWT_STORAGE_KEY);
+    const stored = this.jwtBridge.hydrateFromDisk();
     if (!stored) {
       this.authHydrated = Promise.resolve();
       return;
@@ -153,9 +157,7 @@ export class AuthService {
   logout(): void {
     this._token.set(null);
     this._user.set(null);
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.removeItem(AUTH_JWT_STORAGE_KEY);
-    }
+    this.jwtBridge.wipe();
     this.router.navigate(['/']);
   }
 
@@ -163,8 +165,6 @@ export class AuthService {
   private saveSession(res: AuthResponse): void {
     this._token.set(res.token);
     this._user.set(res.user);
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.setItem(AUTH_JWT_STORAGE_KEY, res.token);
-    }
+    this.jwtBridge.remember(res.token);
   }
 }
