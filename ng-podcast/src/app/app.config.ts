@@ -1,13 +1,32 @@
-// app.config.ts — corriger l'import
-import { ApplicationConfig } from '@angular/core';
+import {
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
+import { APP_INITIALIZER, ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { routes } from './app.routes';           // ← doit correspondre
-import { authInterceptor } from './features/core/interceptors/auth.interceptor';
+import { JwtAuthInterceptor } from './features/core/interceptors/auth.interceptor';
+import { JwtTokenBridge } from './features/core/services/jwt-token-bridge';
+import { routes } from './app.routes';
+
+/** Hydrate le JWT depuis le stockage avant les guards / premiers HttpClient. */
+function hydrateJwtBridge(bridge: JwtTokenBridge): () => Promise<void> {
+  return () => {
+    bridge.hydrateFromDisk();
+    return Promise.resolve();
+  };
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor]))
-  ]
+    provideHttpClient(withInterceptorsFromDi()),
+    { provide: HTTP_INTERCEPTORS, useExisting: JwtAuthInterceptor, multi: true },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: hydrateJwtBridge,
+      deps: [JwtTokenBridge],
+      multi: true,
+    },
+  ],
 };

@@ -21,6 +21,11 @@ export class JwtTokenBridge {
       this.memory = fromLs.trim();
       return this.memory;
     }
+    const fromSs = sessionStorage.getItem(AUTH_JWT_STORAGE_KEY);
+    if (fromSs?.trim()) {
+      this.memory = fromSs.trim();
+      return this.memory;
+    }
     this.memory = null;
     return null;
   }
@@ -32,7 +37,12 @@ export class JwtTokenBridge {
       return this.memory.trim();
     }
     const fromLs = localStorage.getItem(AUTH_JWT_STORAGE_KEY)?.trim();
-    this.memory = fromLs ?? null;
+    if (fromLs) {
+      this.memory = fromLs;
+      return fromLs;
+    }
+    const fromSs = sessionStorage.getItem(AUTH_JWT_STORAGE_KEY)?.trim();
+    this.memory = fromSs ?? null;
     return this.memory;
   }
 
@@ -47,5 +57,6 @@ export class JwtTokenBridge {
     if (!isPlatformBrowser(this.platformId)) return;
     this.memory = null;
     localStorage.removeItem(AUTH_JWT_STORAGE_KEY);
+    sessionStorage.removeItem(AUTH_JWT_STORAGE_KEY);
   }
 }

@@ -1,27 +1,59 @@
-import { HttpInterceptorFn } from '@angular/common/http';
-import { inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { AuthService } from '../../podcast/services/auth.service';
+import {
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest,
+} from '@angular/common/http';
+import { inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Observable } from 'rxjs';
+import { AUTH_JWT_STORAGE_KEY } from '../constants/auth-storage';
+import { JwtTokenBridge } from '../services/jwt-token-bridge';
+
+function normalizeBearer(raw: string): string {
+  const t = raw.trim();
+  if (!t) return '';
+  return t.replace(/^Bearer\s+/i, '').trim();
+}
 
 /**
- * Bearer via {@link AuthService#effectiveAccessToken} pour aligner signal et stockage navigateur.
+ * Ajoute `Authorization: Bearer <jwt>` sur chaque requête HttpClient (navigateur).
+ *
+ * Implémenté via {@link HTTP_INTERCEPTORS} + {@link provideHttpClient#withInterceptorsFromDi}
+ * pour garantir que la chaîne d’intercepteurs est bien branchée (Angular 21).
  */
-export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const platformId = inject(PLATFORM_ID);
-  if (!isPlatformBrowser(platformId)) {
-    return next(req);
+@Injectable({ providedIn: 'root' })
+export class JwtAuthInterceptor implements HttpInterceptor {
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly bridge = inject(JwtTokenBridge);
+
+  intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    if (!isPlatformBrowser(this.platformId)) {
+      return next.handle(req);
+    }
+    if (req.headers.has('Authorization')) {
+      return next.handle(req);
+    }
+
+    let token = normalizeBearer(this.bridge.current() ?? '');
+    if (!token && typeof localStorage !== 'undefined') {
+      token = normalizeBearer(localStorage.getItem(AUTH_JWT_STORAGE_KEY) ?? '');
+    }
+    if (!token && typeof sessionStorage !== 'undefined') {
+      token = normalizeBearer(sessionStorage.getItem(AUTH_JWT_STORAGE_KEY) ?? '');
+      if (token) {
+        this.bridge.remember(token);
+      }
+    }
+
+    if (!token) {
+      return next.handle(req);
+    }
+
+    return next.handle(
+      req.clone({
+        setHeaders: { Authorization: `Bearer ${token}` },
+      }),
+    );
   }
-  const auth = inject(AuthService);
-  if (req.headers.has('Authorization')) {
-    return next(req);
-  }
-  const token = auth.effectiveAccessToken();
-  if (!token) {
-    return next(req);
-  }
-  return next(
-    req.clone({
-      setHeaders: { Authorization: `Bearer ${token}` },
-    }),
-  );
-};
+}
