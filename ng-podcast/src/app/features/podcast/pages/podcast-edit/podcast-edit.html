@@ -1,14 +1,18 @@
-<div class="np-page np-section" style="max-width: 720px">
+<div class="np-page np-section" style="max-width: 920px">
   <div class="np-section-header mb-4">
     <div>
       <span class="np-section-label">Podcast</span>
-      <h2 class="np-section-title">Modifier les <em>informations</em></h2>
+      <h2 class="np-section-title">Modifier le <em>show</em> & les épisodes</h2>
     </div>
-    <a [routerLink]="['/podcasts', podcastId()]" class="btn-np-ghost">Annuler</a>
+    <a [routerLink]="['/podcasts', podcastId()]" class="btn-np-ghost">Voir la page publique</a>
   </div>
 
   @if (store.hasError()) {
     <div class="np-alert np-alert-danger mb-3">{{ store.error() }}</div>
+  }
+
+  @if (episodeLocalError()) {
+    <div class="np-alert np-alert-danger mb-3">{{ episodeLocalError() }}</div>
   }
 
   @if (!store.selected() && store.loading()) {
@@ -25,7 +29,7 @@
       — les épisodes en brouillon restent cachés du public.
     </p>
 
-    <form class="glass-card" [formGroup]="form" (ngSubmit)="submit()">
+    <form class="glass-card mb-4" [formGroup]="form" (ngSubmit)="submit()">
       <div class="mb-3">
         <label class="form-label" for="pe-title">Titre</label>
         <input id="pe-title" type="text" class="np-input w-100" formControlName="title" />
@@ -56,10 +60,107 @@
       </div>
       <div class="d-flex gap-2 flex-wrap">
         <button type="submit" class="btn-np" [disabled]="store.loading()">
-          {{ store.loading() ? 'Enregistrement…' : 'Enregistrer' }}
+          {{ store.loading() ? 'Enregistrement…' : 'Enregistrer les infos' }}
         </button>
         <a [routerLink]="['/podcasts', p.id]" class="btn-np-outline">Fermer</a>
       </div>
     </form>
+
+    <div class="glass-card mb-3">
+      <span class="np-section-label d-block mb-2">Audio</span>
+      <h3 class="h5 mb-2">Épisodes</h3>
+      <p class="np-text-muted small mb-3">
+        Dépose un fichier MP3 / WebM / OGG ou utilise le microphone. Tu peux publier ou garder un épisode en
+        brouillon avant de le rendre public.
+      </p>
+
+      @if (p.episodes.length === 0) {
+        <p class="np-text-muted small mb-4">Aucun épisode pour l’instant — ajoute-en un ci‑dessous.</p>
+      }
+
+      @if (p.episodes.length > 0) {
+        <ul class="list-unstyled d-flex flex-column gap-3 mb-4">
+          @for (ep of p.episodes; track ep.id) {
+            <li
+              class="d-flex flex-wrap justify-content-between align-items-start gap-2 p-3 rounded"
+              style="border: 1px solid color-mix(in srgb, var(--np-border, #444) 40%, transparent)"
+            >
+              <div>
+                <div class="fw-semibold">{{ ep.title }}</div>
+                <div class="np-text-muted small">
+                  {{ isPublishedEpisode(ep) ? 'Publié' : 'Brouillon' }} · créé {{ ep.createdAt | date: 'medium' }}
+                  @if (ep.duration > 0) {
+                    <span> · {{ ep.duration }} s</span>
+                  }
+                </div>
+              </div>
+              <div class="d-flex flex-wrap gap-2">
+                @if (ep.audioUrl) {
+                  <audio [src]="ep.audioUrl" controls style="max-width: 220px; height: 36px"></audio>
+                }
+                <button
+                  type="button"
+                  class="btn-np-outline btn-np-sm"
+                  [disabled]="store.loading()"
+                  (click)="toggleEpisodePublish(ep)"
+                >
+                  {{ isPublishedEpisode(ep) ? 'Repasser en brouillon' : 'Publier' }}
+                </button>
+                <button
+                  type="button"
+                  class="btn-np-outline btn-np-sm text-danger"
+                  [disabled]="store.loading()"
+                  (click)="removeEpisode(ep)"
+                >
+                  Supprimer
+                </button>
+              </div>
+            </li>
+          }
+        </ul>
+      }
+
+      <h4 class="h6 mb-3">Ajouter un épisode</h4>
+      <form [formGroup]="episodeForm" (ngSubmit)="submitNewEpisode()" class="d-flex flex-column gap-3">
+        <div>
+          <label class="form-label" for="pe-ep-title">Titre de l’épisode</label>
+          <input id="pe-ep-title" type="text" class="np-input w-100" formControlName="title" />
+          @if (episodeForm.controls.title.invalid && episodeForm.controls.title.touched) {
+            <p class="text-danger small mb-0 mt-1">Au moins 2 caractères.</p>
+          }
+        </div>
+        <div>
+          <label class="form-label" for="pe-ep-desc">Description (facultatif)</label>
+          <textarea id="pe-ep-desc" class="np-input w-100" rows="2" formControlName="description"></textarea>
+        </div>
+        <div class="form-check">
+          <input id="pe-ep-pub" type="checkbox" class="form-check-input" formControlName="publishNow" />
+          <label class="form-check-label" for="pe-ep-pub">Publier cet épisode tout de suite</label>
+        </div>
+
+        <div class="d-flex flex-wrap gap-3 align-items-start">
+          <div class="flex-grow-1" style="min-width: 200px">
+            <label class="form-label" for="pe-ep-file">Fichier audio</label>
+            <input id="pe-ep-file" type="file" class="np-input w-100" accept="audio/*" (change)="onAudioChange($event)" />
+            @if (audioPick(); as af) {
+              <p class="small np-text-muted mt-1 mb-0">
+                Sélectionné : {{ af.name }} —
+                <button type="button" class="btn btn-link btn-sm p-0 align-baseline" (click)="clearPickedAudio()">
+                  Retirer
+                </button>
+              </p>
+            }
+          </div>
+          <div class="flex-grow-1" style="min-width: 200px">
+            <label class="form-label">Ou enregistrer</label>
+            <app-audio-recorder (fileReady)="onRecorded($event)" />
+          </div>
+        </div>
+
+        <button type="submit" class="btn-np align-self-start" [disabled]="episodeBusy() || store.loading()">
+          {{ episodeBusy() ? 'Envoi…' : 'Ajouter l’épisode' }}
+        </button>
+      </form>
+    </div>
   }
 </div>

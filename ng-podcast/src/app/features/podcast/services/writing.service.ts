@@ -1,8 +1,7 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { AuthService } from './auth.service';
 import { SSR_API_BASE_URL } from '../../core/tokens/ssr-api-base-url.token';
 import { Writing } from '../models/writing.model';
 
@@ -33,25 +32,18 @@ export interface CreateWritingPayload {
   podcastCategory?: string | null;
 }
 
-/** Aligné sur le corps PUT backend {@code UpdateWritingRequest}. */
 export type UpdateWritingPayload = CreateWritingPayload;
 
 @Injectable({ providedIn: 'root' })
 export class WritingService {
   private readonly http = inject(HttpClient);
-  private readonly auth = inject(AuthService);
   private readonly apiRoot =
     inject(SSR_API_BASE_URL, { optional: true }) ?? environment.apiUrl;
   private readonly base = `${this.apiRoot}/api/writings`;
 
-  /** Garantit le Bearer même si l’intercepteur Http n’est pas enregistré (double envoi évité côté intercepteur si déjà présent). */
-  private bearerOpts(): { headers?: HttpHeaders } {
-    const t = this.auth.effectiveAccessToken()?.trim();
-    if (!t) return {};
-    return {
-      headers: new HttpHeaders({ Authorization: `Bearer ${t}` }),
-    };
-  }
+  // ✅ Plus besoin de bearerOpts() ni d'injecter AuthService :
+  // le JwtAuthInterceptor ajoute automatiquement le header Authorization
+  // sur toutes les requêtes HttpClient dès qu'un token est présent.
 
   async listPublished(q?: string): Promise<Writing[]> {
     let params = new HttpParams();
@@ -66,14 +58,14 @@ export class WritingService {
 
   async listMine(): Promise<Writing[]> {
     const rows = await firstValueFrom(
-      this.http.get<WritingApiDto[]>(`${this.base}/mine`, this.bearerOpts())
+      this.http.get<WritingApiDto[]>(`${this.base}/mine`)
     );
     return rows.map((r) => this.mapRow(r));
   }
 
   async getById(id: string): Promise<Writing> {
     const row = await firstValueFrom(
-      this.http.get<WritingApiDto>(`${this.base}/${id}`, this.bearerOpts())
+      this.http.get<WritingApiDto>(`${this.base}/${id}`)
     );
     return this.mapRow(row);
   }
@@ -90,7 +82,7 @@ export class WritingService {
         anonymousAuthor: payload.anonymousAuthor === true,
         podcastCategory:
           payload.podcastCategory?.trim() ? payload.podcastCategory.trim() : null,
-      }, this.bearerOpts())
+      })
     );
     return this.mapRow(row);
   }
@@ -107,13 +99,13 @@ export class WritingService {
         anonymousAuthor: !!payload.anonymousAuthor,
         podcastCategory:
           payload.podcastCategory?.trim() ? payload.podcastCategory.trim() : null,
-      }, this.bearerOpts())
+      })
     );
     return this.mapRow(row);
   }
 
   async delete(id: string): Promise<void> {
-    await firstValueFrom(this.http.delete<void>(`${this.base}/${id}`, this.bearerOpts()));
+    await firstValueFrom(this.http.delete<void>(`${this.base}/${id}`));
   }
 
   private mapRow(r: WritingApiDto): Writing {

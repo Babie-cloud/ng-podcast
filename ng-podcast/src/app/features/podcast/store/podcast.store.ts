@@ -158,6 +158,49 @@ export const PodcastStore = signalStore(
       }
     },
 
+    /** Multipart POST `/api/podcasts/:id/episodes`. */
+    async addEpisode(
+      podcastId: string,
+      opts: {
+        title: string;
+        description?: string;
+        publishNow: boolean;
+        audio: File;
+      },
+    ): Promise<boolean> {
+      patchState(store, { loading: true, error: null });
+      try {
+        const podcast = await service.addEpisode(podcastId, {
+          title: opts.title,
+          description: opts.description ?? '',
+          publishNow: opts.publishNow,
+          audio: opts.audio,
+        });
+        patchState(store, {
+          podcasts: store.podcasts().map((p) => (p.id === podcastId ? podcast : p)),
+          selected: store.selected()?.id === podcastId ? podcast : store.selected(),
+          loading: false,
+        });
+        return true;
+      } catch (e: unknown) {
+        let message = "Impossible d'ajouter l'épisode.";
+        if (e instanceof HttpErrorResponse) {
+          const body = e.error as { detail?: string; message?: string } | undefined;
+          if (body?.detail) {
+            message = body.detail;
+          } else if (body?.message) {
+            message = body.message;
+          } else if (e.message) {
+            message = e.message;
+          }
+        } else if (e instanceof Error) {
+          message = e.message;
+        }
+        patchState(store, { error: message, loading: false });
+        return false;
+      }
+    },
+
     async patchEpisode(podcastId: string, episodeId: string, payload: EpisodePatchPayload): Promise<boolean> {
       patchState(store, { loading: true, error: null });
       try {

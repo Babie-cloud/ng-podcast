@@ -51,6 +51,9 @@
           <a [routerLink]="['/podcasts', podcast.id]" class="btn-np-ghost">
             Voir
           </a>
+          <a [routerLink]="['/podcasts', podcast.id, 'edit']" class="btn-np-outline btn-np-sm">
+            Modifier
+          </a>
           <a [routerLink]="['/podcasts', podcast.id, 'publish']" class="btn-np">
             + Épisode
           </a>

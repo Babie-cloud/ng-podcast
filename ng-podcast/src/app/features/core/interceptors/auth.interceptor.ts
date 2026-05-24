@@ -20,14 +20,23 @@ function normalizeBearer(raw: string): string {
   return t.replace(/^Bearer\s+/i, '').trim();
 }
 
-function shouldSkip401Logout(reqUrl: string): boolean {
+function shouldSkipUnauthorizedLogout(reqUrl: string): boolean {
   return SKIP_UNAUTHORIZED_LOGOUT_SEGMENTS.some((s) => reqUrl.includes(s));
 }
 
 /**
+ * Déconnexion : 401 général ; 403 uniquement pour les sous-ressources `.../mine` où un jeton périmé
+ * est ignoré côté filtre JWT (requête anonyme) et Spring renvoie alors 403.
+ */
+function shouldLogoutOnAuthFailure(err: HttpErrorResponse, reqUrl: string): boolean {
+  if (shouldSkipUnauthorizedLogout(reqUrl)) return false;
+  if (err.status === 401) return true;
+  return err.status === 403 && reqUrl.includes('/mine');
+}
+
+/**
  * 1) Ajoute `Authorization: Bearer <jwt>` sur chaque requête HttpClient (navigateur).
- * 2) Sur **401** (session expirée / jeton invalide côté API), déconnexion automatique —
- * sauf pendant login / register / reset-password pour ne pas casser ces formulaires.
+ * 2) Déconnexion sur erreurs d’auth (voir `shouldLogoutOnAuthFailure`) — sauf login / inscription / reset.
  */
 @Injectable({ providedIn: 'root' })
 export class JwtAuthInterceptor implements HttpInterceptor {
@@ -44,11 +53,7 @@ export class JwtAuthInterceptor implements HttpInterceptor {
 
     return next.handle(authReq).pipe(
       catchError((err: unknown) => {
-        if (
-          err instanceof HttpErrorResponse &&
-          err.status === 401 &&
-          !shouldSkip401Logout(authReq.url)
-        ) {
+        if (err instanceof HttpErrorResponse && shouldLogoutOnAuthFailure(err, authReq.url)) {
           this.clearSessionQuietly();
         }
         return throwError(() => err);

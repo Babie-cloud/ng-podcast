@@ -55,37 +55,33 @@ src/app/
 │
 ├── features/
 │   ├── core/
-│   │   ├── guard/auth.guard.ts               Protection des routes privées
-│   │   └── interceptors/auth.interceptor.ts  Injection du token JWT
-│   │
+│   │   ├── guard/auth.guard.ts                Routes protégées (création, édition, « mine »)
+│   │   ├── interceptors/auth.interceptor.ts    JWT + déconnexion sur 401 / 403 `/mine`
+│   │   └── services/jwt-token-bridge.ts        Sync token navigateur / inject()
 │   ├── layout/
-│   │   ├── header/                            Navbar + theme toggle
-│   │   └── footer/                            Footer + liens sociaux
-│   │
+│   │   └── header/ , footer/                  Navigation shell
 │   └── podcast/
 │       ├── auth/                              Landing, login, signup, reset
 │       ├── components/
-│       │   ├── player/                        Lecteur audio sticky
-│       │   ├── podcast-card/                  Carte de podcast
-│       │   ├── podcast-list/                  Liste de podcasts
-│       │   └── waveform/                      Visualiseur (Canvas + Analyser)
-│       ├── models/podcast.model.ts            Podcast, Episode, PlayerState
+│       │   ├── audio-recorder/               Enregistrement micro (épisodes)
+│       │   ├── player/                        Lecteur sticky
+│       │   ├── podcast-card/ , podcast-list/
+│       │   └── waveform/
 │       ├── pages/
-│       │   ├── home/                          Accueil
-│       │   ├── search/                        Recherche
-│       │   ├── my-podcasts/                   Espace créateur
-│       │   ├── create/                        Création d'un podcast
-│       │   ├── detail/                        Détail + épisodes
-│       │   └── publish/                       Publication d'un épisode
+│       │   ├── home/ , search/ , detail/
+│       │   ├── create/ , publish/            Création podcast + premier épisode
+│       │   ├── podcast-edit/               Métadonnées + liste / ajout / publication d’épisodes
+│       │   ├── writing/ , storytelling/    Textes & témoignages (listes, détail, création, édition)
+│       │   ├── dashboard/                  Vue d’ensemble authentifiée
+│       │   ├── my-podcasts/                Podcasts du créateur
+│       │   └── ...
 │       ├── services/
-│       │   ├── audio.ts                       AudioService (Web Audio)
-│       │   ├── auth.service.ts                Connexion API auth
-│       │   ├── podcast.service.ts             Connexion API podcasts
-│       │   └── theme.service.ts               Dark / light, persistant
+│       │   ├── auth.service.ts , podcast.service.ts
+│       │   ├── writing.service.ts , storytelling.service.ts
+│       │   └── audio.ts , theme.service.ts
 │       ├── store/
-│       │   ├── auth.store.ts                  Token, isLoggedIn
-│       │   └── podcast.store.ts               Liste, courant, lecture
-│       └── podcast.routes.ts                  Sous-routes du module
+│       │   ├── podcast.store.ts , writing.store.ts , storytelling.store.ts
+│       └── podcast.routes.ts
 │
 └── shared/
     └── pages/not-found/                       Page 404
@@ -118,57 +114,49 @@ interface Episode {
   duration: number;     // secondes
   podcastId: string;
   createdAt: Date;
+  status?: string;      // DRAFT | PUBLISHED
 }
 ```
 
 ### Stores (NgRx Signals)
 
-- `PodcastStore` : catalogue, podcast et épisode courants, état de lecture,
-  méthodes `loadAll`, `play`, `pause`, etc.
-- `AuthStore` : token persistant en `localStorage` (avec garde
-  `isPlatformBrowser` pour rester compatible SSR), `isLoggedIn` calculé.
+- `PodcastStore` : catalogue (`loadAll`, `loadMine`), détail (`loadOne`), création multipart, patching méta‑données, épisodes (`addEpisode`, `patchEpisode`, `deleteEpisode`), lecture (`play`, `pause`)
+- `WritingStore` : textes publiés (`loadPublished`), « les miens », CRUD écritures
+- `StorytellingStore` : témoignages / histoires, même philosophie que les écritures
+
+L’**authentification** est gérée par `AuthService` (JWT persisté dans `localStorage`, chargement profil utilisateur). Un `JwtTokenBridge` + `APP_INITIALIZER` hydratent le token avant les premières requêtes HTTP.
 
 ---
 
 ## Fonctionnalités
 
-- Découverte de podcasts (page d'accueil, topics, recherche)
-- Page de détail d'un podcast avec liste d'épisodes
-- Lecteur audio persistant (sticky) avec :
-  - Lecture / pause / saut +-15s
-  - Volume et mute
-  - Vitesse de lecture
-  - Visualiseur waveform via `AnalyserNode` + Canvas
-- Authentification : connexion, inscription, mot de passe oublié
-- Espace créateur protégé par `authGuard` :
-  - Création d'un podcast
-  - Mes podcasts
-  - Publication d'un épisode
-- Thème dark / light avec toggle dans le header, persistant via `localStorage`
-- Design system maison (tokens SCSS, variables CSS, classes utilitaires)
-- Server-Side Rendering pour le SEO et le first paint
-- Lazy loading par feature pour réduire le bundle initial
+- **Podcasts** : flux public (`/podcasts`), détail avec épisodes, création wizard (infos, couverture, premier épisode), page **modifier** (`/podcasts/:id/edit`) : titre / description / statut **et** gestion complète des épisodes (upload, enregistrement micro, publication brouillon / public, suppression), flux « Mes podcasts » protégé
+- **Écritures & storytelling** (`/writing`, `/storytelling`) : découverte publique ; création / édition / « mes contenus » derrière connexion
+- Lecteur audio persistant avec waveform (`Web Audio` + `AnalyserNode`)
+- **JWT** contre l’API Spring Boot (`/auth/login`, intercepteur `Authorization`)
+- **Thème** clair / sombre persistant (`ThemeService`)
 
 ---
 
 ## Routes
 
-| Chemin                       | Composant       | Accès           |
-| ---------------------------- | --------------- | --------------- |
-| `/`                          | `Landingpage`   | Public          |
-| `/login`                     | `Login`         | Public          |
-| `/signup`                    | `Signin`        | Public          |
-| `/resetpassword`             | `Resetpassword` | Public          |
-| `/podcasts`                  | `Home`          | Public          |
-| `/podcasts/search`           | `Search`        | Public          |
-| `/podcasts/:id`              | `Detail`        | Public          |
-| `/podcasts/mine`             | `MyPodcasts`    | Authentifié     |
-| `/podcasts/create`           | `Create`        | Authentifié     |
-| `/podcasts/:id/publish`      | `Publish`       | Authentifié     |
-| `**`                         | `NotFound`      | Public          |
+Principales entrées :
+|--------|------|-------|
+| `/` | Landing | Public |
+| `/login`, `/signup`, `/resetpassword` | Auth | Public |
+| `/dashboard` | Tableau de bord créateur | Authentifié |
+| `/podcasts` | Accueil podcasts | Public |
+| `/podcasts/:id` | Détail podcast | Public |
+| `/podcasts/create` | Créer un podcast (+ 1ᵉ épisode possible) | Authentifié |
+| `/podcasts/:id/edit` | Modifier infos **et épisodes audio** | Authentifié |
+| `/podcasts/:id/publish` | Assistant publication épisode | Authentifié |
+| `/podcasts/mine` | Mes podcasts | Authentifié |
+| `/writing`, `/storytelling` (+ sous‑routes liste / détail / create / mine / `:id/edit`) | Textes & histoires | Mixte (voir `writing.routes.ts`, `storytelling.routes.ts`) |
+| `/search`, `/profil`, `/settings` | Recherche, profil, paramètres | Selon guard |
 
-Les routes authentifiées sont protégées par `authGuard`
-(`features/core/guard/auth.guard.ts`).
+Voir `src/app/app.routes.ts` et `features/podcast/podcast.routes.ts` pour la liste exhaustive.
+
+Les routes réservées aux comptes connectés utilisent **`authGuard`** (`features/core/guard/auth.guard.ts`).
 
 ---
 
@@ -215,11 +203,11 @@ Les partials du design system sont dans `public/styles/`. L'import court
 l'attribut `data-theme="dark" | "light"` sur `<html>`. Tous les accès aux APIs
 navigateur sont gardés par `isPlatformBrowser` pour rester compatibles SSR.
 
-### Authentification
+### Dépendance avec l’API
 
-`AuthStore` conserve le JWT dans `localStorage` (clé `token`). L'intercepteur
-`auth.interceptor.ts` injecte le header `Authorization: Bearer <token>` sur les
-requêtes sortantes. Les pages privées sont protégées par `authGuard`.
+Le fichier `src/environments/environment*.ts` fixe **`apiUrl`** (ex. `http://127.0.0.1:8080` en développement). L’intercepteur JWT (`JwtAuthInterceptor`) ajoute `Authorization: Bearer …` depuis le stockage après hydratation par `JwtTokenBridge`.
+
+Le backend prévu (`sdk-podcast/mon-api`) expose : podcasts multipart, épisodes, écritures, storytelling et auth JWT. À lancer avant `ng serve` si tu veux un flux bout‑à‑bout.
 
 ---
 
@@ -228,7 +216,7 @@ requêtes sortantes. Les pages privées sont protégées par `authGuard`.
 - **Composants standalone** uniquement (pas de NgModule).
 - **Signals d'abord** : utiliser `signal`, `computed`, `effect` pour l'état
   local. Préférer `inject()` à l'injection par constructeur.
-- **NgRx Signals** pour l'état partagé (auth, catalogue, lecture).
+- **NgRx Signals** pour le catalogue podcasts, lectures, témoignages et écritures (stores dédiées).
 - **Lazy loading** systématique pour les pages.
 - **Templates** : utiliser `@if` / `@for` (control flow Angular), éviter
   `*ngIf` / `*ngFor`.
@@ -286,16 +274,8 @@ sur `index.html` pour le routing client.
 
 ## Pistes d'évolution
 
-- Brancher les services `auth.service.ts` et `podcast.service.ts` sur une vraie
-  API (les méthodes `onSubmit` des formulaires d'auth contiennent encore des
-  `TODO`).
-- Internationalisation (`@angular/localize`).
-- Upload réel des fichiers audio et des covers (page `create` et `publish`).
-- Système de favoris et historique d'écoute persistants.
-- Module `writing` et module `storytelling` (placeholders déjà prévus dans
-  `app.routes.ts`).
-- Pipeline CI (lint + tests + build) et environnements `dev` / `staging` / `prod`.
-- Couverture de tests étendue (services, store, guard, intercepteur).
+- Rafraîchissement de JWT (refresh token) et gestion centralisée des erreurs 403 métier (`Accès refusé` hors auth)
+- Pré‑écoute / édition de métadonnées d’épisode (sans supprimer/ré‑uploader)
 
 ---
 

@@ -26,7 +26,9 @@ export const appConfig: ApplicationConfig = {
       provide: APP_INITIALIZER,
       useFactory: hydrateJwtBridge,
       deps: [JwtTokenBridge],
+      useClass: JwtAuthInterceptor,
       multi: true,
+      
     },
   ],
 };

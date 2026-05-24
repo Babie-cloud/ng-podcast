@@ -1,10 +1,3 @@
-
-// ══════════════════════════════════════════════════════════
-// src/app/core/guards/auth.guard.ts
-// ══════════════════════════════════════════════════════════
-// Usage dans les routes :
-//   { path: 'podcasts/create', canActivate: [authGuard], ... }
-//
 import { inject }       from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService }  from '../../podcast/services/auth.service';
