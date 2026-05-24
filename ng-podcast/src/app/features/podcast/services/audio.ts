@@ -105,7 +105,7 @@ export class AudioService implements OnDestroy {
 
 
   private ensureAudioContext(): void {
-    if (this.context) return;   // déjà créé
+    if (this.context) return;   
 
     this.context      = new (window.AudioContext || (window as any).webkitAudioContext)();
     this.gainNode     = this.context.createGain();
@@ -162,7 +162,7 @@ export class AudioService implements OnDestroy {
       if (this.analyserNode && !this.audio.paused) {
         this.analyserNode.getByteFrequencyData(this._analyserData);
       }
-    }, 50);   // 20 fps suffisent pour la visualisation
+    }, 50);   
   }
 
   // ─── Chargement d'une piste ────────────────────────────────────────────────

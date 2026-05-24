@@ -80,13 +80,11 @@ export const routes: Routes = [
       ),
   },
 
-  // ─── Podcasts (protégé) ──────────────────────────────────
+  // ─── Podcasts : accueil + détail publics ; création / édition gardés dans podcast.routes.ts ───
   {
     path: 'podcasts',
-    canActivate: [authGuard],      // 🔒 connexion requise
     loadChildren: () =>
-      import('./features/podcast/podcast.routes')
-        .then(m => m.PODCAST_ROUTES)
+      import('./features/podcast/podcast.routes').then((m) => m.PODCAST_ROUTES),
   },
 
   // ─── 404 ─────────────────────────────────────────────────
