@@ -1,0 +1,80 @@
+<div class="np-page np-section episode-studio">
+  <div class="episode-studio-header glass-card mb-4">
+    <div>
+      <span class="np-section-label">Atelier créateur</span>
+      <h1 class="np-gradient-text h3 mb-1">Ajouter ou enregistrer un épisode</h1>
+      <p class="np-text-muted small mb-0">
+        Une seule piste maîtresse : si vous passez au micro après avoir choisi un fichier,
+        <strong>c’est la prise micro qui part en envoi</strong> (plus pratique si ce n’est plus le bon
+        fichier). Pour retailler précisément le son, préparez le fichier dans votre outil puis
+        importez‑le à nouveau avant publication.
+      </p>
+    </div>
+    <a [routerLink]="['/podcasts', podcastId(), 'edit']" class="btn-np-outline btn-np-sm"
+      >Retour à l’édition</a>
+  </div>
+
+  @if (localError()) {
+    <div class="np-alert np-alert-danger mb-3">{{ localError() }}</div>
+  }
+
+  @if (store.loading() && !store.selected()) {
+    <div class="np-loader-wrap">
+      <div class="np-spinner"></div>
+      <p class="np-text-muted mt-3">Chargement…</p>
+    </div>
+  }
+
+  @if (store.selected(); as p) {
+    <div class="glass-card episode-studio-form">
+      <p class="np-text-muted small mb-4">Podcast&nbsp;: <strong>{{ p.title }}</strong></p>
+
+      <form [formGroup]="form" class="d-flex flex-column gap-3" (ngSubmit)="submit()">
+        <div>
+          <label class="np-label" for="st-title">Titre de l’épisode *</label>
+          <input id="st-title" type="text" class="np-input w-100" formControlName="title" />
+          @if (form.controls.title.invalid && form.controls.title.touched) {
+            <p class="small text-danger mb-0 mt-1">Au moins 2 caractères.</p>
+          }
+        </div>
+
+        <div>
+          <label class="np-label" for="st-desc">Description (facultatif)</label>
+          <textarea id="st-desc" class="np-input w-100" rows="3" formControlName="description"></textarea>
+        </div>
+
+        <div class="form-check">
+          <input id="st-pub" type="checkbox" class="form-check-input" formControlName="publishNow" />
+          <label class="form-check-label" for="st-pub">Publier tout de suite</label>
+        </div>
+
+        <div class="episode-studio-media">
+          <div>
+            <label class="np-label" for="st-file">Fichier audio</label>
+            <input id="st-file" type="file" class="np-input w-100" accept="audio/*" (change)="onAudioChange($event)" />
+            @if (audioPick(); as af) {
+              <p class="small np-text-muted mt-1 mb-0">
+                Sélection&nbsp;: {{ af.name }} —
+                <button type="button" class="btn btn-link btn-sm p-0 align-baseline" (click)="clearPickedAudio()">
+                  Retirer
+                </button>
+              </p>
+            }
+          </div>
+          <div>
+            <label class="np-label">Micro (remplace la sé fichier)</label>
+            <app-audio-recorder (fileReady)="onRecorded($event)" />
+          </div>
+        </div>
+
+        <button type="submit" class="btn-np align-self-start" [disabled]="busy() || store.loading()">
+          @if (busy()) {
+            Ajout…
+          } @else {
+            Ajouter l’épisode
+          }
+        </button>
+      </form>
+    </div>
+  }
+</div>

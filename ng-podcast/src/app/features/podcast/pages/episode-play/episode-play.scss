@@ -1,0 +1,124 @@
+.episode-play-page {
+  max-width: 960px;
+  margin-inline: auto;
+}
+
+.episode-play-layout {
+  display: grid;
+  gap: 1.5rem;
+  padding: 1.25rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: minmax(200px, 280px) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.episode-play-art-wrap {
+  position: relative;
+}
+
+.episode-play-art {
+  width: 100%;
+  border-radius: var(--np-radius-lg, 16px);
+  aspect-ratio: 1;
+  object-fit: cover;
+  box-shadow: var(--np-shadow-md);
+}
+
+.episode-play-pill {
+  position: absolute;
+  top: 0.85rem;
+  left: 0.85rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--np-border);
+  background: color-mix(in srgb, var(--np-bg) 75%, transparent);
+  backdrop-filter: blur(8px);
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-flex;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.episode-play-title {
+  font-size: clamp(1.35rem, 3vw, 1.85rem);
+  font-weight: 700;
+}
+
+.episode-play-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btn-np-icon-lg {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.episode-play-seek-wrap {
+  flex: 1 1 260px;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto auto;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.episode-play-time {
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.episode-play-bar {
+  min-width: 120px;
+}
+
+.episode-play-mini {
+  padding: 0.35rem 0.55rem !important;
+  line-height: 1;
+}
+
+.episode-play-cues-scroll {
+  max-height: min(420px, 52vh);
+  overflow-y: auto;
+  padding: 0.5rem;
+  border-radius: var(--np-radius-md, 12px);
+  border: 1px solid var(--np-border);
+  background: color-mix(in srgb, var(--np-bg) 40%, transparent);
+}
+
+.episode-play-cue {
+  margin: 0 0 0.65rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--np-radius-sm, 10px);
+  font-size: 1rem;
+  line-height: 1.45;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.episode-play-cue-active {
+  background: color-mix(in srgb, var(--np-accent, #6366f1) 26%, transparent);
+  font-weight: 600;
+  transform: translateX(2px);
+}
+
+.episode-play-cue-soon {
+  opacity: 0.92;
+}
+
+.episode-play-cue-idle {
+  opacity: 0.52;
+}
+
+.episode-play-cues-fallback {
+  padding: 1rem;
+}

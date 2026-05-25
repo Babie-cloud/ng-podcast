@@ -3,13 +3,12 @@ import { DatePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { PodcastStore } from '../../store/podcast.store';
-import { AudioRecorder } from '../../components/audio-recorder/audio-recorder';
 import { Episode } from '../../models/podcast.model';
 
 @Component({
   selector: 'app-podcast-edit',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, AudioRecorder, DatePipe],
+  imports: [ReactiveFormsModule, RouterLink, DatePipe],
   templateUrl: './podcast-edit.html',
 })
 export class PodcastEdit implements OnInit {
@@ -28,17 +27,8 @@ export class PodcastEdit implements OnInit {
     'Autre',
   ];
 
-  /** Nouvel épisode — upload ou enregistrement micro. */
-  readonly audioPick = signal<File | null>(null);
-  readonly recordedFile = signal<File | null>(null);
   readonly episodeLocalError = signal<string | null>(null);
-  readonly episodeBusy = signal(false);
-
-  episodeForm = this.fb.nonNullable.group({
-    title: ['', [Validators.required, Validators.minLength(2)]],
-    description: [''],
-    publishNow: [false],
-  });
+  readonly captionsBusyId = signal<string | null>(null);
 
   form = this.fb.nonNullable.group({
     title: ['', [Validators.required, Validators.minLength(3)]],
@@ -68,32 +58,6 @@ export class PodcastEdit implements OnInit {
     return (ep.status ?? '').toUpperCase() === 'PUBLISHED';
   }
 
-  onAudioChange(event: Event): void {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) {
-      this.audioPick.set(file);
-      this.recordedFile.set(null);
-      this.episodeLocalError.set(null);
-    }
-  }
-
-  onRecorded(file: File | null): void {
-    this.recordedFile.set(file);
-    if (file) {
-      this.audioPick.set(null);
-      this.episodeLocalError.set(null);
-    }
-  }
-
-  clearPickedAudio(): void {
-    this.audioPick.set(null);
-    this.recordedFile.set(null);
-  }
-
-  pickedAudio(): File | null {
-    return this.audioPick() ?? this.recordedFile();
-  }
-
   async submit(): Promise<void> {
     this.form.markAllAsTouched();
     if (this.form.invalid) return;
@@ -109,41 +73,6 @@ export class PodcastEdit implements OnInit {
     });
     if (ok) {
       await this.store.loadOne(id);
-    }
-  }
-
-  async submitNewEpisode(): Promise<void> {
-    this.episodeForm.markAllAsTouched();
-    const audio = this.pickedAudio();
-    const pid = this.podcastId();
-
-    if (this.episodeForm.invalid || !audio || !pid) {
-      if (!audio && this.episodeForm.valid) {
-        this.episodeLocalError.set('Choisissez un fichier audio ou enregistrez depuis le navigateur.');
-      }
-      return;
-    }
-
-    this.episodeLocalError.set(null);
-    this.episodeBusy.set(true);
-
-    const v = this.episodeForm.getRawValue();
-    const ok = await this.store.addEpisode(pid, {
-      title: v.title.trim(),
-      description: v.description?.trim(),
-      publishNow: v.publishNow,
-      audio,
-    });
-
-    this.episodeBusy.set(false);
-
-    if (ok) {
-      this.episodeForm.reset({
-        title: '',
-        description: '',
-        publishNow: false,
-      });
-      this.clearPickedAudio();
     }
   }
 
@@ -170,5 +99,21 @@ export class PodcastEdit implements OnInit {
       const err = this.store.error();
       this.episodeLocalError.set(err ?? 'Suppression impossible.');
     }
+  }
+
+  async saveCaptions(ep: Episode, value: string): Promise<void> {
+    const pid = this.podcastId();
+    if (!pid) return;
+    this.episodeLocalError.set(null);
+    this.captionsBusyId.set(ep.id);
+    const captions = value.trim().length === 0 ? '' : value.trim();
+    const ok = await this.store.patchEpisode(pid, ep.id, { captions });
+    this.captionsBusyId.set(null);
+    if (!ok) {
+      const err = this.store.error();
+      this.episodeLocalError.set(err ?? 'Enregistrement des paroles impossible.');
+      return;
+    }
+    await this.store.loadOne(pid);
   }
 }

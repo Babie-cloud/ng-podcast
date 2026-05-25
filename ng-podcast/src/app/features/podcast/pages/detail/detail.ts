@@ -1,6 +1,6 @@
 // src/app/features/podcast/pages/detail/detail.ts
 import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { PodcastStore } from '../../store/podcast.store';
 import { AuthService } from '../../services/auth.service';
@@ -16,6 +16,7 @@ export class Detail implements OnInit {
   readonly store = inject(PodcastStore);
   readonly auth = inject(AuthService);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id')!;
@@ -27,10 +28,10 @@ export class Detail implements OnInit {
     return !!u && podcast.authorId === u.id;
   }
 
-  playEpisode(ep: Episode): void {
-    this.store.isPlaying() && this.store.currentEpisode()?.id === ep.id
-      ? this.store.pause()
-      : this.store.play(ep);
+  /** Ouvre la vue « plein cadre » (jaquette + synchro léger façon Spotify). */
+  openEpisodePlay(podcastId: string, ep: Episode): void {
+    this.store.play(ep);
+    void this.router.navigate(['/podcasts', podcastId, 'episode', ep.id]);
   }
 
   formatDuration(seconds: number): string {
@@ -41,15 +42,5 @@ export class Detail implements OnInit {
 
   episodeStatus(ep: Episode): string {
     return ep.status ?? 'DRAFT';
-  }
-
-  async toggleEpisodePublish(podcastId: string, ep: Episode): Promise<void> {
-    const next = this.episodeStatus(ep) !== 'PUBLISHED';
-    await this.store.patchEpisode(podcastId, ep.id, { publishNow: next });
-  }
-
-  async deleteEpisode(podcastId: string, ep: Episode): Promise<void> {
-    if (!confirm(`Supprimer l'épisode « ${ep.title} » ?`)) return;
-    await this.store.deleteEpisode(podcastId, ep.id);
   }
 }

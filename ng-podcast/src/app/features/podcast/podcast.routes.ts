@@ -1,9 +1,9 @@
 // src/app/features/podcast/podcast.routes.ts
 import { Routes } from '@angular/router';
 import { authGuard } from '../core/guard/auth.guard';
+import { podcastOwnerGuard } from '../core/guard/podcast-owner.guard';
 
 export const PODCAST_ROUTES: Routes = [
-
   {
     path: '',
     loadComponent: () =>
@@ -26,15 +26,27 @@ export const PODCAST_ROUTES: Routes = [
     loadComponent: () =>
       import('./pages/create/create').then(m => m.Create),
   },
+  /** Lecture plein écran + paroles (public si épisode publié). — avant :id générique */
+  {
+    path: ':id/episode/:episodeId',
+    loadComponent: () =>
+      import('./pages/episode-play/episode-play').then((m) => m.EpisodePlay),
+  },
+  {
+    path: ':id/studio',
+    canActivate: [authGuard, podcastOwnerGuard],
+    loadComponent: () =>
+      import('./pages/episode-studio/episode-studio').then((m) => m.EpisodeStudio),
+  },
   {
     path: ':id/edit',
-    canActivate: [authGuard],
+    canActivate: [authGuard, podcastOwnerGuard],
     loadComponent: () =>
       import('./pages/podcast-edit/podcast-edit').then(m => m.PodcastEdit),
   },
   {
     path: ':id/publish',
-    canActivate: [authGuard],
+    canActivate: [authGuard, podcastOwnerGuard],
     loadComponent: () =>
       import('./pages/publish/publish').then(m => m.Publish),
   },

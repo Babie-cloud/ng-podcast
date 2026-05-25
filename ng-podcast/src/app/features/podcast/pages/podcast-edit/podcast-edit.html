@@ -68,99 +68,103 @@
 
     <div class="glass-card mb-3">
       <span class="np-section-label d-block mb-2">Audio</span>
-      <h3 class="h5 mb-2">Épisodes</h3>
-      <p class="np-text-muted small mb-3">
-        Dépose un fichier MP3 / WebM / OGG ou utilise le microphone. Tu peux publier ou garder un épisode en
-        brouillon avant de le rendre public.
-      </p>
+      <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
+        <div>
+          <h3 class="h5 mb-1">Épisodes</h3>
+          <p class="np-text-muted small mb-0">
+            Ajouter une piste depuis l&apos;atelier (fichier ou micro&nbsp;; le micro remplace le fichier choisi).
+          </p>
+        </div>
+        <a [routerLink]="['/podcasts', podcastId(), 'studio']" class="btn-np ms-auto">
+          <i class="fa-solid fa-microphone-lines me-2" aria-hidden="true"></i>
+          Atelier audio
+        </a>
+      </div>
 
       @if (p.episodes.length === 0) {
-        <p class="np-text-muted small mb-4">Aucun épisode pour l’instant — ajoute-en un ci‑dessous.</p>
+        <p class="np-text-muted small mb-0">Aucun épisode — ouvrez l&apos;atelier pour en créer un.</p>
       }
 
       @if (p.episodes.length > 0) {
-        <ul class="list-unstyled d-flex flex-column gap-3 mb-4">
+        <ul class="list-unstyled d-flex flex-column gap-3 mb-0">
           @for (ep of p.episodes; track ep.id) {
             <li
-              class="d-flex flex-wrap justify-content-between align-items-start gap-2 p-3 rounded"
+              class="d-flex flex-column gap-3 p-3 rounded"
               style="border: 1px solid color-mix(in srgb, var(--np-border, #444) 40%, transparent)"
             >
-              <div>
-                <div class="fw-semibold">{{ ep.title }}</div>
-                <div class="np-text-muted small">
-                  {{ isPublishedEpisode(ep) ? 'Publié' : 'Brouillon' }} · créé {{ ep.createdAt | date: 'medium' }}
-                  @if (ep.duration > 0) {
-                    <span> · {{ ep.duration }} s</span>
+              <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
+                <div>
+                  <div class="fw-semibold">{{ ep.title }}</div>
+                  <div class="np-text-muted small">
+                    {{ isPublishedEpisode(ep) ? 'Publié' : 'Brouillon' }} · créé {{ ep.createdAt | date: 'medium' }}
+                    @if (ep.duration > 0) {
+                      <span> · {{ ep.duration }} s</span>
+                    }
+                  </div>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                  @if (ep.audioUrl) {
+                    <audio [src]="ep.audioUrl" controls style="max-width: 240px; height: 38px"></audio>
                   }
+                  <button
+                    type="button"
+                    class="btn-np-outline btn-np-sm"
+                    title="Publication"
+                    [disabled]="store.loading()"
+                    (click)="toggleEpisodePublish(ep)"
+                  >
+                    @if (isPublishedEpisode(ep)) {
+                      <i class="fa-solid fa-eye-slash me-1" aria-hidden="true"></i>Brouillon
+                    } @else {
+                      <i class="fa-solid fa-bullhorn me-1" aria-hidden="true"></i>Publier
+                    }
+                  </button>
+                  <button
+                    type="button"
+                    class="btn-np-outline btn-np-sm text-danger np-btn-danger"
+                    title="Supprimer"
+                    [disabled]="store.loading()"
+                    (click)="removeEpisode(ep)"
+                  >
+                    <i class="fa-solid fa-trash-can me-1" aria-hidden="true"></i>
+                    Supprimer
+                  </button>
                 </div>
               </div>
-              <div class="d-flex flex-wrap gap-2">
-                @if (ep.audioUrl) {
-                  <audio [src]="ep.audioUrl" controls style="max-width: 220px; height: 36px"></audio>
-                }
-                <button
-                  type="button"
-                  class="btn-np-outline btn-np-sm"
-                  [disabled]="store.loading()"
-                  (click)="toggleEpisodePublish(ep)"
-                >
-                  {{ isPublishedEpisode(ep) ? 'Repasser en brouillon' : 'Publier' }}
-                </button>
-                <button
-                  type="button"
-                  class="btn-np-outline btn-np-sm text-danger"
-                  [disabled]="store.loading()"
-                  (click)="removeEpisode(ep)"
-                >
-                  Supprimer
-                </button>
+
+              <div>
+                <label class="np-label small" [attr.for]="'caps-' + ep.id">Paroles synchronisées (JSON)</label>
+                <textarea
+                  [id]="'caps-' + ep.id"
+                  #capTa
+                  class="np-input w-100 font-monospace small"
+                  rows="3"
+                  [value]="ep.captions ?? ''"
+                  spellcheck="false"
+                  placeholder='[{"s":0,"e":3,"t":"Bonjour"},{"s":3,"e":7,"t":"Merci"}]'
+                ></textarea>
+                <div class="d-flex justify-content-between flex-wrap gap-2 mt-2">
+                  <p class="small np-text-muted mb-0">
+                    <code>s</code>/<code>e</code> en secondes, <code>t</code>&nbsp;= texte. Laisser vide pour effacer.
+                  </p>
+                  <button
+                    type="button"
+                    class="btn-np-outline btn-np-sm"
+                    [disabled]="captionsBusyId() === ep.id || store.loading()"
+                    (click)="saveCaptions(ep, capTa.value)"
+                  >
+                    @if (captionsBusyId() === ep.id) {
+                      Envoi…
+                    } @else {
+                      Enregistrer les paroles
+                    }
+                  </button>
+                </div>
               </div>
             </li>
           }
         </ul>
       }
-
-      <h4 class="h6 mb-3">Ajouter un épisode</h4>
-      <form [formGroup]="episodeForm" (ngSubmit)="submitNewEpisode()" class="d-flex flex-column gap-3">
-        <div>
-          <label class="form-label" for="pe-ep-title">Titre de l’épisode</label>
-          <input id="pe-ep-title" type="text" class="np-input w-100" formControlName="title" />
-          @if (episodeForm.controls.title.invalid && episodeForm.controls.title.touched) {
-            <p class="text-danger small mb-0 mt-1">Au moins 2 caractères.</p>
-          }
-        </div>
-        <div>
-          <label class="form-label" for="pe-ep-desc">Description (facultatif)</label>
-          <textarea id="pe-ep-desc" class="np-input w-100" rows="2" formControlName="description"></textarea>
-        </div>
-        <div class="form-check">
-          <input id="pe-ep-pub" type="checkbox" class="form-check-input" formControlName="publishNow" />
-          <label class="form-check-label" for="pe-ep-pub">Publier cet épisode tout de suite</label>
-        </div>
-
-        <div class="d-flex flex-wrap gap-3 align-items-start">
-          <div class="flex-grow-1" style="min-width: 200px">
-            <label class="form-label" for="pe-ep-file">Fichier audio</label>
-            <input id="pe-ep-file" type="file" class="np-input w-100" accept="audio/*" (change)="onAudioChange($event)" />
-            @if (audioPick(); as af) {
-              <p class="small np-text-muted mt-1 mb-0">
-                Sélectionné : {{ af.name }} —
-                <button type="button" class="btn btn-link btn-sm p-0 align-baseline" (click)="clearPickedAudio()">
-                  Retirer
-                </button>
-              </p>
-            }
-          </div>
-          <div class="flex-grow-1" style="min-width: 200px">
-            <label class="form-label">Ou enregistrer</label>
-            <app-audio-recorder (fileReady)="onRecorded($event)" />
-          </div>
-        </div>
-
-        <button type="submit" class="btn-np align-self-start" [disabled]="episodeBusy() || store.loading()">
-          {{ episodeBusy() ? 'Envoi…' : 'Ajouter l’épisode' }}
-        </button>
-      </form>
     </div>
   }
 </div>

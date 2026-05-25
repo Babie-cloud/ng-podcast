@@ -4,12 +4,11 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { PodcastStore } from '../../store/podcast.store';
 import { PodcastService } from '../../services/podcast.service';
-import { AudioRecorder } from '../../components/audio-recorder/audio-recorder';
 
 @Component({
   selector: 'app-publish',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, AudioRecorder],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './publish.html',
 })
 export class Publish implements OnInit {
@@ -22,7 +21,6 @@ export class Publish implements OnInit {
   private readonly podcastService = inject(PodcastService);
 
   audioFile = signal<File | null>(null);
-  recordedFile = signal<File | null>(null);
   platforms = signal<string[]>(['spotify', 'apple', 'youtube']);
   saving = signal(false);
   errorMsg = signal<string | null>(null);
@@ -44,14 +42,6 @@ export class Publish implements OnInit {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
       this.audioFile.set(file);
-      this.recordedFile.set(null);
-    }
-  }
-
-  onRecorded(file: File | null): void {
-    this.recordedFile.set(file);
-    if (file) {
-      this.audioFile.set(null);
     }
   }
 
@@ -63,7 +53,7 @@ export class Publish implements OnInit {
   }
 
   pickedAudio(): File | null {
-    return this.audioFile() ?? this.recordedFile();
+    return this.audioFile();
   }
 
   async submit(): Promise<void> {

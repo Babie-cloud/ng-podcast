@@ -20,6 +20,8 @@ export interface EpisodePatchPayload {
   publishNow?: boolean;
   title?: string;
   description?: string;
+  /** JSON lignes synchro `{s,e,t}` */
+  captions?: string | null;
 }
 
 interface EpisodeApiDto {
@@ -30,6 +32,7 @@ interface EpisodeApiDto {
   podcastId: string;
   status?: string;
   createdAt: string;
+  captions?: string | null;
 }
 
 interface PodcastSummaryApiDto {
@@ -174,6 +177,7 @@ export class PodcastService {
       podcastId: e.podcastId,
       createdAt: new Date(e.createdAt),
       status: e.status ?? 'DRAFT',
+      captions: e.captions ?? undefined,
     };
   }
 }

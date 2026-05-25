@@ -22,6 +22,8 @@ export interface Episode {
   createdAt: Date;
   /** DRAFT ou PUBLISHED — les brouillons ne sont visibles que par le créateur (filtrés côté API). */
   status?: string;
+  /** JSON paroles synchro `[{ "s", "e", "t" }]` (secondes). */
+  captions?: string | null;
 }
 
 export interface PlayerState {

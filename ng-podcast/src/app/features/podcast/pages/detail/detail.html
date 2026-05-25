@@ -38,12 +38,17 @@
           </span>
         </div>
         @if (isOwner(podcast)) {
-          <div class="d-flex flex-wrap gap-2 mt-3">
+          <div class="d-flex flex-wrap gap-2 mt-3 align-items-center">
             <a [routerLink]="['/podcasts', podcast.id, 'edit']" class="btn-np-outline btn-np-sm">
-              Modifier le podcast
+              <i class="fa-solid fa-pen-to-square me-1" aria-hidden="true"></i>
+              Modifier
             </a>
-            <a [routerLink]="['/podcasts', podcast.id, 'publish']" class="btn-np btn-np-sm">
-              Ajouter un épisode
+            <a [routerLink]="['/podcasts', podcast.id, 'studio']" class="btn-np btn-np-sm">
+              <i class="fa-solid fa-microphone-lines me-1" aria-hidden="true"></i>
+              Atelier audio
+            </a>
+            <a [routerLink]="['/podcasts', podcast.id, 'publish']" class="btn-np-ghost btn-np-sm">
+              Assistant publication
             </a>
           </div>
         }
@@ -92,29 +97,28 @@
             @if (ep.audioUrl) {
               <button
                 type="button"
-                class="btn-np-icon"
-                [class.np-playing]="store.currentEpisode()?.id === ep.id && store.isPlaying()"
-                (click)="playEpisode(ep)"
-                [attr.aria-label]="store.currentEpisode()?.id === ep.id && store.isPlaying() ? 'Pause' : 'Lecture'"
+                class="btn-np-outline btn-np-sm"
+                (click)="openEpisodePlay(podcast.id, ep)"
+                title="Ouvrir la page d’écoute"
               >
-                {{ store.currentEpisode()?.id === ep.id && store.isPlaying() ? 'Pause' : 'Écouter' }}
+                <i class="fa-solid fa-headphones-simple me-1" aria-hidden="true"></i>
+                Écouter
               </button>
+              @if (store.currentEpisode()?.id === ep.id && store.isPlaying()) {
+                <button
+                  type="button"
+                  class="btn-np-ghost btn-np-sm"
+                  (click)="store.pause()"
+                  aria-label="Pause"
+                >
+                  <i class="fa-solid fa-pause" aria-hidden="true"></i>
+                </button>
+              }
             }
             @if (isOwner(podcast)) {
-              <button
-                type="button"
-                class="btn-np-outline btn-np-sm"
-                (click)="toggleEpisodePublish(podcast.id, ep)"
-              >
-                {{ episodeStatus(ep) === 'PUBLISHED' ? 'Repasser en brouillon' : 'Publier' }}
-              </button>
-              <button
-                type="button"
-                class="btn-np-ghost btn-np-sm np-btn-danger"
-                (click)="deleteEpisode(podcast.id, ep)"
-              >
-                Supprimer
-              </button>
+              <a [routerLink]="['/podcasts', podcast.id, 'edit']" class="btn-np-outline btn-np-sm" title="Montage réservé au créateur">
+                <i class="fa-solid fa-sliders me-1" aria-hidden="true"></i>Gérer
+              </a>
             }
           </div>
         </div>
@@ -122,9 +126,14 @@
         <div class="np-empty glass-card">
           <p class="np-text-muted">Aucun épisode pour ce podcast.</p>
           @if (isOwner(podcast)) {
-            <a [routerLink]="['/podcasts', podcast.id, 'publish']" class="btn-np mt-2">
-              Ajouter un épisode
-            </a>
+            <div class="d-flex flex-wrap gap-2 mt-2">
+              <a [routerLink]="['/podcasts', podcast.id, 'studio']" class="btn-np">
+                Atelier audio
+              </a>
+              <a [routerLink]="['/podcasts', podcast.id, 'publish']" class="btn-np-outline">
+                Assistant publication
+              </a>
+            </div>
           }
         </div>
       }

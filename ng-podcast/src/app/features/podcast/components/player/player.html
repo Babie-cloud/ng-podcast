@@ -2,13 +2,16 @@
   <div class="np-player">
 
     <div class="np-player-left">
-      <p class="np-player-title">{{ episode.title }}</p>
-      <p class="np-player-author">{{ audio.timeLabel() }}</p>
+      <a
+        class="np-player-title-link np-player-title mb-1 d-block"
+        [routerLink]="['/podcasts', episode.podcastId, 'episode', episode.id]"
+      >{{ episode.title }}</a>
+      <p class="np-player-author mb-0">{{ audio.timeLabel() }}</p>
     </div>
 
     <div class="np-player-center">
       <app-waveform class="np-player-wave" />
-      <div class="np-seek-bar" (click)="onSeekClick($event)">
+      <div class="np-seek-bar" role="presentation" (click)="onSeekClick($event)">
         <div class="np-seek-buffered" [style.width.%]="audio.buffered()"></div>
         <div class="np-seek-progress" [style.width.%]="audio.progress()"></div>
       </div>
@@ -17,6 +20,7 @@
     <div class="np-player-right">
       <select class="np-rate-select"
         [value]="audio.playbackRate()"
+        aria-label="Vitesse de lecture"
         (change)="onRateChange($event)">
         <option value="0.5">0.5×</option>
         <option value="0.75">0.75×</option>
@@ -26,28 +30,38 @@
         <option value="2">2×</option>
       </select>
 
-      <button class="np-player-btn"
+      <button type="button" class="np-player-btn-icon"
         (click)="audio.skipBackward()"
-        aria-label="Reculer de 15 secondes">
-        −15s
+        aria-label="Reculer de 15 secondes"
+        title="−15 s">
+        <i class="fa-solid fa-backward-fast" aria-hidden="true"></i>
       </button>
 
-      <button class="np-player-btn np-player-btn-main"
+      <button type="button" class="np-player-btn-main"
         (click)="togglePlay()"
         [attr.aria-label]="store.isPlaying() ? 'Pause' : 'Lecture'">
-        {{ store.isPlaying() ? 'Pause' : 'Lecture' }}
+        @if (store.isPlaying()) {
+          <i class="fa-solid fa-pause fa-lg" aria-hidden="true"></i>
+        } @else {
+          <i class="fa-solid fa-play fa-lg" aria-hidden="true"></i>
+        }
       </button>
 
-      <button class="np-player-btn"
+      <button type="button" class="np-player-btn-icon"
         (click)="audio.skipForward()"
-        aria-label="Avancer de 15 secondes">
-        +15s
+        aria-label="Avancer de 15 secondes"
+        title="+15 s">
+        <i class="fa-solid fa-forward-fast" aria-hidden="true"></i>
       </button>
 
-      <button class="np-player-btn"
+      <button type="button" class="np-player-btn-icon"
         (click)="audio.toggleMute()"
         [attr.aria-label]="audio.state().muted ? 'Activer le son' : 'Couper le son'">
-        {{ audio.state().muted ? 'Muet' : 'Son' }}
+        @if (audio.state().muted) {
+          <i class="fa-solid fa-volume-xmark" aria-hidden="true"></i>
+        } @else {
+          <i class="fa-solid fa-volume-high" aria-hidden="true"></i>
+        }
       </button>
 
       <input type="range" min="0" max="1" step="0.05"

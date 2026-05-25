@@ -1,0 +1,26 @@
+.episode-studio {
+  max-width: 760px;
+  margin-inline: auto;
+}
+
+.episode-studio-header {
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--np-radius-lg, 16px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.episode-studio-form {
+  padding: 1.5rem;
+}
+
+.episode-studio-media {
+  display: grid;
+  gap: 1.25rem;
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
