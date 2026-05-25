@@ -1,7 +1,7 @@
 // src/app/features/podcast/auth/signin/signin.ts
 import { Component, signal, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink, Router } from '@angular/router';
+import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -14,6 +14,7 @@ import { AuthService } from '../../services/auth.service';
 export class Signin {
   private fb     = new FormBuilder();
   private router = inject(Router);
+  private route  = inject(ActivatedRoute);
   readonly auth  = inject(AuthService);
 
   readonly loading = signal(false);
@@ -51,7 +52,9 @@ export class Signin {
         email:    email!,
         password: password!
       });
-      this.router.navigate(['/dashboard']);
+      const returnUrl =
+        this.route.snapshot.queryParamMap.get('returnUrl') ?? '/dashboard';
+      await this.router.navigateByUrl(returnUrl);
     } catch (e: any) {
       this.error.set(
         e?.error?.message ?? 'Erreur lors de l\'inscription.'

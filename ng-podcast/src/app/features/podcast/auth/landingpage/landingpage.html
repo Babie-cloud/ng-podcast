@@ -26,7 +26,8 @@
             </a>
           } @else {
             <!-- 🔒 Non connecté : vers inscription/login -->
-            <a routerLink="/signup" class="btn-np btn-np-lg">
+            <a routerLink="/signup" class="btn-np btn-np-lg"
+              [queryParams]="{ returnUrl: '/podcasts/create' }">
               Commencer gratuitement
             </a>
             <a routerLink="/login" class="btn-np-outline btn-np-lg">
@@ -78,7 +79,7 @@
             professionnel directement dans le navigateur.
           </p>
           <span class="np-feature-cta">
-            {{ auth.isLogged() ? 'Accéder →' : '🔒 Connexion requise' }}
+            Accéder →
           </span>
         </div>
 
@@ -116,7 +117,7 @@
     </div>
   </section>
 
-  <!-- Derniers podcasts — visibles par tous, lecture protégée -->
+  <!-- Derniers podcasts (catalogue consultable sans compte) -->
   <section class="np-section">
     <div class="np-page">
       <div class="np-section-header mb-4">
@@ -124,27 +125,34 @@
           <span class="np-section-label">Tendances</span>
           <h2 class="np-section-title">Derniers podcasts</h2>
         </div>
-        <!-- ✅ Search accessible à tous -->
-        <a routerLink="/search" class="btn-np-ghost">Voir tout →</a>
+        <a routerLink="/podcasts/search" class="btn-np-ghost">Voir tout →</a>
       </div>
+
+      @if (store.loading()) {
+        <div class="np-text-muted mb-4">Chargement…</div>
+      }
+      @if (store.hasError()) {
+        <div class="np-alert np-alert-danger mb-4">{{ store.error() }}</div>
+      }
 
       <div class="np-grid-3">
         @for (podcast of store.podcasts(); track podcast.id) {
-          <app-podcast-card [podcast]="podcast" />
+          <app-podcast-card [podcast]="podcast" (play)="store.play($event)" />
+        } @empty {
+          @if (!store.loading()) {
+            <div class="np-empty glass-card">
+              <p class="np-text-muted mb-0">Aucun podcast à afficher pour le moment.</p>
+            </div>
+          }
         }
       </div>
 
-      <!-- Bannière de connexion si non connecté -->
       @if (!auth.isLogged()) {
-        <div class="np-login-banner glass-card mt-4">
-          <p class="mb-0">
-            🔒 Connectez-vous pour écouter, créer et interagir avec les podcasts.
-          </p>
-          <div class="d-flex gap-2 mt-3">
-            <a routerLink="/login" class="btn-np">Se connecter</a>
-            <a routerLink="/signup" class="btn-np-outline">Créer un compte</a>
-          </div>
-        </div>
+        <p class="np-text-muted small mt-4 mb-0">
+          Pour <strong>publier</strong> ou <strong>modifier</strong> l&apos;audio, vous devez
+          <a routerLink="/signup" [queryParams]="{ returnUrl: '/podcasts/create' }">créer un compte</a>
+          puis vous connecter. En lecture seule, explorez les fiches et écoutez les épisodes publics.
+        </p>
       }
     </div>
   </section>

@@ -9,9 +9,19 @@
       qui font vibrer les âmes.
     </p>
     <div class="d-flex gap-3 flex-wrap">
-      <a routerLink="/podcasts/create" class="btn-np">
-        + Créer un podcast
-      </a>
+      @if (auth.isLogged()) {
+        <a routerLink="/podcasts/create" class="btn-np">
+          + Créer un podcast
+        </a>
+      } @else {
+        <a
+          routerLink="/signup"
+          class="btn-np"
+          [queryParams]="{ returnUrl: '/podcasts/create' }"
+        >
+          Créer un compte pour publier
+        </a>
+      }
       <a routerLink="/podcasts/search" class="btn-np-outline">
         Explorer
       </a>
@@ -64,9 +74,19 @@
       @if (!store.loading()) {
         <div class="np-empty glass-card">
           <p>Aucun podcast pour le moment.</p>
-          <a routerLink="/podcasts/create" class="btn-np">
-            Créer le premier
-          </a>
+          @if (auth.isLogged()) {
+            <a routerLink="/podcasts/create" class="btn-np">
+              Créer le premier
+            </a>
+          } @else {
+            <a
+              routerLink="/signup"
+              class="btn-np"
+              [queryParams]="{ returnUrl: '/podcasts/create' }"
+            >
+              Créer un compte pour publier
+            </a>
+          }
         </div>
       }
     }

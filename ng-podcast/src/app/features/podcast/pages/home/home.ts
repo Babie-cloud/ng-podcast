@@ -3,6 +3,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { PodcastStore } from '../../store/podcast.store';
 import { PodcastCard } from '../../components/podcast-card/podcast-card';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -12,6 +13,7 @@ import { PodcastCard } from '../../components/podcast-card/podcast-card';
 })
 export class Home implements OnInit {
   readonly store = inject(PodcastStore);
+  readonly auth = inject(AuthService);
 
   // ✅ topics manquait dans la classe
   readonly topics = [

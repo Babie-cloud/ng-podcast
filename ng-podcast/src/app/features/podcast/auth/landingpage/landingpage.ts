@@ -18,17 +18,29 @@ export class Landingpage implements OnInit {
   private router  = inject(Router);
 
   ngOnInit(): void {
-    this.store.loadAll();
+    void this.loadFeaturedPodcasts();
   }
 
-  // ─── Redirige vers login si pas connecté, sinon vers la cible ─
+  /** Aperçu du catalogue pour la landing — visible par tous. */
+  private async loadFeaturedPodcasts(): Promise<void> {
+    await this.auth.whenAuthHydrated();
+    await this.store.loadAll();
+  }
+
+  /** Accès direct aux zones publiques ; sinon inscription / connexion avec retour. */
   navigate(target: string): void {
-    if (this.auth.isLogged()) {
-      this.router.navigate([target]);
-    } else {
-      this.router.navigate(['/login'], {
-        queryParams: { returnUrl: target }
-      });
+    if (this.isPublicBrowsePath(target) || this.auth.isLogged()) {
+      void this.router.navigateByUrl(target);
+      return;
     }
+    void this.router.navigate(['/signup'], {
+      queryParams: { returnUrl: target },
+    });
+  }
+
+  private isPublicBrowsePath(target: string): boolean {
+    if (target === '/podcasts' || target === '/podcasts/search') return true;
+    if (/^\/podcasts\/[^/]+$/.test(target)) return true;
+    return /^\/podcasts\/[^/]+\/episode\/[^/]+$/.test(target);
   }
 }

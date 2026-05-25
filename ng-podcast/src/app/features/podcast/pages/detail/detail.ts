@@ -15,8 +15,8 @@ import { Episode } from '../../models/podcast.model';
 export class Detail implements OnInit {
   readonly store = inject(PodcastStore);
   readonly auth = inject(AuthService);
+  readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id')!;

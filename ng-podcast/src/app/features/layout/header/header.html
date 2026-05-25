@@ -12,7 +12,7 @@
         routerLinkActive="np-nav-active"
         [routerLinkActiveOptions]="{ exact: true }"
         class="np-nav-link"
-      >Accueil</a>
+      >Accueil podcasts</a>
 
       <a
         routerLink="/podcasts/search"
@@ -85,6 +85,12 @@
           )}
         </div>
       } @else {
+        <a
+          routerLink="/signup"
+          class="btn-np-outline btn-np-sm"
+          [queryParams]="{ returnUrl: '/podcasts/create' }"
+          (click)="closeProfileMenu()"
+        >Créer un podcast</a>
         <a routerLink="/login" class="btn-np-ghost btn-np-sm">Connexion</a>
         <a routerLink="/signup" class="btn-np btn-np-sm">S'inscrire</a>
       }
