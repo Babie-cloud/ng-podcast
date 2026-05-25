@@ -31,6 +31,22 @@ export const routes: Routes = [
         .then(m => m.Resetpassword)
   },
 
+  // ─── Légal / English canonical text (site UI may be localized) ──
+  {
+    path: 'terms',
+    loadComponent: () =>
+      import('./features/layout/legal/terms-page/terms-page').then(
+        (m) => m.TermsPage,
+      ),
+  },
+  {
+    path: 'privacy',
+    loadComponent: () =>
+      import('./features/layout/legal/privacy-page/privacy-page').then(
+        (m) => m.PrivacyPage,
+      ),
+  },
+
   // ─── Search (publique — visible sans connexion) ──────────
   {
     path: 'search',
