@@ -25,6 +25,74 @@
   letter-spacing: 0.02em;
 }
 
+.profil-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+
+.profil-form-error {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-radius: var(--np-radius-md, 12px);
+  background: color-mix(in srgb, #b91c1c 14%, transparent);
+  border: 1px solid color-mix(in srgb, #b91c1c 35%, transparent);
+  color: var(--np-text);
+  font-size: 0.9rem;
+}
+
+.profil-form {
+  margin-top: 0;
+}
+
+.profil-fields-row {
+  display: grid;
+  gap: 1rem;
+
+  @media (min-width: 560px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  &--single {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.profil-field {
+  margin-bottom: 1rem;
+}
+
+.profil-field-hint,
+.profil-field-hint-neutral {
+  margin: 0.35rem 0 0;
+  font-size: 0.8rem;
+}
+
+.profil-field-hint {
+  color: #b91c1c;
+}
+
+.profil-field-hint-neutral {
+  color: var(--np-text-muted, rgba(47, 31, 20, 0.55));
+}
+
+.profil-email-row,
+.profil-role-row {
+  padding-top: 0.85rem;
+  border-top: 1px solid
+    color-mix(in srgb, var(--np-border, rgba(139, 69, 19, 0.16)) 60%, transparent);
+}
+
+.profil-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  padding-top: 0.35rem;
+}
+
 .profil-dl {
   margin: 0;
 }

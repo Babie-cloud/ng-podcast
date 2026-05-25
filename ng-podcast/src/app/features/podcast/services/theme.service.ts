@@ -1,73 +1,82 @@
 // src/app/core/services/theme.service.ts
 
-import { Injectable, inject, signal, effect, PLATFORM_ID } from '@angular/core';
+import { Injectable, inject, signal, effect, PLATFORM_ID, computed } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { DOCUMENT } from '@angular/common';
 
+/** Thème appliqué sur &lt;html data-theme&gt; */
 export type Theme = 'light' | 'dark';
+/** Choix utilisateur : suivre l’OS ou forcer un thème */
+export type ThemeMode = 'system' | Theme;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ThemeService {
-
   private readonly platformId = inject(PLATFORM_ID);
   private readonly document = inject(DOCUMENT);
 
-  // Signal réactif pour le thème actuel
-  private readonly _isDark = signal<boolean>(false);
+  private readonly _mode = signal<ThemeMode>('system');
+  private readonly _systemPrefersDark = signal(false);
 
-  // Expositions en lecture seule (utilisées dans tes composants)
-  readonly isDark = this._isDark.asReadonly();
+  /** Mode sélectionné (clair, sombre, ou synchro système). */
+  readonly mode = this._mode.asReadonly();
+
+  /** Thème résolu après application du mode + préférence OS si besoin */
+  readonly isDark = computed(() => {
+    const m = this._mode();
+    if (m === 'dark') return true;
+    if (m === 'light') return false;
+    return this._systemPrefersDark();
+  });
 
   private readonly STORAGE_KEY = 'ng-podcast-theme';
 
   constructor() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.initTheme();
-
-      // Effet qui applique le thème dès que le signal change
-      effect(() => {
-        this.applyTheme(this._isDark());
-      });
-    }
-  }
-
-  private initTheme(): void {
-    // 1. Récupérer la préférence sauvegardée
-    const savedTheme = localStorage.getItem(this.STORAGE_KEY) as Theme | null;
-
-    let shouldBeDark = false;
-
-    if (savedTheme) {
-      shouldBeDark = savedTheme === 'dark';
-    } else {
-      // 2. Sinon, suivre la préférence système (prefers-color-scheme)
-      shouldBeDark = this.document.defaultView
-        ?.matchMedia('(prefers-color-scheme: dark)')
-        .matches ?? false;
-    }
-
-    this._isDark.set(shouldBeDark);
-  }
-
-  private applyTheme(isDark: boolean): void {
     if (!isPlatformBrowser(this.platformId)) return;
 
+    const win = this.document.defaultView;
+    const mq = win?.matchMedia('(prefers-color-scheme: dark)');
+    const syncSystem = () => this._systemPrefersDark.set(mq?.matches ?? false);
+    syncSystem();
+    mq?.addEventListener('change', syncSystem);
+
+    this.initFromStorage();
+
+    effect(() => {
+      this.syncDomAndStorage();
+    });
+  }
+
+  private initFromStorage(): void {
+    const raw = localStorage.getItem(this.STORAGE_KEY);
+    if (raw === 'system' || raw === 'light' || raw === 'dark') {
+      this._mode.set(raw);
+      return;
+    }
+    this._mode.set('system');
+  }
+
+  private syncDomAndStorage(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     const htmlElement = this.document.documentElement;
-    const theme: Theme = isDark ? 'dark' : 'light';
-
-    htmlElement.setAttribute('data-theme', theme);
-    localStorage.setItem(this.STORAGE_KEY, theme);
+    const themeAttr: Theme = this.isDark() ? 'dark' : 'light';
+    htmlElement.setAttribute('data-theme', themeAttr);
+    localStorage.setItem(this.STORAGE_KEY, this._mode());
   }
 
-  /** Bascule entre light et dark */
+  /** Basculer vers l’inverse du rendu actuel (passe en clair ou sombre explicites). */
   toggle(): void {
-    this._isDark.update(current => !current);
+    this._mode.set(this.isDark() ? 'light' : 'dark');
   }
 
-  /** Force un thème spécifique */
+  /** Forcer un thème clair ou sombre */
   setTheme(theme: Theme): void {
-    this._isDark.set(theme === 'dark');
+    this._mode.set(theme);
+  }
+
+  /** Inclut le mode « système » pour les préférences détaillées */
+  setMode(mode: ThemeMode): void {
+    this._mode.set(mode);
   }
 }

@@ -30,7 +30,8 @@ interface AuthResponse {
   user:  AuthUser;
 }
 
-function readApiErrorDetail(err: unknown, fallback: string): string {
+/** Extrait le message exploitable depuis une erreur HTTP (login, profil, etc.). */
+export function readApiErrorDetail(err: unknown, fallback: string): string {
   if (err instanceof HttpErrorResponse) {
     const body = err.error as { detail?: unknown; message?: unknown } | null;
     if (body?.detail !== undefined && body.detail !== null && `${body.detail}`.trim() !== '') {
@@ -171,6 +172,18 @@ export class AuthService {
   async fetchMe(): Promise<void> {
     const user = await firstValueFrom(
       this.http.get<AuthUser>(`${this.apiRoot}/users/me`)
+    );
+    this._user.set(user);
+  }
+
+  /** PATCH /users/me — pseudo public + nom légal (email inchangé ici). */
+  async updateProfile(body: {
+    username: string;
+    prenom: string;
+    name: string;
+  }): Promise<void> {
+    const user = await firstValueFrom(
+      this.http.patch<AuthUser>(`${this.apiRoot}/users/me`, body)
     );
     this._user.set(user);
   }

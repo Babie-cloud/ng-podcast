@@ -1,16 +1,28 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AuthService, readApiErrorDetail } from '../../services/auth.service';
 
 @Component({
   selector: 'app-profil',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, ReactiveFormsModule],
   templateUrl: './profil.html',
   styleUrl: './profil.scss',
 })
 export class Profil {
   readonly auth = inject(AuthService);
+  private readonly fb = inject(FormBuilder);
+
+  readonly editMode = signal(false);
+  readonly saving = signal(false);
+  readonly saveError = signal<string | null>(null);
+
+  readonly profileForm = this.fb.nonNullable.group({
+    username: ['', [Validators.required, Validators.maxLength(160)]],
+    prenom: ['', [Validators.required, Validators.maxLength(120)]],
+    name: ['', [Validators.required, Validators.maxLength(120)]],
+  });
 
   displayName(): string {
     const u = this.auth.user();
@@ -23,5 +35,41 @@ export class Profil {
     const n = u.name?.trim();
     if (n) return n;
     return u.email;
+  }
+
+  startEdit(): void {
+    const u = this.auth.user();
+    if (!u) return;
+    this.saveError.set(null);
+    this.profileForm.setValue({
+      username: u.username ?? '',
+      prenom: u.prenom ?? '',
+      name: u.name ?? '',
+    });
+    this.editMode.set(true);
+  }
+
+  cancelEdit(): void {
+    this.editMode.set(false);
+    this.saveError.set(null);
+  }
+
+  async saveProfile(): Promise<void> {
+    if (this.profileForm.invalid) {
+      this.profileForm.markAllAsTouched();
+      return;
+    }
+    this.saveError.set(null);
+    this.saving.set(true);
+    try {
+      await this.auth.updateProfile(this.profileForm.getRawValue());
+      this.editMode.set(false);
+    } catch (e: unknown) {
+      this.saveError.set(
+        readApiErrorDetail(e, "Impossible d'enregistrer les modifications.")
+      );
+    } finally {
+      this.saving.set(false);
+    }
   }
 }

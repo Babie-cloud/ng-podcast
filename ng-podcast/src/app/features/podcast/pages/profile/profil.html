@@ -3,51 +3,167 @@
     <p class="np-hero-eyebrow">Compte</p>
     <h1 class="np-gradient-text">Mon profil</h1>
     <p class="np-hero-desc mb-0">
-      Infos publiées sur votre pseudo, votre rôle et votre identité de connexion. Les autres réglages
-      auront leur propre espace.
+      Mettez à jour votre pseudo public et votre nom légal. Les paramètres d&apos;apparence restent sous
+      <a routerLink="/settings">Paramètres</a>; l&apos;email de connexion ne change pas ici — contactez-nous ou
+      un admin si nécessaire.
     </p>
   </header>
 
   @if (auth.user(); as u) {
     <div class="profil-layout">
       <section class="glass-card profil-card profil-main">
-        <h2 class="profil-card-title">Identité</h2>
-        <dl class="profil-dl">
-          <div class="profil-row">
-            <dt>Nom affiché</dt>
-            <dd>{{ displayName() }}</dd>
-          </div>
-          <div class="profil-row">
-            <dt>Pseudo public</dt>
-            <dd>{{ u.username }}</dd>
-          </div>
-          @if (u.prenom || u.name) {
+        <div class="profil-section-head">
+          <h2 class="profil-card-title mb-0">Identité</h2>
+          @if (!editMode()) {
+            <button type="button" class="btn-np-outline btn-np-sm" (click)="startEdit()">
+              Modifier
+            </button>
+          }
+        </div>
+
+        @if (saveError()) {
+          <p class="profil-form-error mb-4" role="alert">{{ saveError() }}</p>
+        }
+
+        @if (!editMode()) {
+          <dl class="profil-dl">
             <div class="profil-row">
-              <dt>Nom légal</dt>
+              <dt>Nom affiché</dt>
+              <dd>{{ displayName() }}</dd>
+            </div>
+            <div class="profil-row">
+              <dt>Pseudo public</dt>
+              <dd>{{ u.username }}</dd>
+            </div>
+            @if (u.prenom || u.name) {
+              <div class="profil-row">
+                <dt>Nom légal</dt>
+                <dd>
+                  @if (u.prenom && u.name) {
+                    {{ u.prenom }} {{ u.name }}
+                  } @else {
+                    {{ u.prenom || u.name }}
+                  }
+                </dd>
+              </div>
+            }
+            <div class="profil-row">
+              <dt>Email de connexion</dt>
+              <dd class="profil-muted">{{ u.email }}</dd>
+            </div>
+            <div class="profil-row">
+              <dt>Rôle</dt>
               <dd>
-                @if (u.prenom && u.name) {
-                  {{ u.prenom }} {{ u.name }}
+                @if (u.role === 'ADMIN') {
+                  <span class="profil-role profil-role-admin">Administrateur</span>
                 } @else {
-                  {{ u.prenom || u.name }}
+                  <span class="profil-role">Créateur</span>
                 }
               </dd>
             </div>
-          }
-          <div class="profil-row">
-            <dt>Email de connexion</dt>
-            <dd class="profil-muted">{{ u.email }}</dd>
-          </div>
-          <div class="profil-row">
-            <dt>Rôle</dt>
-            <dd>
+          </dl>
+        } @else {
+          <form class="profil-form" (ngSubmit)="saveProfile()">
+            <div class="profil-fields-row profil-fields-row--single">
+              <div class="profil-field">
+                <label class="np-label" for="pf-pseudo">Pseudo public *</label>
+                <input
+                  id="pf-pseudo"
+                  type="text"
+                  class="np-input w-100"
+                  maxlength="160"
+                  [formControl]="profileForm.controls.username"
+                  autocomplete="nickname"
+                  aria-describedby="pf-pseudo-hint"
+                />
+                @if (
+                  profileForm.controls.username.invalid &&
+                  profileForm.controls.username.touched
+                ) {
+                  <p id="pf-pseudo-hint" class="profil-field-hint">
+                    Champ requis (max. 160 caractères).
+                  </p>
+                } @else {
+                  <p id="pf-pseudo-hint" class="profil-field-hint-neutral">
+                    Visible sur vos contenus publics — distinct de votre email de connexion.
+                  </p>
+                }
+              </div>
+            </div>
+
+            <div class="profil-fields-row">
+              <div class="profil-field">
+                <label class="np-label" for="pf-prenom">Prénom *</label>
+                <input
+                  id="pf-prenom"
+                  type="text"
+                  class="np-input w-100"
+                  maxlength="120"
+                  [formControl]="profileForm.controls.prenom"
+                  autocomplete="given-name"
+                />
+              </div>
+              <div class="profil-field">
+                <label class="np-label" for="pf-nom">Nom *</label>
+                <input
+                  id="pf-nom"
+                  type="text"
+                  class="np-input w-100"
+                  maxlength="120"
+                  [formControl]="profileForm.controls.name"
+                  autocomplete="family-name"
+                />
+              </div>
+            </div>
+
+            @if (
+              (profileForm.controls.prenom.invalid && profileForm.controls.prenom.touched)
+              || (profileForm.controls.name.invalid && profileForm.controls.name.touched)
+            ) {
+              <p class="profil-field-hint mb-4">Nom et prénom sont obligatoires (max. 120 caractères chacun).</p>
+            }
+
+            <div class="profil-email-row mb-4">
+              <span class="np-label d-block mb-1">Email de connexion</span>
+              <span class="profil-muted">{{ u.email }}</span>
+              <span class="profil-muted small d-block mt-2">
+                Réinitialiser le mot de passe depuis&nbsp;
+                <a routerLink="/settings">Paramètres</a> ou <a routerLink="/resetpassword">mot de passe oublié</a>.
+              </span>
+            </div>
+
+            <div class="profil-role-row mb-4">
+              <span class="np-label d-block mb-1">Rôle</span>
               @if (u.role === 'ADMIN') {
                 <span class="profil-role profil-role-admin">Administrateur</span>
               } @else {
                 <span class="profil-role">Créateur</span>
               }
-            </dd>
-          </div>
-        </dl>
+            </div>
+
+            <div class="profil-form-actions">
+              <button
+                type="submit"
+                class="btn-np btn-np-sm"
+                [disabled]="saving()"
+              >
+                @if (saving()) {
+                  Enregistrement…
+                } @else {
+                  Enregistrer
+                }
+              </button>
+              <button
+                type="button"
+                class="btn-np-outline btn-np-sm"
+                [disabled]="saving()"
+                (click)="cancelEdit()"
+              >
+                Annuler
+              </button>
+            </div>
+          </form>
+        }
       </section>
 
       <aside class="glass-card profil-card profil-aside">
