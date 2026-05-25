@@ -3,7 +3,7 @@
 
     <a routerLink="/" class="np-brand">
       <span class="np-brand-mark" aria-hidden="true"></span>
-      <span class="np-brand-name">ng-podcast</span>
+      <span class="np-brand-name" i18n>ng-podcast</span>
     </a>
 
     <div class="np-nav-links">
@@ -12,20 +12,20 @@
         routerLinkActive="np-nav-active"
         [routerLinkActiveOptions]="{ exact: true }"
         class="np-nav-link"
-      >Accueil podcasts</a>
+      >Home podcasts</a>
 
       <a
         routerLink="/podcasts/search"
         routerLinkActive="np-nav-active"
         class="np-nav-link"
-      >Rechercher</a>
+      >Search</a>
 
       @if (auth.isLogged()) {
         <a
           routerLink="/podcasts/mine"
           routerLinkActive="np-nav-active"
           class="np-nav-link"
-        >Mes podcasts</a>
+        >My podcasts</a>
       }
     </div>
 
@@ -41,8 +41,8 @@
       </button>
 
       @if (auth.isLogged()) {
-        <a routerLink="/podcasts/create" class="btn-np btn-np-sm" (click)="closeProfileMenu()">+ Créer</a>
-        <a routerLink="/dashboard" class="btn-np-outline btn-np-sm" (click)="closeProfileMenu()">Tableau de bord</a>
+        <a routerLink="/podcasts/create" class="btn-np btn-np-sm" (click)="closeProfileMenu()" i18n>+ Create</a>
+        <a routerLink="/dashboard" class="btn-np-outline btn-np-sm" (click)="closeProfileMenu()" i18n>Dashboard</a>
 
         <div class="np-profile-wrap">
           <button
@@ -65,24 +65,29 @@
                   }
                 </div>
                 <hr class="np-profile-menu-rule" />
-                <a routerLink="/podcasts/mine" class="np-profile-menu-row" (click)="closeProfileMenu()">
-                  Mes podcasts</a>
-                <a routerLink="/writing/mine" class="np-profile-menu-row" (click)="closeProfileMenu()">
-                  Mes textes</a>
-                <a routerLink="/storytelling/mine" class="np-profile-menu-row" (click)="closeProfileMenu()">
-                  Mes histoires</a>
+                <a routerLink="/podcasts/mine" class="np-profile-menu-row" (click)="closeProfileMenu()" i18n>
+                  My podcasts
+                </a>
+                <a routerLink="/writing/mine" class="np-profile-menu-row" (click)="closeProfileMenu()" i18n>
+                  My texts
+                </a>
+                <a routerLink="/storytelling/mine" class="np-profile-menu-row" (click)="closeProfileMenu()" i18n>
+                  My stories
+                </a>
                 <hr class="np-profile-menu-rule" />
-                <a routerLink="/profil" class="np-profile-menu-row" (click)="closeProfileMenu()">
-                  Mon profil</a>
-                <a routerLink="/settings" class="np-profile-menu-row" (click)="closeProfileMenu()">
-                  Paramètres</a>
+                <a routerLink="/profil" class="np-profile-menu-row" (click)="closeProfileMenu()" i18n>
+                  My profile
+                </a>
+                <a routerLink="/settings" class="np-profile-menu-row" (click)="closeProfileMenu()" i18n>
+                  Settings
+                </a>
                 <hr class="np-profile-menu-rule" />
-                <button type="button" class="np-profile-menu-signout np-btn-danger" (click)="logout()">
-                  <i class="fa-solid fa-right-from-bracket me-2"></i>Déconnexion
+                <button type="button" class="np-profile-menu-signout np-btn-danger" (click)="logout()" i18n>
+                  <i class="fa-solid fa-right-from-bracket me-2"></i>Logout
                 </button>
               }
             </div>
-          )}
+          }
         </div>
       } @else {
         <a
@@ -90,9 +95,10 @@
           class="btn-np-outline btn-np-sm"
           [queryParams]="{ returnUrl: '/podcasts/create' }"
           (click)="closeProfileMenu()"
-        >Créer un podcast</a>
-        <a routerLink="/login" class="btn-np-ghost btn-np-sm">Connexion</a>
-        <a routerLink="/signup" class="btn-np btn-np-sm">S'inscrire</a>
+          i18n
+        >Create podcast</a>
+        <a routerLink="/login" class="btn-np-ghost btn-np-sm" i18n>Login</a>
+        <a routerLink="/signup" class="btn-np btn-np-sm" i18n>Sign up</a>
       }
     </div>
 
