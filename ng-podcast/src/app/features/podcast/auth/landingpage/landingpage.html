@@ -17,7 +17,7 @@
 
         <div class="np-landing-actions">
           @if (auth.isLogged()) {
-            <!-- ✅ Connecté : accès direct -->
+            <!--  Connecté : accès direct -->
             <a routerLink="/podcasts" class="btn-np btn-np-lg">
               Vos podcasts
             </a>
@@ -25,7 +25,7 @@
               + Créer un podcast
             </a>
           } @else {
-            <!-- 🔒 Non connecté : vers inscription/login -->
+            <!--  Non connecté : vers inscription/login -->
             <a routerLink="/signup" class="btn-np btn-np-lg"
               [queryParams]="{ returnUrl: '/podcasts/create' }">
               Commencer gratuitement
