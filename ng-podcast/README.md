@@ -39,4 +39,4 @@ Il doit etre lance avant le front-end.
 
 ## Licence
 
-Projet prive. Tous droits reserves.
+Projet privé. Tous droits réservés.
