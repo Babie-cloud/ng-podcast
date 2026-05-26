@@ -1,9 +1,9 @@
 <div class="np-section-header mb-4">
   <div>
-    <span class="np-section-label">Mon espace</span>
-    <h2 class="np-section-title">Mes <em>textes</em></h2>
+    <span class="np-section-label" i18n>My space</span>
+    <h2 class="np-section-title" i18n>My <em>texts</em></h2>
   </div>
-  <a routerLink="/writing/create" class="btn-np">+ Nouveau</a>
+  <a routerLink="/writing/create" class="btn-np" i18n>+ New</a>
 </div>
 
 @if (store.hasError()) {
@@ -13,7 +13,7 @@
 @if (store.loading()) {
   <div class="np-loader-wrap">
     <div class="np-spinner"></div>
-    <p class="np-text-muted mt-3">Chargement…</p>
+    <p class="np-text-muted mt-3" i18n>Loading…</p>
   </div>
 }
 
@@ -24,6 +24,7 @@
         <span class="np-tag-pill">{{ w.type }}</span>
         <span
           class="np-tag-pill"
+          i18n
           >{{ w.status }}</span
         >
       </div>
@@ -34,17 +35,17 @@
         {{ w.createdAt | date: 'medium' }}
       </p>
       <div class="d-flex gap-2 flex-wrap">
-        <a routerLink="/writing/{{ w.id }}" class="btn-np-outline btn-np-sm">Ouvrir</a>
-        <button type="button" class="btn-np-ghost btn-np-sm np-btn-danger" (click)="confirmDelete(w.id, w.title)">
-          Supprimer
+        <a routerLink="/writing/{{ w.id }}" class="btn-np-outline btn-np-sm" i18n>Open</a>
+        <button type="button" class="btn-np-ghost btn-np-sm np-btn-danger" (click)="confirmDelete(w.id, w.title)" i18n>
+          Delete
         </button>
       </div>
     </article>
   } @empty {
     @if (!store.loading()) {
       <div class="glass-card np-empty">
-        <p>Vous n’avez pas encore de texte.</p>
-        <a routerLink="/writing/create" class="btn-np mt-2">Créer le premier</a>
+        <p i18n>You don't have any text yet.</p>
+        <a routerLink="/writing/create" class="btn-np mt-2" i18n>Create the first one</a>
       </div>
     }
   }

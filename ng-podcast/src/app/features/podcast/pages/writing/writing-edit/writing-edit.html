@@ -20,8 +20,8 @@
 @if (store.selected(); as w) {
   <form class="glass-card" style="max-width: 720px" [formGroup]="form" (ngSubmit)="submit()">
     <p class="np-text-muted small mb-3">
-      Visibilité :
-      <strong>{{ w.status === 'PUBLISHED' ? 'Public (liste communauté)' : 'Privé / brouillon (vous seul)' }}</strong>
+      Visibility status:
+      <strong>{{ w.status === 'PUBLISHED' ? 'Public (visible to everyone)' : 'Private / draft (just you)' }}</strong>
     </p>
 
     <div class="mb-3">
@@ -44,7 +44,7 @@
     <div class="mb-3">
       <label class="form-label" for="we-theme" i18n>Podcast theme (optional)</label>
       <select id="we-theme" class="np-input w-100" formControlName="podcastCategory">
-        <option value="">— Sans thème précis —</option>
+        <option value="">— Without specific theme—</option>
         @for (theme of podcastThemes; track theme) {
           <option [value]="theme">{{ theme }}</option>
         }
@@ -54,8 +54,8 @@
     <div class="mb-3">
       <label class="form-label" for="we-status" i18n>Visibility</label>
       <select id="we-status" class="np-input w-100" formControlName="status">
-        <option value="DRAFT" i18n>Brouillon (privé)</option>
-        <option value="PUBLISHED" i18n>Publié (visible par tous dans « Découvrir »)</option>
+        <option value="DRAFT" i18n>Draft (private)</option>
+        <option value="PUBLISHED" i18n>Published (visible to everyone in « Discover »)</option>
       </select>
     </div>
 
@@ -68,10 +68,10 @@
           formControlName="anonymousAuthor"
         />
         <label class="form-check-label" for="we-anonymous">
-          Publication <strong>sans pseudo</strong> (affiché comme « Anonyme » lorsque le texte est public).
+          Publish <strong>with a pseudonym</strong> (displayed as "Anonymous" when the text is public).
         </label>
       </div>
-      <p class="small np-text-muted mb-0 mt-2" i18n>Vous restez propriétaire du contenu comme d'habitude.</p>
+      <p class="small np-text-muted mb-0 mt-2" i18n>You retain ownership of the content as usual.</p>
     </div>
 
     <div class="mb-3">
@@ -106,7 +106,7 @@
 
     <div class="d-flex gap-2 flex-wrap">
       <button type="submit" class="btn-np" [disabled]="store.loading()">
-        {{ store.loading() ? 'Backup…' : 'Enregistrer' }}
+        {{ store.loading() ? 'Backup…' : 'Backup' }}
       </button>
       <a [routerLink]="['/writing', w.id]" class="btn-np-outline" i18n>Close</a>
     </div>
