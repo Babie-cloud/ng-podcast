@@ -11,20 +11,21 @@
         routerLink="/podcasts"
         routerLinkActive="np-nav-active"
         [routerLinkActiveOptions]="{ exact: true }"
-        class="np-nav-link"
+        class="np-nav-link" i18n
       >Home podcasts</a>
 
       <a
         routerLink="/podcasts/search"
         routerLinkActive="np-nav-active"
         class="np-nav-link"
+        i18n
       >Search</a>
 
       @if (auth.isLogged()) {
         <a
           routerLink="/podcasts/mine"
           routerLinkActive="np-nav-active"
-          class="np-nav-link"
+          class="np-nav-link" i18n
         >My podcasts</a>
       }
     </div>

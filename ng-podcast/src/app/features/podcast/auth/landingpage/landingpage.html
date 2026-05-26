@@ -5,7 +5,7 @@
   <section class="np-landing-hero">
     <div class="np-page">
       <div class="np-landing-hero-inner glass-card">
-        <p class="np-hero-eyebrow"> Podcast · Écriture · Storytelling</p>
+        <p class="np-hero-eyebrow" i18n> Podcast · Writing · Storytelling</p>
         <h1 class="np-landing-title">
           Donnez une voix<br>
           à votre <em class="np-gradient-text">créativité</em>
@@ -18,20 +18,20 @@
         <div class="np-landing-actions">
           @if (auth.isLogged()) {
             <!--  Connecté : accès direct -->
-            <a routerLink="/podcasts" class="btn-np btn-np-lg">
-              Vos podcasts
+            <a routerLink="/podcasts" class="btn-np btn-np-lg" i18n>
+              Your podcast
             </a>
-            <a routerLink="/podcasts/create" class="btn-np-outline btn-np-lg">
-              + Créer un podcast
+            <a routerLink="/podcasts/create" class="btn-np-outline btn-np-lg" i18n>
+              + Create podcast
             </a>
           } @else {
             <!--  Non connecté : vers inscription/login -->
             <a routerLink="/signup" class="btn-np btn-np-lg"
-              [queryParams]="{ returnUrl: '/podcasts/create' }">
-              Commencer gratuitement
+              [queryParams]="{ returnUrl: '/podcasts/create' }" i18n>
+              Start for free
             </a>
-            <a routerLink="/login" class="btn-np-outline btn-np-lg">
-              Se connecter
+            <a routerLink="/login" class="btn-np-outline btn-np-lg" i18n>
+              Log in
             </a>
           }
         </div>
@@ -40,15 +40,15 @@
         <div class="np-stats-row mt-4">
           <div class="np-stat">
             <span class="np-stat-num np-gradient-text">142</span>
-            <span class="np-stat-lbl">Épisodes</span>
+            <span class="np-stat-lbl" i18n>Episodes</span>
           </div>
           <div class="np-stat">
             <span class="np-stat-num np-gradient-text">48k</span>
-            <span class="np-stat-lbl">Auditeurs</span>
+            <span class="np-stat-lbl" i18n>Auditeurs</span>
           </div>
           <div class="np-stat">
             <span class="np-stat-num np-gradient-text">3</span>
-            <span class="np-stat-lbl">Ans en ligne</span>
+            <span class="np-stat-lbl" i18n>Years on line</span>
           </div>
         </div>
       </div>
@@ -60,9 +60,9 @@
     <div class="np-page">
       <div class="np-section-header mb-4">
         <div>
-          <span class="np-section-label">Fonctionnalités</span>
-          <h2 class="np-section-title">
-            Tout ce dont vous avez <em>besoin</em>
+          <span class="np-section-label" i18n>Features</span>
+          <h2 class="np-section-title i18n">
+            All you <em>need</em>
           </h2>
         </div>
       </div>
@@ -72,14 +72,14 @@
         <div class="np-feature-card glass-card"
           style="cursor:pointer"
           (click)="navigate('/podcasts')">
-          <span class="np-feature-icon">🎙</span>
-          <h3 class="np-feature-title">Podcast</h3>
+          <span class="np-feature-icon"></span>
+          <h3 class="np-feature-title" i18n>Podcast</h3>
           <p class="np-text-muted">
-            Créez, éditez et publiez vos podcasts avec un éditeur audio
-            professionnel directement dans le navigateur.
+            Create, edit and publish your podcasts with a professional audio editor
+            directly in the browser.
           </p>
           <span class="np-feature-cta">
-            Accéder →
+            <span i18n>Access</span> →
           </span>
         </div>
 
@@ -87,14 +87,14 @@
         <div class="np-feature-card glass-card"
           style="cursor:pointer"
           (click)="navigate('/writing')">
-          <span class="np-feature-icon">✍️</span>
-          <h3 class="np-feature-title">Écriture créative</h3>
-          <p class="np-text-muted">
-            Rédigez et partagez vos poèmes, nouvelles et textes créatifs
-            avec la communauté.
+          <span class="np-feature-icon"></span>
+          <h3 class="np-feature-title" i18n>Creative Writing</h3>
+          <p class="np-text-muted i18n">
+            Write and share your poems, stories and creative texts
+            with the community.
           </p>
           <span class="np-feature-cta">
-            {{ auth.isLogged() ? 'Accéder →' : '🔒 Connexion requise' }}
+            {{ auth.isLogged() ? 'Access →' : ' Login required' }}
           </span>
         </div>
 
@@ -102,14 +102,14 @@
         <div class="np-feature-card glass-card"
           style="cursor:pointer"
           (click)="navigate('/storytelling')">
-          <span class="np-feature-icon">📖</span>
-          <h3 class="np-feature-title">Storytelling</h3>
-          <p class="np-text-muted">
-            Partagez vos témoignages, confessions et histoires de vie
-            en audio ou en texte.
+          <span class="np-feature-icon"></span>
+          <h3 class="np-feature-title" i18n>Storytelling</h3>
+          <p class="np-text-muted" i18n>
+            Share your testimonies, confessions and life stories
+            in audio or text.
           </p>
           <span class="np-feature-cta">
-            {{ auth.isLogged() ? 'Accéder →' : '🔒 Connexion requise' }}
+            {{ auth.isLogged() ? 'Access →' : ' Login required' }}
           </span>
         </div>
 
@@ -122,14 +122,14 @@
     <div class="np-page">
       <div class="np-section-header mb-4">
         <div>
-          <span class="np-section-label">Tendances</span>
-          <h2 class="np-section-title">Derniers podcasts</h2>
+          <span class="np-section-label" i18n>Tendances</span>
+          <h2 class="np-section-title" i18n>Last Episodes</h2>
         </div>
-        <a routerLink="/podcasts/search" class="btn-np-ghost">Voir tout →</a>
+        <a routerLink="/podcasts/search" class="btn-np-ghost" i18n>See all →</a>
       </div>
 
       @if (store.loading()) {
-        <div class="np-text-muted mb-4">Chargement…</div>
+        <div class="np-text-muted mb-4">Loading…</div>
       }
       @if (store.hasError()) {
         <div class="np-alert np-alert-danger mb-4">{{ store.error() }}</div>
@@ -141,7 +141,7 @@
         } @empty {
           @if (!store.loading()) {
             <div class="np-empty glass-card">
-              <p class="np-text-muted mb-0">Aucun podcast à afficher pour le moment.</p>
+              <p class="np-text-muted mb-0">No podcasts to display at the moment.</p>
             </div>
           }
         }
@@ -149,9 +149,9 @@
 
       @if (!auth.isLogged()) {
         <p class="np-text-muted small mt-4 mb-0">
-          Pour <strong>publier</strong> ou <strong>modifier</strong> l&apos;audio, vous devez
-          <a routerLink="/signup" [queryParams]="{ returnUrl: '/podcasts/create' }">créer un compte</a>
-          puis vous connecter. En lecture seule, explorez les fiches et écoutez les épisodes publics.
+          To <strong>publish</strong> or <strong>modify</strong> the audio, you must
+          <a routerLink="/signup" [queryParams]="{ returnUrl: '/podcasts/create' }">create an account</a>
+          then log in. In read-only mode, explore the cards and listen to public episodes.
         </p>
       }
     </div>
@@ -161,13 +161,13 @@
   <section class="np-section">
     <div class="np-page">
       <div class="np-newsletter glass-card">
-        <h2>Ne manquez plus un épisode 🎧</h2>
-        <p class="np-text-muted">
-          Recevez les nouveaux épisodes chaque semaine dans votre boîte mail.
+        <h2 i18n>Never miss an episode</h2>
+        <p class="np-text-muted" i18n>
+          Receive new episodes every week in your inbox.
         </p>
         <div class="np-nl-form">
-          <input type="email" class="np-input" placeholder="votre@email.com" />
-          <button class="btn-np">S'abonner</button>
+          <input type="email" class="np-input" placeholder="your@email.com" />
+          <button class="btn-np" i18n>Subscribe</button>
         </div>
       </div>
     </div>
