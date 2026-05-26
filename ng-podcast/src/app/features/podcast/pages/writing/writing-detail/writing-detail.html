@@ -1,19 +1,19 @@
 @if (store.hasError() && !store.selected()) {
-  <div class="np-alert np-alert-danger mb-3">{{ store.error() }}</div>
-  <a routerLink="/writing" class="btn-np-outline">Retour</a>
+  <div class="np-alert np-alert-danger mb-3" >{{ store.error() }}</div>
+  <a routerLink="/writing" class="btn-np-outline" i18n>Back</a>
 } @else if (store.loading() && !store.selected()) {
   <div class="np-loader-wrap">
     <div class="np-spinner"></div>
-    <p class="np-text-muted mt-3">Chargement…</p>
+    <p class="np-text-muted mt-3" i18n>Loading…</p>
   </div>
 } @else if (store.selected(); as w) {
   <div class="np-section-header mb-3 flex-wrap gap-2">
-    <a routerLink="/writing" class="btn-np-ghost btn-np-sm">← Retour</a>
+    <a routerLink="/writing" class="btn-np-ghost btn-np-sm" i18n>← Back </a>
     <div class="ms-auto d-flex flex-wrap gap-2">
       @if (canManage) {
-        <a [routerLink]="['/writing', w.id, 'edit']" class="btn-np-outline btn-np-sm">Modifier</a>
-        <button type="button" class="btn-np-ghost btn-np-sm np-btn-danger" (click)="remove()">
-          Supprimer
+        <a [routerLink]="['/writing', w.id, 'edit']" class="btn-np-outline btn-np-sm" i18n>Modify</a>
+        <button type="button" class="btn-np-ghost btn-np-sm np-btn-danger" (click)="remove()" i18n>
+          Delete
         </button>
       }
     </div>
@@ -26,10 +26,10 @@
   >
     @if (w.status === 'PUBLISHED') {
       <strong>Public</strong>
-      <span> — ce texte apparaît dans la liste « Découvrir ».</span>
+      <span> — this text appears in the « Discover » list.</span>
     } @else {
-      <strong>Brouillon (privé)</strong>
-      <span> — seul vous pouvez le consulter tant qu'il n'est pas publié.</span>
+      <strong>Draft (private)</strong>
+      <span> — only you can view it until it is published.</span>
     }
   </div>
 
@@ -41,7 +41,7 @@
         <span class="np-tag-pill">{{ w.podcastCategory }}</span>
       }
       @if (w.anonymousAuthor && canManage) {
-        <span class="np-tag-pill">Anonyme pour le public</span>
+        <span class="np-tag-pill" i18n>Anonyme pour le public</span>
       }
       <span class="np-text-hint ms-auto" style="font-size: 13px">{{ w.views }} vues</span>
     </div>
@@ -54,7 +54,7 @@
 
     @if (w.audioUrl) {
       <div class="mb-4 np-writing-audio">
-        <p class="np-text-muted small mb-2">Écouter</p>
+        <p class="np-text-muted small mb-2" i18n>Listen</p>
         <audio class="np-audio-native w-100" controls preload="metadata" [src]="w.audioUrl"></audio>
       </div>
     }
@@ -62,6 +62,6 @@
     <p class="np-text-muted mb-4">
       Par {{ w.authorName }} · {{ w.createdAt | date: 'medium' }}
     </p>
-    <div class="writing-body">{{ w.content }}</div>
+    <div class="writing-body" i18n> {{ w.content }} </div>
   </article>
 }
