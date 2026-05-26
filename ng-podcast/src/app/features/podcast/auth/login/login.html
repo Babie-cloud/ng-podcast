@@ -2,24 +2,24 @@
   <div class="np-auth-card glass-strong">
 
     <div class="np-auth-logo">
-      <span class="np-gradient-text">ng-podcast</span>
+      <span class="np-gradient-text" i18n>ng-podcast</span>
     </div>
 
-    <h2 class="np-auth-title">Bon retour</h2>
-    <p class="np-text-muted np-auth-subtitle">
-      Connectez-vous pour accéder à votre espace créatif.
+    <h2 class="np-auth-title" i18n> Welcome back</h2>
+    <p class="np-text-muted np-auth-subtitle" i18n>
+      Connect to your account to create and manage your podcasts, access your dashboard and more.
     </p>
 
     <div class="np-field">
-      <label class="np-label">Email</label>
+      <label class="np-label" i18n>Email</label>
       <input class="np-input" type="email"
-        placeholder="votre@email.com"
+        placeholder="your@email.com"
         [formControl]="loginForm.controls.email"
       />
     </div>
 
     <div class="np-field">
-      <label class="np-label">Mot de passe</label>
+      <label class="np-label" i18n>Password</label>
       <div class="np-input-password">
         <input class="np-input"
           [type]="showPassword ? 'text' : 'password'"
@@ -28,8 +28,8 @@
         />
         <button type="button" class="np-input-eye"
           (click)="showPassword = !showPassword"
-          [attr.aria-label]="showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'">
-          {{ showPassword ? 'Masquer' : 'Afficher' }}
+          [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'" i18n>
+          {{ showPassword ? 'Hide' : 'Show' }}
         </button>
       </div>
     </div>
@@ -37,10 +37,10 @@
     <div class="np-auth-options">
       <label class="np-checkbox-label">
         <input type="checkbox" style="accent-color:var(--np-primary)">
-        Se souvenir de moi
+        <span i18n>Remember me</span>
       </label>
-      <a routerLink="/resetpassword" class="np-auth-link">
-        Mot de passe oublié ?
+      <a routerLink="/resetpassword" class="np-auth-link" i18n>
+        Forgot password?
       </a>
     </div>
 
@@ -54,17 +54,17 @@
       @if (loading()) {
         <span class="np-spinner-sm"></span> Connexion...
       } @else {
-        Se connecter
+        <span i18n>Sign in</span>
       }
     </button>
 
     <div class="np-auth-separator">
-      <span>ou</span>
+      <span i18n>or</span>
     </div>
 
     <p class="np-auth-footer">
       Pas encore de compte ?
-      <a routerLink="/signup" class="np-auth-link">S'inscrire</a>
+      <a routerLink="/signup" class="np-auth-link" i18n>Sign up</a>
     </p>
 
   </div>

@@ -141,14 +141,14 @@
         } @empty {
           @if (!store.loading()) {
             <div class="np-empty glass-card">
-              <p class="np-text-muted mb-0">No podcasts to display at the moment.</p>
+              <p class="np-text-muted mb-0" i18n>No podcasts to display at the moment.</p>
             </div>
           }
         }
       </div>
 
       @if (!auth.isLogged()) {
-        <p class="np-text-muted small mt-4 mb-0">
+        <p class="np-text-muted small mt-4 mb-0" i18n>
           To <strong>publish</strong> or <strong>modify</strong> the audio, you must
           <a routerLink="/signup" [queryParams]="{ returnUrl: '/podcasts/create' }">create an account</a>
           then log in. In read-only mode, explore the cards and listen to public episodes.
