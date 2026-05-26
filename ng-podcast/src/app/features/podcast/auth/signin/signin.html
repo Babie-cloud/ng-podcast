@@ -3,24 +3,24 @@
   <div class="np-auth-card glass-strong">
 
     <div class="np-auth-logo">
-      <span class="np-gradient-text">ng-podcast</span>
+      <span class="np-gradient-text" i18n>ng-podcast</span>
     </div>
 
-    <h2 class="np-auth-title">Créer un compte</h2>
-    <p class="np-text-muted np-auth-subtitle">
-      Rejoignez la communauté des créateurs de contenu.
+    <h2 class="np-auth-title" i18n>Create an account</h2>
+    <p class="np-text-muted np-auth-subtitle" i18n>
+      Join the community of content creators.
     </p>
 
     <div class="np-fields-row">
       <div class="np-field">
-        <label class="np-label">Nom *</label>
+        <label class="np-label" i18n>Name *</label>
         <input class="np-input" type="text"
           placeholder="Dupont"
           [formControl]="loginForm.controls.name"
         />
       </div>
       <div class="np-field">
-        <label class="np-label">Prénom *</label>
+        <label class="np-label" i18n>First name *</label>
         <input class="np-input" type="text"
           placeholder="Marie"
           [formControl]="loginForm.controls.prenom"
@@ -29,7 +29,7 @@
     </div>
 
     <div class="np-field">
-      <label class="np-label">Email *</label>
+      <label class="np-label" i18n>Email *</label>
       <input class="np-input" type="email"
         placeholder="votre@email.com"
         [formControl]="loginForm.controls.email"
@@ -37,7 +37,7 @@
     </div>
 
     <div class="np-field">
-      <label class="np-label">Mot de passe *</label>
+      <label class="np-label" i18n>Password *</label>
       <input class="np-input" type="password"
         placeholder="••••••••"
         [formControl]="loginForm.controls.password"
@@ -45,7 +45,7 @@
     </div>
 
     <div class="np-field">
-      <label class="np-label">Confirmer le mot de passe *</label>
+      <label class="np-label" i18n>Confirm password *</label>
       <input class="np-input" type="password"
         placeholder="••••••••"
         [formControl]="loginForm.controls.confirmPassword"
@@ -60,15 +60,21 @@
       [disabled]="loginForm.invalid || loading()"
       (click)="onSubmit()">
       @if (loading()) {
-        <span class="np-spinner-sm"></span> Création...
+        <span class="np-spinner-sm"></span> Creating...
       } @else {
-        Créer mon compte
+        <span i18n>Create account</span>
       }
     </button>
 
-    <p class="np-auth-footer">
-      Déjà un compte ?
-      <a routerLink="/login" class="np-auth-link">Se connecter</a>
+    <p class="np-auth-footer" i18n>
+       By creating an account, you agree to our
+       <a href="/terms" target="_blank" i18n>Terms of Service</a>
+       and
+       <a href="/privacy" target="_blank" i18n>Privacy Policy</a>.
+    </p>
+    <p class="np-auth-footer" i18n>
+      Already have an account?
+      <a routerLink="/login" class="np-auth-link" i18n>Sign in</a>
     </p>
 
   </div>
