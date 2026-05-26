@@ -1,7 +1,7 @@
 <div class="np-section-header mb-3">
   <div>
-    <span class="np-section-label">Public</span>
-    <h2 class="np-section-title">Histoires <em>publiées</em></h2>
+    <span class="np-section-label" i18n>Public</span>
+    <h2 class="np-section-title" i18n>Published <em> stories</em></h2>
   </div>
 </div>
 
@@ -12,7 +12,7 @@
 @if (store.loading()) {
   <div class="np-loader-wrap">
     <div class="np-spinner"></div>
-    <p class="np-text-muted mt-3">Chargement…</p>
+    <p class="np-text-muted mt-3" i18n>Loading…</p>
   </div>
 }
 
@@ -22,14 +22,14 @@
       <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
         <span class="np-tag-pill">{{ s.type }}</span>
         <span class="np-text-hint" style="font-size: 12px">
-          {{ s.views }} vues · {{ s.likes }} likes
+          {{ s.views }} views · {{ s.likes }} likes
         </span>
       </div>
       <h3 class="h6 mb-2">
-        <a routerLink="/storytelling/{{ s.id }}" class="text-decoration-none">{{ s.title }}</a>
+        <a routerLink="/storytelling/{{ s.id }}" class="text-decoration-none" i18n>{{ s.title }}</a>
       </h3>
       <p class="np-text-muted mb-2" style="font-size: 13px">
-        {{ s.anonymous ? 'Anonyme' : 'Par ' + s.authorName }} · {{ s.createdAt | date: 'mediumDate' }}
+        {{ s.anonymous ? 'Anonymously' : 'By ' + s.authorName }} · {{ s.createdAt | date: 'mediumDate' }}
       </p>
       <p class="mb-0 np-text-muted" style="font-size: 14px">
         {{ s.content | slice: 0 : 200 }}{{ s.content.length > 200 ? '…' : '' }}
@@ -37,8 +37,8 @@
     </article>
   } @empty {
     @if (!store.loading()) {
-      <div class="glass-card np-empty">
-        <p>Aucune histoire publiée pour le moment.</p>
+          <div class="glass-card np-empty" i18n>
+            <p>No stories published yet.</p>
       </div>
     }
   }

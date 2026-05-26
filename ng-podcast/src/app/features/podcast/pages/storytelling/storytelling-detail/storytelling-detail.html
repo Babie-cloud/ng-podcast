@@ -1,23 +1,23 @@
 @if (store.hasError() && !store.selected()) {
   <div class="np-alert np-alert-danger mb-3">{{ store.error() }}</div>
-  <a routerLink="/storytelling" class="btn-np-outline">Retour</a>
+  <a routerLink="/storytelling" class="btn-np-outline" i18n>Return</a>
 } @else if (store.loading() && !store.selected()) {
   <div class="np-loader-wrap">
     <div class="np-spinner"></div>
-    <p class="np-text-muted mt-3">Chargement…</p>
+    <p class="np-text-muted mt-3" i18n>Loading…</p>
   </div>
 } @else if (store.selected(); as s) {
   <div class="np-section-header mb-3 flex-wrap gap-2">
-    <a routerLink="/storytelling" class="btn-np-ghost btn-np-sm">← Retour</a>
+    <a routerLink="/storytelling" class="btn-np-ghost btn-np-sm" i18n>← Return</a>
     <div class="ms-auto d-flex flex-wrap gap-2">
       @if (canEdit) {
-        <a [routerLink]="['/storytelling', s.id, 'edit']" class="btn-np-outline btn-np-sm">
-          Modifier
+        <a [routerLink]="['/storytelling', s.id, 'edit']" class="btn-np-outline btn-np-sm" i18n>
+          Modify
         </a>
       }
       @if (canManage || canEdit) {
-        <button type="button" class="btn-np-ghost btn-np-sm np-btn-danger" (click)="remove()">
-          Supprimer
+        <button type="button" class="btn-np-ghost btn-np-sm np-btn-danger" (click)="remove()" i18n>
+          Delete
         </button>
       }
     </div>
@@ -29,14 +29,14 @@
     [class.private]="s.status !== 'PUBLISHED'"
   >
     @if (s.status === 'PUBLISHED') {
-      <strong>Public</strong>
-      <span> — visible dans la liste communauté.</span>
+      <strong  i18n>Public</strong>
+      <span i18n> — visible on the community list.</span>
       @if (s.anonymous) {
-        <span> Auteur affiché comme <em>Anonyme</em>.</span>
+        <span i18n> Author displayed as <em>Anonymus</em>.</span>
       }
     } @else {
-      <strong>Brouillon (privé)</strong>
-      <span> — visible uniquement par vous jusqu'à publication.</span>
+      <strong i18n>Draft (private)</strong>
+      <span i18n> — visible only to you until published.</span>
     }
   </div>
 
@@ -45,15 +45,15 @@
       <span class="np-tag-pill">{{ s.type }}</span>
       <span class="np-tag-pill">{{ s.status }}</span>
       @if (s.anonymous) {
-        <span class="np-tag-pill">Anonyme</span>
+        <span class="np-tag-pill" i18n>Anonymous</span>
       }
       <span class="np-text-hint ms-auto" style="font-size: 13px">
-        {{ s.views }} vues · {{ s.likes }} likes
+        {{ s.views }} views · {{ s.likes }} likes
       </span>
     </div>
     <h1 class="h3 np-gradient-text mb-2">{{ s.title }}</h1>
     <p class="np-text-muted mb-4">
-      {{ s.anonymous ? 'Anonyme' : 'Par ' + s.authorName }} · {{ s.createdAt | date: 'medium' }}
+      {{ s.anonymous ? 'Anonymous' : 'By ' + s.authorName }} · {{ s.createdAt | date: 'medium' }}
     </p>
     <div class="story-body">{{ s.content }}</div>
   </article>

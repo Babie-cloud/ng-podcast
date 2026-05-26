@@ -1,9 +1,9 @@
 <div class="np-section-header mb-4">
   <div>
-    <span class="np-section-label">Création</span>
-    <h2 class="np-section-title">Nouvelle <em>histoire</em></h2>
+    <span class="np-section-label" i18n>Creation</span>
+    <h2 class="np-section-title" i18n>New <em>story</em></h2>
   </div>
-  <a routerLink="/storytelling/mine" class="btn-np-ghost">Mes histoires</a>
+  <a routerLink="/storytelling/mine" class="btn-np-ghost" i18n>My Stories</a>
 </div>
 
 @if (store.hasError()) {
@@ -12,15 +12,15 @@
 
 <form class="glass-card" style="max-width: 720px" [formGroup]="form" (ngSubmit)="submit()">
   <div class="mb-3">
-    <label class="form-label" for="s-title">Titre</label>
+    <label class="form-label" for="s-title" i18n>Title</label>
     <input id="s-title" type="text" class="np-input w-100" formControlName="title" />
     @if (form.controls.title.invalid && form.controls.title.touched) {
-      <p class="text-danger small mb-0 mt-1">Titre requis (2–200 caractères).</p>
+      <p class="text-danger small mb-0 mt-1" i18n>Title required (2–200 characters).</p>
     }
   </div>
 
   <div class="mb-3">
-    <label class="form-label" for="s-type">Type</label>
+    <label class="form-label" for="s-type" i18n>Type</label>
     <select id="s-type" class="np-input w-100" formControlName="type">
       @for (t of types; track t) {
         <option [value]="t">{{ t }}</option>
@@ -29,33 +29,33 @@
   </div>
 
   <div class="mb-3">
-    <label class="form-label" for="s-status">Visibilité</label>
+    <label class="form-label" for="s-status" i18n>Visibility</label>
     <select id="s-status" class="np-input w-100" formControlName="status">
-      <option value="DRAFT">Brouillon</option>
-      <option value="PUBLISHED">Publié</option>
+      <option value="DRAFT" i18n>Draft</option>
+      <option value="PUBLISHED" i18n>Published</option>
     </select>
   </div>
 
   <div class="mb-3 form-check">
     <input id="s-anon" type="checkbox" class="form-check-input" formControlName="anonymous" />
-    <label class="form-check-label" for="s-anon">Publier anonymement</label>
+    <label class="form-check-label" for="s-anon" i18n>Publish anonymously</label>
   </div>
 
   <div class="mb-4">
-    <label class="form-label" for="s-content">Contenu</label>
+    <label class="form-label" for="s-content" i18n>Content  </label>
     <textarea
       id="s-content"
       class="np-input w-100"
       rows="12"
       formControlName="content"
-      placeholder="Votre témoignage…"
+      placeholder="Your story…"
     ></textarea>
   </div>
 
   <div class="d-flex gap-2 flex-wrap">
     <button type="submit" class="btn-np" [disabled]="store.loading()">
-      {{ store.loading() ? 'Envoi…' : 'Enregistrer' }}
+      {{ store.loading() ? 'Sending…' : 'Save' }}
     </button>
-    <a routerLink="/storytelling" class="btn-np-outline">Annuler</a>
+    <a routerLink="/storytelling" class="btn-np-outline" i18n>Cancel</a>
   </div>
 </form>

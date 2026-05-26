@@ -1,9 +1,9 @@
 <div class="np-section-header mb-4">
   <div>
-    <span class="np-section-label">Création</span>
-    <h2 class="np-section-title">Nouveau <em>texte</em></h2>
+    <span class="np-section-label" i18n>Creation</span>
+    <h2 class="np-section-title" i18n>New <em>Text</em></h2>
   </div>
-  <a routerLink="/writing/mine" class="btn-np-ghost">Mes textes</a>
+  <a routerLink="/writing/mine" class="btn-np-ghost" i18n>My Texts</a>
 </div>
 
 @if (store.hasError()) {
@@ -12,15 +12,15 @@
 
 <form class="glass-card" style="max-width: 720px" [formGroup]="form" (ngSubmit)="submit()">
   <div class="mb-3">
-    <label class="form-label" for="w-title">Titre</label>
+    <label class="form-label" for="w-title" i18n>Title</label>
     <input id="w-title" type="text" class="np-input w-100" formControlName="title" />
     @if (form.controls.title.invalid && form.controls.title.touched) {
-      <p class="text-danger small mb-0 mt-1">Titre requis (2–200 caractères).</p>
+      <p class="text-danger small mb-0 mt-1" i18n>Title is required (2–200 characters).</p>
     }
   </div>
 
   <div class="mb-3">
-    <label class="form-label" for="w-type">Type</label>
+    <label class="form-label" for="w-type" i18n>Type</label>
     <select id="w-type" class="np-input w-100" formControlName="type">
       @for (t of typeOptions; track t.value) {
         <option [value]="t.value">{{ t.label }}</option>
@@ -29,9 +29,9 @@
   </div>
 
   <div class="mb-3">
-    <label class="form-label" for="w-theme">Thématique podcast (optionnel)</label>
+    <label class="form-label" for="w-theme" i18n>Podcast Theme (optional)</label>
     <select id="w-theme" class="np-input w-100" formControlName="podcastCategory">
-      <option value="">— Sans thème précis —</option>
+      <option value="">— Without specific theme —</option>
       @for (theme of podcastThemes; track theme) {
         <option [value]="theme">{{ theme }}</option>
       }
@@ -39,10 +39,10 @@
   </div>
 
   <div class="mb-3">
-    <label class="form-label" for="w-status">Visibilité</label>
+    <label class="form-label" for="w-status" i18n>Visibility</label>
     <select id="w-status" class="np-input w-100" formControlName="status">
-      <option value="DRAFT">Brouillon — privé, visible seulement par vous</option>
-      <option value="PUBLISHED">Publié — visible dans « Découvrir »</option>
+      <option value="DRAFT" i18n>Draft — private, visible only to you</option>
+      <option value="PUBLISHED" i18n>Published — visible in « Discover »</option>
     </select>
   </div>
 
@@ -55,16 +55,16 @@
         formControlName="anonymousAuthor"
       />
       <label class="form-check-label" for="w-anonymous">
-        Publiée <strong>sans afficher mon pseudo</strong> (lecteurs voient « Anonyme » lorsque le texte est public).
+        <span i18n>Published</span> <strong i18n>sans afficher mon pseudo</strong> (lecteurs voient « Anonyme » lorsque le texte est public).
       </label>
     </div>
     <p class="small np-text-muted mb-0 mt-2">
-      Vous conservez toujours la gestion du texte sur « Mes écrits » ; seul le nom affiché est masqué.
+      <span i18n>You always keep control of your text on « My Texts » ; only the displayed name is hidden.</span>
     </p>
   </div>
 
   <div class="mb-3">
-    <label class="form-label" for="w-audio">URL fichier audio (optionnel)</label>
+    <label class="form-label" for="w-audio" i18n>Audio file URL (optional)</label>
     <input
       id="w-audio"
       type="url"
@@ -73,16 +73,16 @@
       placeholder="https://…"
       autocomplete="off"
     />
-    <span class="small np-text-muted">Lecture sur la page du texte après enregistrement.</span>
+    <span class="small np-text-muted" i18n>Reading on the text page after saving.</span>
   </div>
 
   <div class="mb-4">
-    <label class="form-label" for="w-cover">URL image de couverture (optionnel)</label>
+    <label class="form-label" for="w-cover" i18n>Cover image URL (optional)</label>
     <input id="w-cover" type="url" class="np-input w-100" formControlName="coverUrl" placeholder="https://…" />
   </div>
 
   <div class="mb-4">
-    <label class="form-label" for="w-content">Contenu</label>
+    <label class="form-label" for="w-content" i18n>Content</label>
     <textarea
       id="w-content"
       class="np-input w-100"
@@ -91,14 +91,14 @@
       placeholder="Votre texte…"
     ></textarea>
     @if (form.controls.content.invalid && form.controls.content.touched) {
-      <p class="text-danger small mb-0 mt-1">Contenu trop court.</p>
+      <p class="text-danger small mb-0 mt-1" i18n>Content is too short.</p>
     }
   </div>
 
   <div class="d-flex gap-2 flex-wrap">
     <button type="submit" class="btn-np" [disabled]="store.loading()">
-      {{ store.loading() ? 'Envoi…' : 'Enregistrer' }}
+      {{ store.loading() ? 'Sending…' : 'Save' }}
     </button>
-    <a routerLink="/writing" class="btn-np-outline">Annuler</a>
+    <a routerLink="/writing" class="btn-np-outline" i18n>Cancel</a>
   </div>
 </form>
