@@ -1,9 +1,9 @@
 <div class="np-section-header mb-4">
   <div>
-    <span class="np-section-label">Édition</span>
-    <h2 class="np-section-title">Modifier un <em>texte</em></h2>
+    <span class="np-section-label" i18n>Editing</span>
+    <h2 class="np-section-title" i18n>Modify <em>text</em></h2>
   </div>
-  <a [routerLink]="['/writing', id()]" class="btn-np-ghost">Annuler</a>
+  <a [routerLink]="['/writing', id()]" class="btn-np-ghost" i18n>Cancel</a>
 </div>
 
 @if (store.hasError()) {
@@ -13,7 +13,7 @@
 @if (!store.selected() && store.loading()) {
   <div class="np-loader-wrap">
     <div class="np-spinner"></div>
-    <p class="np-text-muted mt-3">Chargement…</p>
+    <p class="np-text-muted mt-3" i18n>Loading…</p>
   </div>
 }
 
@@ -25,15 +25,15 @@
     </p>
 
     <div class="mb-3">
-      <label class="form-label" for="we-title">Titre</label>
+      <label class="form-label" for="we-title" i18n>Title</label>
       <input id="we-title" type="text" class="np-input w-100" formControlName="title" />
       @if (form.controls.title.invalid && form.controls.title.touched) {
-        <p class="text-danger small mb-0 mt-1">Titre requis (2–200 caractères).</p>
+        <p class="text-danger small mb-0 mt-1" i18n>Title is required (2–200 characters).</p>
       }
     </div>
 
     <div class="mb-3">
-      <label class="form-label" for="we-type">Type</label>
+      <label class="form-label" for="we-type" i18n>Type</label>
       <select id="we-type" class="np-input w-100" formControlName="type">
         @for (t of typeOptions; track t.value) {
           <option [value]="t.value">{{ t.label }}</option>
@@ -42,7 +42,7 @@
     </div>
 
     <div class="mb-3">
-      <label class="form-label" for="we-theme">Thématique podcast (optionnel)</label>
+      <label class="form-label" for="we-theme" i18n>Podcast theme (optional)</label>
       <select id="we-theme" class="np-input w-100" formControlName="podcastCategory">
         <option value="">— Sans thème précis —</option>
         @for (theme of podcastThemes; track theme) {
@@ -52,10 +52,10 @@
     </div>
 
     <div class="mb-3">
-      <label class="form-label" for="we-status">Visibilité</label>
+      <label class="form-label" for="we-status" i18n>Visibility</label>
       <select id="we-status" class="np-input w-100" formControlName="status">
-        <option value="DRAFT">Brouillon (privé)</option>
-        <option value="PUBLISHED">Publié (visible par tous dans « Découvrir »)</option>
+        <option value="DRAFT" i18n>Brouillon (privé)</option>
+        <option value="PUBLISHED" i18n>Publié (visible par tous dans « Découvrir »)</option>
       </select>
     </div>
 
@@ -71,11 +71,11 @@
           Publication <strong>sans pseudo</strong> (affiché comme « Anonyme » lorsque le texte est public).
         </label>
       </div>
-      <p class="small np-text-muted mb-0 mt-2">Vous restez propriétaire du contenu comme d'habitude.</p>
+      <p class="small np-text-muted mb-0 mt-2" i18n>Vous restez propriétaire du contenu comme d'habitude.</p>
     </div>
 
     <div class="mb-3">
-      <label class="form-label" for="we-audio">URL fichier audio (optionnel)</label>
+      <label class="form-label" for="we-audio" i18n>Audio file URL (optional)</label>
       <input
         id="we-audio"
         type="url"
@@ -87,12 +87,12 @@
     </div>
 
     <div class="mb-3">
-      <label class="form-label" for="we-cover">URL image de couverture (optionnel)</label>
+      <label class="form-label" for="we-cover" i18n>Cover image URL (optional)</label>
       <input id="we-cover" type="url" class="np-input w-100" formControlName="coverUrl" placeholder="https://…" />
     </div>
 
     <div class="mb-4">
-      <label class="form-label" for="we-content">Contenu</label>
+      <label class="form-label" for="we-content" i18n>Content</label>
       <textarea
         id="we-content"
         class="np-input w-100"
@@ -100,15 +100,15 @@
         formControlName="content"
       ></textarea>
       @if (form.controls.content.invalid && form.controls.content.touched) {
-        <p class="text-danger small mb-0 mt-1">Contenu trop court.</p>
+        <p class="text-danger small mb-0 mt-1" i18n>Content is too short.</p>
       }
     </div>
 
     <div class="d-flex gap-2 flex-wrap">
       <button type="submit" class="btn-np" [disabled]="store.loading()">
-        {{ store.loading() ? 'Enregistrement…' : 'Enregistrer' }}
+        {{ store.loading() ? 'Backup…' : 'Enregistrer' }}
       </button>
-      <a [routerLink]="['/writing', w.id]" class="btn-np-outline">Fermer</a>
+      <a [routerLink]="['/writing', w.id]" class="btn-np-outline" i18n>Close</a>
     </div>
   </form>
 }
