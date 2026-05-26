@@ -1,45 +1,46 @@
 <article class="np-podcast-card">
 
   <div class="np-cover-wrap">
-    <a [routerLink]="['/podcasts', podcast.id]">
+    <a [routerLink]="['/podcasts', podcast.id]" i18n>
       <img
         [src]="podcast.coverUrl"
         [alt]="podcast.title"
         loading="lazy"
       />
     </a>
-    <div class="np-cover-overlay">
+    <div class="np-cover-overlay" i18n>
       <button
         class="np-cover-play"
         (click)="firstEpisode && onPlay(firstEpisode)"
         [disabled]="!firstEpisode"
-        [attr.aria-label]="isCurrentlyPlaying ? 'Pause' : 'Lecture'"
+        [attr.aria-label]="isCurrentlyPlaying ? 'Pause' : 'Play'"
       >
-        {{ isCurrentlyPlaying ? 'Pause' : 'Lecture' }}
+        {{ isCurrentlyPlaying ? 'Pause' : 'Play' }}
       </button>
     </div>
   </div>
 
   <div class="np-card-body">
-    <span class="np-badge np-badge-primary mb-2">
+    <span class="np-badge np-badge-primary mb-2" i18n>
       {{ podcast.episodes.length }}
-      {{ podcast.episodes.length > 1 ? 'épisodes' : 'épisode' }}
+      {{ podcast.episodes.length > 1 ? 'episodes' : 'episode' }}
     </span>
 
-    <h3 class="np-card-title">{{ podcast.title }}</h3>
+    <h3 class="np-card-title" i18n>{{ podcast.title }}</h3>
     <p class="np-card-author">par {{ podcast.authorName }}</p>
-    <p class="np-card-desc">{{ podcast.description }}</p>
-    <p class="np-card-meta">
+    <p class="np-card-desc" i18n>{{ podcast.description }}</p>
+    <p class="np-card-meta" i18n>
+       Published on
       {{ podcast.createdAt | date:'dd/MM/yyyy' }}
     </p>
 
     <div class="np-card-actions">
-      <a class="btn-np" [routerLink]="['/podcasts', podcast.id]">
-        Voir les épisodes
+      <a class="btn-np" [routerLink]="['/podcasts', podcast.id]" i18n>
+        View episodes
       </a>
       @if (firstEpisode) {
-        <button class="btn-np-outline" (click)="onPlay(firstEpisode)">
-          {{ isCurrentlyPlaying ? 'Pause' : 'Écouter' }}
+        <button class="btn-np-outline" (click)="onPlay(firstEpisode)" i18n>
+          {{ isCurrentlyPlaying ? 'Pause' : 'Play' }}
         </button>
       }
     </div>

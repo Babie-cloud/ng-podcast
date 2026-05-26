@@ -1,11 +1,11 @@
 <div class="np-page np-section profil-page">
   <header class="np-hero glass-card mb-4">
-    <p class="np-hero-eyebrow">Compte</p>
-    <h1 class="np-gradient-text">Mon profil</h1>
-    <p class="np-hero-desc mb-0">
-      Mettez à jour votre pseudo public et votre nom légal. Les paramètres d&apos;apparence restent sous
-      <a routerLink="/settings">Paramètres</a>; l&apos;email de connexion ne change pas ici — contactez-nous ou
-      un admin si nécessaire.
+    <p class="np-hero-eyebrow" i18n>Account</p>
+    <h1 class="np-gradient-text" i18n>My profile</h1>
+    <p class="np-hero-desc mb-0" i18n>
+      Update your public username and legal name. Appearance settings remain under
+      <a routerLink="/settings" i18n>Settings</a>; your login email does not change here — contact us or
+      an admin if necessary.
     </p>
   </header>
 
@@ -13,10 +13,10 @@
     <div class="profil-layout">
       <section class="glass-card profil-card profil-main">
         <div class="profil-section-head">
-          <h2 class="profil-card-title mb-0">Identité</h2>
+          <h2 class="profil-card-title mb-0" i18n>Identity</h2>
           @if (!editMode()) {
-            <button type="button" class="btn-np-outline btn-np-sm" (click)="startEdit()">
-              Modifier
+            <button type="button" class="btn-np-outline btn-np-sm" (click)="startEdit()" i18n>
+              Modify my profile
             </button>
           }
         </div>
@@ -28,16 +28,16 @@
         @if (!editMode()) {
           <dl class="profil-dl">
             <div class="profil-row">
-              <dt>Nom affiché</dt>
+              <dt i18n>Name</dt>
               <dd>{{ displayName() }}</dd>
             </div>
             <div class="profil-row">
-              <dt>Pseudo public</dt>
+              <dt i18n>Public username</dt>
               <dd>{{ u.username }}</dd>
             </div>
             @if (u.prenom || u.name) {
               <div class="profil-row">
-                <dt>Nom légal</dt>
+                <dt i18n>Legal name</dt>
                 <dd>
                   @if (u.prenom && u.name) {
                     {{ u.prenom }} {{ u.name }}
@@ -48,16 +48,16 @@
               </div>
             }
             <div class="profil-row">
-              <dt>Email de connexion</dt>
+              <dt i18n>Login email</dt>
               <dd class="profil-muted">{{ u.email }}</dd>
             </div>
             <div class="profil-row">
-              <dt>Rôle</dt>
+              <dt i18n>Role</dt>
               <dd>
                 @if (u.role === 'ADMIN') {
-                  <span class="profil-role profil-role-admin">Administrateur</span>
+                  <span class="profil-role profil-role-admin" i18n>Administrator</span>
                 } @else {
-                  <span class="profil-role">Créateur</span>
+                  <span class="profil-role" i18n>Creator</span>
                 }
               </dd>
             </div>
@@ -101,10 +101,11 @@
                   maxlength="120"
                   [formControl]="profileForm.controls.prenom"
                   autocomplete="given-name"
+                  i18n:placeholder="first name" 
                 />
               </div>
               <div class="profil-field">
-                <label class="np-label" for="pf-nom">Nom *</label>
+                <label class="np-label" for="pf-nom">Name *</label>
                 <input
                   id="pf-nom"
                   type="text"
@@ -124,7 +125,7 @@
             }
 
             <div class="profil-email-row mb-4">
-              <span class="np-label d-block mb-1">Email de connexion</span>
+              <span class="np-label d-block mb-1" i18n>Login email</span>
               <span class="profil-muted">{{ u.email }}</span>
               <span class="profil-muted small d-block mt-2">
                 Réinitialiser le mot de passe depuis&nbsp;
@@ -133,11 +134,11 @@
             </div>
 
             <div class="profil-role-row mb-4">
-              <span class="np-label d-block mb-1">Rôle</span>
+              <span class="np-label d-block mb-1" i18n>Role</span>
               @if (u.role === 'ADMIN') {
-                <span class="profil-role profil-role-admin">Administrateur</span>
+                <span class="profil-role profil-role-admin" i18n>Administrator</span>
               } @else {
-                <span class="profil-role">Créateur</span>
+                <span class="profil-role" i18n>Creator</span>
               }
             </div>
 
@@ -167,22 +168,22 @@
       </section>
 
       <aside class="glass-card profil-card profil-aside">
-        <h2 class="profil-card-title">Raccourcis</h2>
-        <p class="profil-muted small mb-4">
+        <h2 class="profil-card-title" i18n>Shortcuts</h2>
+        <p class="profil-muted small mb-4" i18n>
           Accéder rapidement à vos contenus ou aux réglages généraux de l&apos;application.
         </p>
         <nav class="profil-actions">
-          <a routerLink="/dashboard" class="btn-np">Tableau de bord</a>
-          <a routerLink="/settings" class="btn-np-outline">Paramètres</a>
-          <a routerLink="/podcasts/mine" class="btn-np-outline">Mes podcasts</a>
-          <a routerLink="/writing/mine" class="btn-np-outline">Mes textes</a>
-          <a routerLink="/storytelling/mine" class="btn-np-outline">Mes histoires</a>
+          <a routerLink="/dashboard" class="btn-np" i18n>Dashboard</a>
+          <a routerLink="/settings" class="btn-np-outline" i18n>Settings</a>
+          <a routerLink="/podcasts/mine" class="btn-np-outline" i18n>My podcasts</a>
+          <a routerLink="/writing/mine" class="btn-np-outline" i18n>My texts</a>
+          <a routerLink="/storytelling/mine" class="btn-np-outline" i18n>My stories </a>
         </nav>
       </aside>
     </div>
   } @else {
     <div class="glass-card profil-card profil-loading">
-      <p class="mb-0 profil-muted">Chargement du profil...</p>
+      <p class="mb-0 profil-muted" i18n>Loading profile...</p>
     </div>
   }
 </div>

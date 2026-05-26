@@ -4,26 +4,26 @@
 
     <!-- Breadcrumb -->
     <div class="np-breadcrumb mb-4">
-      <a routerLink="/podcasts" class="np-breadcrumb-link">Podcasts</a>
-      <span class="np-breadcrumb-sep">›</span>
-      <span>Nouveau podcast</span>
+      <a routerLink="/podcasts" class="np-breadcrumb-link" i18n>Podcasts</a>
+      <span class="np-breadcrumb-sep"></span>
+      <span i18n>New podcast</span>
     </div>
 
-    <h1 class="np-gradient-text mb-1">Créer un podcast</h1>
-    <p class="np-text-muted mb-4">
-      Remplissez les informations et publiez votre premier épisode.
+    <h1 class="np-gradient-text mb-1"  i18n>Create a podcast</h1>
+    <p class="np-text-muted mb-4" i18n>
+      Fill in the information and publish your first episode.
     </p>
 
     <!-- Stepper -->
-    <div class="np-stepper mb-4">
+    <div class="np-stepper mb-4" i18n>
       @for (step of steps; track step.index) {
         <div class="np-step-item"
           [class.active]="currentStep() === step.index"
           [class.done]="currentStep() > step.index">
-          <span class="np-step-dot">
+          <span class="np-step-dot" i18n>
             {{ currentStep() > step.index ? '✓' : step.index + 1 }}
           </span>
-          <span class="np-step-label">{{ step.label }}</span>
+          <span class="np-step-label" i18n>{{ step.label }}</span>
         </div>
       }
     </div>
@@ -31,30 +31,30 @@
     <!-- STEP 0 : Infos -->
     @if (currentStep() === 0) {
       <div class="glass-card mb-3">
-        <h5 class="np-card-section-title">Informations générales</h5>
+        <h5 class="np-card-section-title" i18n>General information</h5>
 
         <div class="np-field">
-          <label class="np-label">Titre *</label>
+          <label class="np-label" i18n>Title *</label>
           <input class="np-input"
             [class.np-input-error]="isInvalid('title')"
-            placeholder="Ex : Les chroniques du lundi"
+            placeholder="Ex : The Angular Show — Angular developers talk about everything Angular!"
             [formControl]="form.controls.title"
           />
           @if (isInvalid('title')) {
-            <span class="np-error-msg">Minimum 3 caractères requis.</span>
+            <span class="np-error-msg" i18n>Minimum 3 caracters required.</span>
           }
         </div>
 
         <div class="np-field">
-          <label class="np-label">Description *</label>
+          <label class="np-label" i18n>Description *</label>
           <textarea class="np-input np-textarea"
             [class.np-input-error]="isInvalid('description')"
-            placeholder="De quoi parle votre podcast ?"
+            placeholder="What is your podcast about?"
             [formControl]="form.controls.description"
           ></textarea>
           <div class="np-field-meta">
             @if (isInvalid('description')) {
-              <span class="np-error-msg">Minimum 10 caractères.</span>
+              <span class="np-error-msg" i18n>Minimum 10 caracters required.</span>
             } @else { <span></span> }
             <span class="np-text-hint">
               {{ form.controls.description.value?.length ?? 0 }} / 500
@@ -63,9 +63,9 @@
         </div>
 
         <div class="np-field">
-          <label class="np-label">Catégorie</label>
+          <label class="np-label" i18n>Category</label>
           <select class="np-input np-select" [formControl]="form.controls.category">
-            <option value="">Sélectionner...</option>
+            <option value="">Select...</option>
             @for (cat of categories; track cat) {
               <option [value]="cat">{{ cat }}</option>
             }
@@ -73,11 +73,11 @@
         </div>
 
         <div class="np-field">
-          <label class="np-label">Langue</label>
+          <label class="np-label" i18n>Language</label>
           <select class="np-input np-select" [formControl]="form.controls.language">
-            <option value="fr">Français</option>
-            <option value="en">English</option>
-            <option value="es">Español</option>
+            <option value="fr" i18n>Français</option>
+            <option value="en" i18n>English</option>
+            <option value="es" i18n>Español</option>
           </select>
         </div>
       </div>
@@ -92,7 +92,7 @@
     <!-- STEP 1 : Couverture -->
     @if (currentStep() === 1) {
       <div class="glass-card mb-3">
-        <h5 class="np-card-section-title">Image de couverture</h5>
+        <h5 class="np-card-section-title" i18n>Cover Image</h5>
         <div class="np-upload-zone"
           [class.has-file]="coverPreview()"
           (click)="coverInput.click()"
@@ -100,10 +100,10 @@
           (drop)="onCoverDrop($event)">
           @if (coverPreview()) {
             <img [src]="coverPreview()!" alt="Aperçu" class="np-cover-preview" />
-            <div class="np-cover-overlay">Changer l'image</div>
+            <div class="np-cover-overlay" i18n>Change image</div>
           } @else {
-            <p class="mb-1 fw-semibold">Déposez votre image ici</p>
-            <small class="np-text-hint">JPG, PNG, WebP — 5 Mo max</small>
+            <p class="mb-1 fw-semibold" i18n>Drop your image here</p>
+            <small class="np-text-hint" i18n>JPG, PNG, WebP — 5 Mo max</small>
           }
         </div>
         <input #coverInput type="file" accept="image/*"
@@ -114,8 +114,8 @@
       </div>
 
       <div class="d-flex justify-content-between">
-        <button class="btn-np-ghost" (click)="prevStep()">Retour</button>
-        <button class="btn-np" (click)="nextStep()">Suivant</button>
+        <button class="btn-np-ghost" (click)="prevStep()" i18n>Return</button>
+        <button class="btn-np" (click)="nextStep()" i18n>Next</button>
       </div>
     }
 
@@ -123,12 +123,12 @@
     @if (currentStep() === 2) {
       <div class="glass-card mb-3">
         <h5 class="np-card-section-title">
-          Premier épisode
-          <span class="np-badge np-badge-muted ms-2">Optionnel</span>
+          First episode
+          <span class="np-badge np-badge-muted ms-2">Optionnal</span>
         </h5>
 
         <div class="np-field">
-          <label class="np-label">Titre de l'épisode</label>
+          <label class="np-label" i18n>Title of the episode</label>
           <input class="np-input"
             placeholder="Ex : Introduction — Bienvenue !"
             [formControl]="form.controls.episodeTitle"
@@ -136,12 +136,12 @@
         </div>
 
         <div class="np-field">
-          <label class="np-label">Fichier audio</label>
+          <label class="np-label" i18n>File audio</label>
           <div class="np-upload-zone np-upload-audio"
             [class.has-file]="audioFile()"
             (click)="audioInput.click()"
             (dragover)="$event.preventDefault()"
-            (drop)="onAudioDrop($event)">
+            (drop)="onAudioDrop($event)" i18n>
             @if (audioFile()) {
               <div class="np-audio-info">
                 <div>
@@ -149,11 +149,11 @@
                   <small class="np-text-muted">{{ formatSize(audioFile()!.size) }}</small>
                 </div>
                 <button class="btn-np-ghost ms-auto"
-                  (click)="removeAudio($event)">Retirer</button>
+                  (click)="removeAudio($event)" i18n>Remove</button>
               </div>
             } @else {
-              <p class="mb-1 fw-semibold">Déposez votre audio ici</p>
-              <small class="np-text-hint">MP3, WAV, OGG — 200 Mo max</small>
+              <p class="mb-1 fw-semibold" i18n>Drop your audio here</p>
+              <small class="np-text-hint" i18n>MP3, WAV, OGG — 200 Mo max</small>
             }
           </div>
           <input #audioInput type="file" accept="audio/*"
@@ -163,15 +163,15 @@
 
       <!-- Récap -->
       <div class="np-recap glass-card mb-3">
-        <h6 class="np-card-section-title">Récapitulatif</h6>
+        <h6 class="np-card-section-title" i18n>Summary</h6>
         <div class="np-recap-grid">
-          <span class="np-text-muted">Titre</span>
+          <span class="np-text-muted" i18n>Title</span>
           <strong>{{ form.controls.title.value }}</strong>
-          <span class="np-text-muted">Catégorie</span>
+          <span class="np-text-muted" i18n>Category</span>
           <strong>{{ form.controls.category.value || '—' }}</strong>
-          <span class="np-text-muted">Couverture</span>
-          <strong>{{ coverPreview() ? 'Oui' : 'Non' }}</strong>
-          <span class="np-text-muted">Épisode</span>
+          <span class="np-text-muted" i18n>Cover</span>
+          <strong>{{ coverPreview() ? 'Yes' : 'No' }}</strong>
+          <span class="np-text-muted" i18n>Episode</span>
           <strong>{{ audioFile()?.name || '—' }}</strong>
         </div>
       </div>
@@ -180,12 +180,12 @@
       @if (store.uploadProgress() > 0 && store.loading()) {
         <div class="np-progress-wrap mb-3">
           <div class="d-flex justify-content-between mb-1">
-            <small class="np-text-muted">Upload en cours...</small>
+            <small class="np-text-muted" i18n>Upload in progress...</small>
             <small class="np-text-muted">{{ store.uploadProgress() }}%</small>
           </div>
           <div class="np-progress-bar">
             <div class="np-progress-fill"
-              [style.width.%]="store.uploadProgress()"></div>
+              [style.width.%]="store.uploadProgress()" i18n></div>
           </div>
         </div>
       }
@@ -199,12 +199,12 @@
       }
 
       <div class="d-flex justify-content-between">
-        <button class="btn-np-ghost" (click)="prevStep()">Retour</button>
+        <button class="btn-np-ghost" (click)="prevStep()" i18n>Return</button>
         <button class="btn-np" [disabled]="store.loading()" (click)="submit()">
           @if (store.loading()) {
-            <span class="np-spinner-sm"></span> Création...
+            <span class="np-spinner-sm" i18n></span> Creating...
           } @else {
-            Créer mon podcast
+            Create my podcast
           }
         </button>
       </div>

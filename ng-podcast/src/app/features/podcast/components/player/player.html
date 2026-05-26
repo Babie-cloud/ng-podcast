@@ -1,12 +1,12 @@
 @if (store.currentEpisode(); as episode) {
   <div class="np-player">
 
-    <div class="np-player-left">
+    <div class="np-player-left" i18n>
       <a
         class="np-player-title-link np-player-title mb-1 d-block"
         [routerLink]="['/podcasts', episode.podcastId, 'episode', episode.id]"
-      >{{ episode.title }}</a>
-      <p class="np-player-author mb-0">{{ audio.timeLabel() }}</p>
+       i18n>{{ episode.title }}</a>
+      <p class="np-player-author mb-0" i18n>{{ audio.timeLabel() }}</p>
     </div>
 
     <div class="np-player-center">
@@ -22,24 +22,24 @@
         [value]="audio.playbackRate()"
         aria-label="Vitesse de lecture"
         (change)="onRateChange($event)">
-        <option value="0.5">0.5×</option>
-        <option value="0.75">0.75×</option>
+        <option value="0.5" >0.5×</option>
+        <option value="0.75" >0.75×</option>
         <option value="1">1×</option>
-        <option value="1.25">1.25×</option>
-        <option value="1.5">1.5×</option>
+        <option value="1.25" >1.25×</option>
+        <option value="1.5" >1.5×</option>
         <option value="2">2×</option>
       </select>
 
       <button type="button" class="np-player-btn-icon"
         (click)="audio.skipBackward()"
-        aria-label="Reculer de 15 secondes"
-        title="−15 s">
+        aria-label="Go back 15 seconds"
+        title="−15 s" i18n>
         <i class="fa-solid fa-backward-fast" aria-hidden="true"></i>
       </button>
 
       <button type="button" class="np-player-btn-main"
         (click)="togglePlay()"
-        [attr.aria-label]="store.isPlaying() ? 'Pause' : 'Lecture'">
+        [attr.aria-label]="store.isPlaying() ? 'Pause' : 'Play'">
         @if (store.isPlaying()) {
           <i class="fa-solid fa-pause fa-lg" aria-hidden="true"></i>
         } @else {
@@ -49,14 +49,14 @@
 
       <button type="button" class="np-player-btn-icon"
         (click)="audio.skipForward()"
-        aria-label="Avancer de 15 secondes"
-        title="+15 s">
+        aria-label="Advance by 15 seconds"
+        title="+15 s" i18n>
         <i class="fa-solid fa-forward-fast" aria-hidden="true"></i>
       </button>
 
       <button type="button" class="np-player-btn-icon"
         (click)="audio.toggleMute()"
-        [attr.aria-label]="audio.state().muted ? 'Activer le son' : 'Couper le son'">
+        [attr.aria-label]="audio.state().muted ? 'Activate sound' : 'Mute sound'">
         @if (audio.state().muted) {
           <i class="fa-solid fa-volume-xmark" aria-hidden="true"></i>
         } @else {
@@ -69,12 +69,12 @@
         [value]="audio.volume()"
         (input)="onVolumeChange($event)"
         aria-label="Volume"
-      />
+        i18n />
     </div>
 
     @if (audio.loading()) {
       <div class="np-player-loader">
-        <div class="np-spinner-sm"></div>
+        <div class="np-spinner-sm" i18n>Loading...</div>
       </div>
     }
 

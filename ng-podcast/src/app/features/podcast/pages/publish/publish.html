@@ -1,48 +1,48 @@
 <div class="container py-4" style="max-width: 740px">
 
-  <h1 class="mb-1">Publier un épisode</h1>
+  <h1 class="mb-1" i18n>Publish an episode</h1>
   @if (store.selected(); as podcast) {
-    <p class="text-muted mb-4">Pour : <strong>{{ podcast.title }}</strong></p>
+    <p class="text-muted mb-4" i18n>Pour : <strong>{{ podcast.title }}</strong></p>
   }
 
   <!-- Étapes -->
   <div class="np-steps mb-4">
-    <div class="np-step done">  <span>1</span> Contenu </div>
-    <div class="np-step active"><span>2</span> Diffusion</div>
-    <div class="np-step">      <span>3</span> Planifier</div>
-    <div class="np-step">      <span>4</span> Confirmer</div>
+    <div class="np-step done" i18n>  <span>1</span> Content </div>
+    <div class="np-step active" i18n><span>2</span> Distribution</div>
+    <div class="np-step" i18n>      <span>3</span> Schedule</div>
+    <div class="np-step" i18n>      <span>4</span> Confirm</div>
   </div>
 
   <!-- Titre de l'épisode -->
   <div class="glass-card mb-3">
-    <h3 class="h6 mb-3">Détails de l'épisode</h3>
+    <h3 class="h6 mb-3" i18n>Détails of the episode</h3>
     <div class="mb-3">
-      <label class="form-label fw-semibold">Titre *</label>
+      <label class="form-label fw-semibold" i18n>Title *</label>
       <input class="form-control" placeholder="Ex : Interview avec l'invité X"
              [formControl]="form.controls.title" />
     </div>
     <div class="mb-3">
-      <label class="form-label fw-semibold">Description</label>
+      <label class="form-label fw-semibold" i18n>Description</label>
       <textarea class="form-control" rows="3" placeholder="Résumé de l'épisode…"
                 [formControl]="form.controls.description"></textarea>
     </div>
     <div>
-      <label class="form-label fw-semibold">Fichier audio *</label>
+      <label class="form-label fw-semibold" i18n>File audio *</label>
       <input type="file" class="form-control" accept="audio/*" (change)="onAudioChange($event)" />
       @if (audioFile()) {
         <small class="text-success mt-1 d-block">{{ audioFile()!.name }}</small>
       }
       <p class="small np-text-muted mt-2 mb-0">
-        Enregistrement micro&nbsp;: utiliser l’
-        <a [routerLink]="['/podcasts', podcastId(), 'studio']">atelier créateur</a>
-        — un nouvel enregistrement remplace un fichier précédemment sélectionné sur cette page avant envoi.
+        Microphone recording&nbsp;: use the
+        <a [routerLink]="['/podcasts', podcastId(), 'studio']">creative workshop</a>
+        — a new recording replaces a previously selected file on this page before submission.
       </p>
     </div>
   </div>
 
   <!-- Plateformes -->
   <div class="glass-card mb-3">
-    <h3 class="h6 mb-3">Plateformes de diffusion</h3>
+    <h3 class="h6 mb-3" i18n>Platforms</h3>
     <div class="np-platforms">
       @for (p of [
         {id:'spotify',    label:'Spotify'},
@@ -66,25 +66,25 @@
 
   <!-- Planification -->
   <div class="glass-card mb-4">
-    <h3 class="h6 mb-3">Planification</h3>
+    <h3 class="h6 mb-3" i18n>Scheduling</h3>
     <div class="d-flex gap-3 mb-3 flex-wrap">
       <label class="d-flex align-items-center gap-2 cursor-pointer">
         <input type="radio" name="timing" [formControl]="form.controls.publishNow" [value]="true"
-               style="accent-color:var(--np-primary)"> Publier maintenant
+               style="accent-color:var(--np-primary)"> Publish now
       </label>
       <label class="d-flex align-items-center gap-2 cursor-pointer">
         <input type="radio" name="timing" [formControl]="form.controls.publishNow" [value]="false"
-               style="accent-color:var(--np-primary)"> Planifier
+               style="accent-color:var(--np-primary)"> Schedule for later 
       </label>
     </div>
     @if (!form.controls.publishNow.value) {
       <div class="row g-2">
         <div class="col-sm-6">
-          <label class="form-label small">Date</label>
+          <label class="form-label small" i18n>Date</label>
           <input class="form-control" type="date" [formControl]="form.controls.scheduledAt" />
         </div>
         <div class="col-sm-6">
-          <label class="form-label small">Heure</label>
+          <label class="form-label small" i18n>Time </label>
           <input class="form-control" type="time" />
         </div>
       </div>
@@ -104,16 +104,16 @@
     <button
       class="btn-np"
       [disabled]="form.invalid || !pickedAudio() || saving()"
-      (click)="submit()"
+      (click)="submit()" i18n
     >
       @if (saving()) {
-        <span class="spinner-border spinner-border-sm me-2"></span>Publication…
+        <span class="spinner-border spinner-border-sm me-2"></span>Publish…
       } @else {
-        Publier l'épisode
+        Publish episode
       }
     </button>
     <a class="btn btn-outline-secondary"
-       [routerLink]="['/podcasts', podcastId()]">Annuler</a>
+       [routerLink]="['/podcasts', podcastId()]" i18n>cancel</a>
   </div>
 </div>
 

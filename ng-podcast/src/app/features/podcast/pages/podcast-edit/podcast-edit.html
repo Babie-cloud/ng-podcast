@@ -1,10 +1,10 @@
 <div class="np-page np-section" style="max-width: 920px">
   <div class="np-section-header mb-4">
     <div>
-      <span class="np-section-label">Podcast</span>
-      <h2 class="np-section-title">Modifier le <em>show</em> & les épisodes</h2>
+      <span class="np-section-label" i18n>Podcast</span>
+      <h2 class="np-section-title" i18n>Modify <em>show</em> & episodes</h2>
     </div>
-    <a [routerLink]="['/podcasts', podcastId()]" class="btn-np-ghost">Voir la page publique</a>
+    <a [routerLink]="['/podcasts', podcastId()]" class="btn-np-ghost" i18n>View public page</a>
   </div>
 
   @if (store.hasError()) {
@@ -18,28 +18,28 @@
   @if (!store.selected() && store.loading()) {
     <div class="np-loader-wrap">
       <div class="np-spinner"></div>
-      <p class="np-text-muted mt-3">Chargement…</p>
+      <p class="np-text-muted mt-3" i18n>Loading…</p>
     </div>
   }
 
   @if (store.selected(); as p) {
     <p class="np-text-muted small mb-3">
-      Visibilité du podcast :
-      <strong>{{ p.status === 'PUBLISHED' ? 'Public' : 'Brouillon (visible par vous)' }}</strong>
-      — les épisodes en brouillon restent cachés du public.
+      Visibility of podcast :
+      <strong>{{ p.status === 'PUBLISHED' ? 'Public' : 'Draft (visible by you)' }}</strong>
+      — the episodes in draft remain hidden from the public.
     </p>
 
     <form class="glass-card mb-4" [formGroup]="form" (ngSubmit)="submit()">
       <div class="mb-3">
-        <label class="form-label" for="pe-title">Titre</label>
+        <label class="form-label" for="pe-title" i18n>Title</label>
         <input id="pe-title" type="text" class="np-input w-100" formControlName="title" />
       </div>
       <div class="mb-3">
-        <label class="form-label" for="pe-desc">Description</label>
+        <label class="form-label" for="pe-desc" i18n>Description</label>
         <textarea id="pe-desc" class="np-input w-100" rows="5" formControlName="description"></textarea>
       </div>
       <div class="mb-3">
-        <label class="form-label" for="pe-cat">Catégorie</label>
+        <label class="form-label" for="pe-cat" i18n>Category</label>
         <select id="pe-cat" class="np-input w-100" formControlName="category">
           <option value="">—</option>
           @for (c of categories; track c) {
@@ -48,55 +48,55 @@
         </select>
       </div>
       <div class="mb-3">
-        <label class="form-label" for="pe-lang">Langue</label>
+        <label class="form-label" for="pe-lang" i18n>Language</label>
         <input id="pe-lang" type="text" class="np-input w-100" formControlName="language" maxlength="10" />
       </div>
       <div class="mb-4">
-        <label class="form-label" for="pe-status">Statut</label>
+        <label class="form-label" for="pe-status" i18n>Status</label>
         <select id="pe-status" class="np-input w-100" formControlName="status">
-          <option value="DRAFT">Brouillon</option>
-          <option value="PUBLISHED">Publié</option>
+          <option value="DRAFT" i18n>Draft</option>
+          <option value="PUBLISHED" i18n  >Published</option>
         </select>
       </div>
       <div class="d-flex gap-2 flex-wrap">
-        <button type="submit" class="btn-np" [disabled]="store.loading()">
-          {{ store.loading() ? 'Enregistrement…' : 'Enregistrer les infos' }}
+        <button type="submit" class="btn-np" [disabled]="store.loading()" i18n>
+          {{ store.loading() ? 'Saving…' : 'Save information' }}
         </button>
-        <a [routerLink]="['/podcasts', p.id]" class="btn-np-outline">Fermer</a>
+        <a [routerLink]="['/podcasts', p.id]" class="btn-np-outline" i18n>Close</a>
       </div>
     </form>
 
     <div class="glass-card mb-3">
-      <span class="np-section-label d-block mb-2">Audio</span>
+      <span class="np-section-label d-block mb-2" i18n>Audio</span>
       <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
         <div>
-          <h3 class="h5 mb-1">Épisodes</h3>
-          <p class="np-text-muted small mb-0">
-            Ajouter une piste depuis l&apos;atelier (fichier ou micro&nbsp;; le micro remplace le fichier choisi).
+          <h3 class="h5 mb-1" i18n>Episodes</h3>
+          <p class="np-text-muted small mb-0" i18n>
+            Add a track from the studio (file or microphone&nbsp;; the microphone replaces the selected file).
           </p>
         </div>
-        <a [routerLink]="['/podcasts', podcastId(), 'studio']" class="btn-np ms-auto">
+        <a [routerLink]="['/podcasts', podcastId(), 'studio']" class="btn-np ms-auto" i18n>
           <i class="fa-solid fa-microphone-lines me-2" aria-hidden="true"></i>
           Atelier audio
         </a>
       </div>
 
       @if (p.episodes.length === 0) {
-        <p class="np-text-muted small mb-0">Aucun épisode — ouvrez l&apos;atelier pour en créer un.</p>
+        <p class="np-text-muted small mb-0" i18n>No episodes — open the studio to create one.</p>
       }
 
       @if (p.episodes.length > 0) {
-        <ul class="list-unstyled d-flex flex-column gap-3 mb-0">
+        <ul class="list-unstyled d-flex flex-column gap-3 mb-0" i18n>
           @for (ep of p.episodes; track ep.id) {
             <li
               class="d-flex flex-column gap-3 p-3 rounded"
               style="border: 1px solid color-mix(in srgb, var(--np-border, #444) 40%, transparent)"
-            >
-              <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
+             i18n>
+              <div class="d-flex flex-wrap justify-content-between align-items-start gap-2" i18n>
                 <div>
                   <div class="fw-semibold">{{ ep.title }}</div>
-                  <div class="np-text-muted small">
-                    {{ isPublishedEpisode(ep) ? 'Publié' : 'Brouillon' }} · créé {{ ep.createdAt | date: 'medium' }}
+                  <div class="np-text-muted small" i18n>
+                    {{ isPublishedEpisode(ep) ? 'Published' : 'Draft' }} · created {{ ep.createdAt | date: 'medium' }}
                     @if (ep.duration > 0) {
                       <span> · {{ ep.duration }} s</span>
                     }
@@ -109,31 +109,31 @@
                   <button
                     type="button"
                     class="btn-np-outline btn-np-sm"
-                    title="Publication"
+                    title="Publish"
                     [disabled]="store.loading()"
                     (click)="toggleEpisodePublish(ep)"
-                  >
+                   i18n>
                     @if (isPublishedEpisode(ep)) {
-                      <i class="fa-solid fa-eye-slash me-1" aria-hidden="true"></i>Brouillon
+                      <i class="fa-solid fa-eye-slash me-1" aria-hidden="true" i18n></i>Draft
                     } @else {
-                      <i class="fa-solid fa-bullhorn me-1" aria-hidden="true"></i>Publier
+                      <i class="fa-solid fa-bullhorn me-1" aria-hidden="true" i18n></i>Publish 
                     }
                   </button>
                   <button
                     type="button"
                     class="btn-np-outline btn-np-sm text-danger np-btn-danger"
-                    title="Supprimer"
+                    title="Delete episode"
                     [disabled]="store.loading()"
-                    (click)="removeEpisode(ep)"
+                    (click)="removeEpisode(ep)" i18n
                   >
-                    <i class="fa-solid fa-trash-can me-1" aria-hidden="true"></i>
-                    Supprimer
+                    <i class="fa-solid fa-trash-can me-1" aria-hidden="true" i18n></i>
+                    Delete
                   </button>
                 </div>
               </div>
 
               <div>
-                <label class="np-label small" [attr.for]="'caps-' + ep.id">Paroles synchronisées (JSON)</label>
+                <label class="np-label small" [attr.for]="'caps-' + ep.id">Synchronized lyrics (JSON)</label>
                 <textarea
                   [id]="'caps-' + ep.id"
                   #capTa
@@ -145,18 +145,19 @@
                 ></textarea>
                 <div class="d-flex justify-content-between flex-wrap gap-2 mt-2">
                   <p class="small np-text-muted mb-0">
-                    <code>s</code>/<code>e</code> en secondes, <code>t</code>&nbsp;= texte. Laisser vide pour effacer.
+                    <code>s</code>/<code>e</code> in seconds, <code>t</code>&nbsp;= text. Leave empty to clear.
                   </p>
                   <button
                     type="button"
                     class="btn-np-outline btn-np-sm"
                     [disabled]="captionsBusyId() === ep.id || store.loading()"
                     (click)="saveCaptions(ep, capTa.value)"
+                    i18n
                   >
                     @if (captionsBusyId() === ep.id) {
-                      Envoi…
+                      Sending…
                     } @else {
-                      Enregistrer les paroles
+                      Save lyrics
                     }
                   </button>
                 </div>

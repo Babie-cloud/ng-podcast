@@ -1,10 +1,9 @@
 <div class="np-page np-section settings-page">
   <header class="np-hero glass-card mb-4">
-    <p class="np-hero-eyebrow">Préférences</p>
-    <h1 class="np-gradient-text">Paramètres</h1>
-    <p class="np-hero-desc mb-0">
-      Personnalisez l&apos;apparence, accédez à votre compte et à la sécurité, ou retrouvez vos contenus
-      en un clic.
+    <p class="np-hero-eyebrow" i18n>Preferences</p>
+    <h1 class="np-gradient-text" i18n>Settings</h1>
+    <p class="np-hero-desc mb-0" i18n>
+      Customize the appearance, access your account and security, or find your content with a click.
     </p>
   </header>
 
@@ -12,16 +11,16 @@
     <div class="settings-layout">
       <div class="settings-stack">
         <section class="glass-card settings-card" aria-labelledby="settings-appearance-title">
-          <h2 id="settings-appearance-title" class="settings-card-title">
-            Apparence
+          <h2 id="settings-appearance-title" class="settings-card-title" i18n>
+            Appearance
           </h2>
           <p class="settings-lead mb-4">
-            Choisissez comment ng-podcast s&apos;affiche. «&nbsp;Système&nbsp;» suit le mode clair ou sombre de
-            votre appareil. Le bouton lune&nbsp;/&nbsp;soleil dans la barre du haut règle aussi le thème
-            (clair ou sombre explicite).
+            Choose how ng-podcast displays. «&nbsp;System&nbsp;» follows the light or dark mode of
+            your device. The moon&nbsp;/&nbsp;sun button in the top bar also sets the theme
+            (clear or explicit darkness).
           </p>
 
-          <div class="settings-theme-options" role="radiogroup" aria-label="Thème d’affichage">
+          <div class="settings-theme-options" role="radiogroup" aria-label="Display theme options">
             <label class="settings-choice" [class.settings-choice-active]="theme.mode() === 'system'">
               <input
                 type="radio"
@@ -31,8 +30,8 @@
                 (change)="setThemeMode('system')"
               />
               <span class="settings-choice-body">
-                <span class="settings-choice-label">Système</span>
-                <span class="settings-choice-meta">Automatique selon l’OS</span>
+                <span class="settings-choice-label" i18n>System</span>
+                <span class="settings-choice-meta" i18n>Automatic depending on the OS</span>
               </span>
             </label>
             <label class="settings-choice" [class.settings-choice-active]="theme.mode() === 'light'">
@@ -44,8 +43,8 @@
                 (change)="setThemeMode('light')"
               />
               <span class="settings-choice-body">
-                <span class="settings-choice-label">Clair</span>
-                <span class="settings-choice-meta">Fond lumineux, contrastes doux</span>
+                <span class="settings-choice-label" i18n>Light</span>
+                <span class="settings-choice-meta" i18n>Light background, soft contrasts</span>
               </span>
             </label>
             <label class="settings-choice" [class.settings-choice-active]="theme.mode() === 'dark'">
@@ -57,90 +56,89 @@
                 (change)="setThemeMode('dark')"
               />
               <span class="settings-choice-body">
-                <span class="settings-choice-label">Sombre</span>
-                <span class="settings-choice-meta">Repos des yeux le soir</span>
+                <span class="settings-choice-label" i18n>Dark</span>
+                <span class="settings-choice-meta" i18n>Dark background, high contrasts</span>
               </span>
             </label>
           </div>
           <p class="settings-footnote mb-0">
-            Rendu actuel&nbsp;: <strong>{{ theme.isDark() ? 'thème sombre' : 'thème clair' }}</strong>
+            Current rendering&nbsp;: <strong>{{ theme.isDark() ? 'dark theme' : 'light theme' }}</strong>
             @if (theme.mode() === 'system') {
-              <span class="settings-footnote-sys"> (via votre système)</span>
+              <span class="settings-footnote-sys"> (via your system)</span>
             }
           </p>
         </section>
 
         <section class="glass-card settings-card" aria-labelledby="settings-account-title">
-          <h2 id="settings-account-title" class="settings-card-title">Compte</h2>
+          <h2 id="settings-account-title" class="settings-card-title" i18n>Account</h2>
           <dl class="settings-dl">
             <div class="settings-row">
-              <dt>Nom affiché</dt>
+              <dt i18n>Display name</dt>
               <dd>{{ displayName() }}</dd>
             </div>
             <div class="settings-row">
-              <dt>Email</dt>
+              <dt i18n>Email</dt>
               <dd class="settings-muted">{{ u.email }}</dd>
             </div>
             <div class="settings-row">
-              <dt>Rôle</dt>
+              <dt i18n>Role</dt>
               <dd>
                 @if (u.role === 'ADMIN') {
-                  <span class="settings-pill settings-pill-admin">Administrateur</span>
+                  <span class="settings-pill settings-pill-admin" i18n>Administrator</span>
                 } @else {
-                  <span class="settings-pill">Créateur</span>
+                  <span class="settings-pill" i18n>Creator</span>
                 }
               </dd>
             </div>
           </dl>
           <div class="settings-inline-actions mt-4">
-            <a routerLink="/profil" class="btn-np btn-np-sm">Modifier le profil</a>
+            <a routerLink="/profil" class="btn-np btn-np-sm" i18n>Modify profile</a>
           </div>
         </section>
 
         <section class="glass-card settings-card" aria-labelledby="settings-security-title">
-          <h2 id="settings-security-title" class="settings-card-title">Sécurité</h2>
+          <h2 id="settings-security-title" class="settings-card-title" i18n>Security</h2>
           <p class="settings-lead mb-0">
-            Réinitialiser votre mot de passe par email depuis la page dédiée (lien envoyé après
-            inscription ou sur demande).
+           Reset your password via email from the dedicated page (link sent after registration or upon request).
           </p>
           <div class="settings-inline-actions mt-4">
-            <a routerLink="/resetpassword" class="btn-np-outline btn-np-sm">
-              Réinitialiser le mot de passe
+            <a routerLink="/resetpassword" class="btn-np-outline btn-np-sm" i18n>
+              Reset password
             </a>
           </div>
         </section>
 
         <section class="glass-card settings-card settings-session" aria-labelledby="settings-session-title">
-          <h2 id="settings-session-title" class="settings-card-title">Session</h2>
+          <h2 id="settings-session-title" class="settings-card-title" i18n>Session</h2>
           <p class="settings-lead mb-3">
-            Vous êtes connecté(e) en tant que <strong>{{ u.email }}</strong>. La déconnexion efface la
-            session sur cet appareil.
+            You are logged in as <strong>{{ u.email }}</strong>. Signing out will clear the
+            session on this device.
           </p>
           <button type="button" class="np-btn-danger btn-np-sm settings-signout" (click)="logout()">
             <i class="fa-solid fa-right-from-bracket me-2" aria-hidden="true"></i>
-            Déconnexion
+            Sign out  
           </button>
         </section>
       </div>
 
       <aside class="glass-card settings-card settings-aside">
-        <h2 class="settings-card-title">Raccourcis</h2>
+        <h2 class="settings-card-title" i18n>Shortcuts</h2>
         <p class="settings-muted small mb-4">
-          Création, tableau de bord et bibliothèques personnelles.
+          Creation, dashboard and personal libraries.
         </p>
-        <nav class="settings-actions" aria-label="Raccourcis application">
-          <a routerLink="/dashboard" class="btn-np">Tableau de bord</a>
-          <a routerLink="/podcasts/create" class="btn-np-outline">Nouveau podcast</a>
-          <a routerLink="/podcasts/mine" class="btn-np-outline">Mes podcasts</a>
-          <a routerLink="/writing/mine" class="btn-np-outline">Mes textes</a>
-          <a routerLink="/storytelling/mine" class="btn-np-outline">Mes histoires</a>
-          <a routerLink="/search" class="btn-np-outline">Recherche</a>
+        <nav class="settings-actions" aria-label="Application shortcuts ">
+          <a routerLink="/dashboard" class="btn-np" i18n>Dashboard</a>
+          <a routerLink="/podcasts/create" class="btn-np-outline" i18n>Create podcast</a>
+          <a routerLink="/podcasts/mine" class="btn-np-outline" i18n>My podcasts</a>
+          <a routerLink="/writing/mine" class="btn-np-outline" i18n>My texts</a>
+          <a routerLink="/storytelling/mine" class="btn-np-outline" i18n>My stories</a>
+          <a routerLink="/search" class="btn-np-outline" i18n>Search</a>
         </nav>
       </aside>
     </div>
   } @else {
     <div class="glass-card settings-card settings-loading">
-      <p class="mb-0 settings-muted">Chargement des paramètres...</p>
+      <p class="mb-0 settings-muted" i18n>Loading settings...</p>
     </div>
   }
 </div>

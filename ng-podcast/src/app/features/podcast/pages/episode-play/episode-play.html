@@ -2,7 +2,7 @@
   @if (store.selected(); as podcast) {
     @if (episode(); as ep) {
       <div class="episode-play-layout glass-card">
-        <div class="episode-play-art-wrap">
+        <div class="episode-play-art-wrap" i18n>
           <img
             [src]="podcast.coverUrl || '/icons/favicon.svg'"
             alt=""
@@ -13,13 +13,13 @@
             class="episode-play-pill"
             [routerLink]="['/podcasts', podcast.id]"
             aria-label="Retour au podcast"
-          >
+            i18n>
             <i class="fa-solid fa-arrow-left-long" aria-hidden="true"></i>
             Podcast
           </button>
         </div>
 
-        <div class="episode-play-main">
+        <div class="episode-play-main"  i18n>
           <p class="np-text-muted small mb-1">{{ podcast.title }}</p>
           <h1 class="episode-play-title">{{ ep.title }}</h1>
           <p class="np-text-muted small mb-4">{{ ep.createdAt | date:'longDate' }}</p>
@@ -28,7 +28,7 @@
             <p class="text-danger small mb-3">{{ audio.error() }}</p>
           }
 
-          <div class="episode-play-controls mb-4">
+          <div class="episode-play-controls mb-4"  i18n>
             <button
               type="button"
               class="btn-np btn-np-icon-lg"
@@ -60,6 +60,7 @@
                 class="btn-np-ghost episode-play-mini"
                 (click)="audio.skipBackward()"
                 aria-label="-15 sec"
+                i18n
               >
                 <i class="fa-solid fa-backward-fast"></i>
               </button>
@@ -68,14 +69,15 @@
                 class="btn-np-ghost episode-play-mini"
                 (click)="audio.skipForward()"
                 aria-label="+15 sec"
-              >
+                 i18n >
                 <i class="fa-solid fa-forward-fast"></i>
               </button>
               <button
                 type="button"
                 class="btn-np-ghost episode-play-mini"
                 (click)="audio.toggleMute()"
-                [attr.aria-label]="audio.state().muted ? 'Son' : 'Muet'"
+                [attr.aria-label]="audio.state().muted ? 'Sound' : 'Mute'"
+                 i18n
               >
                 @if (audio.state().muted) {
                   <i class="fa-solid fa-volume-xmark"></i>
@@ -86,10 +88,10 @@
             </div>
           </div>
 
-          <section class="episode-play-cues-panel" aria-label="Paroles synchronisées">
+          <section class="episode-play-cues-panel" aria-label="Synchronized lyrics">
             <div class="d-flex justify-content-between align-items-baseline mb-2 flex-wrap gap-2">
-              <h2 class="h6 mb-0">Paroles synchronisées</h2>
-              <span class="small np-text-muted">Mise en avant selon la position dans l’audio</span>
+              <h2 class="h6 mb-0">Synchronized lyrics</h2>
+              <span class="small np-text-muted" i18n>Highlighting based on position in the audio</span>
             </div>
             @if (cues().length > 0) {
               <div class="episode-play-cues-scroll">
@@ -99,10 +101,10 @@
               </div>
             } @else {
               <div class="episode-play-cues-fallback">
-                <p class="np-text-muted small mb-0">
-                  Pas encore de lignes synchronisées (JSON tableau avec <code>s</code>,
-                  <code>e</code> en secondes, <code>t</code> pour le texte — à saisir par le créateur
-                  lors de l’édition du podcast).
+                <p class="np-text-muted small mb-0" i18n>
+                  No synchronized lines yet (JSON array with <code>s</code>,
+                  <code>e</code> in seconds, <code>t</code> for the text — to be entered by the creator
+                  during podcast editing).
                 </p>
               </div>
             }

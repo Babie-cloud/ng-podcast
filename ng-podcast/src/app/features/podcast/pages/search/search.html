@@ -1,19 +1,19 @@
 <div class="np-search-page container py-4">
   <div class="np-search-hero mb-4">
-    <h1 class="mb-3">Rechercher un podcast</h1>
+    <h1 class="mb-3" i18n>Search for a podcast</h1>
     <div class="np-search-bar">
       <i class="fa-solid fa-magnifying-glass np-search-icon" aria-hidden="true"></i>
       <input
         type="search"
         class="np-search-input"
-        placeholder="Titre, auteur, thème…"
+        placeholder="Title, author, theme…"
         [ngModel]="query()"
         (ngModelChange)="onSearch($event)"
         autocomplete="off"
         autofocus
-      />
+       i18n/>
       @if (query()) {
-        <button type="button" class="np-search-clear" (click)="onSearch('')" aria-label="Effacer">×</button>
+        <button type="button" class="np-search-clear" (click)="onSearch('')" aria-label="Effacer" i18n>cancel</button>
       }
     </div>
 
@@ -25,11 +25,11 @@
   </div>
 
   @if (query()) {
-    <p class="np-results-count mb-3">{{ results().length }} résultat(s) pour « {{ query() }} »</p>
+    <p class="np-results-count mb-3" i18n>{{ results().length }} result(s) for « {{ query() }} »</p>
 
     @if (results().length === 0) {
       <div class="np-empty text-center py-5">
-        <p class="np-text-muted mb-0">Aucun podcast ne correspond à votre recherche.</p>
+        <p class="np-text-muted mb-0" i18n>No podcast matches your search.</p>
       </div>
     }
 
@@ -41,7 +41,7 @@
       }
     </div>
   } @else {
-    <h2 class="h5 mb-3">Tous les podcasts</h2>
+    <h2 class="h5 mb-3" i18n>All podcasts</h2>
     <div class="row g-3">
       @for (podcast of store.podcasts(); track podcast.id) {
         <div class="col-md-4">

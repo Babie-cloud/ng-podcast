@@ -1,5 +1,5 @@
 @if (!supported()) {
-  <p class="np-text-muted small mb-0">Enregistrement micro indisponible dans cet environnement.</p>
+  <p class="np-text-muted small mb-0" i18n>Recording not supported in this environment.</p>
 } @else {
   @if (error()) {
     <div class="np-alert np-alert-danger small mb-2">{{ error() }}</div>
@@ -7,15 +7,15 @@
   <div class="d-flex flex-wrap gap-2 align-items-center">
     @if (!recording()) {
       <button type="button" class="btn-np-outline btn-np-sm" (click)="start()">
-        Enregistrer le micro
+        Record on Microphone
       </button>
     } @else {
-      <button type="button" class="btn-np btn-np-sm np-btn-danger" (click)="stop()">
-        Arrêter l'enregistrement
+      <button type="button" class="btn-np btn-np-sm np-btn-danger" (click)="stop()" i18n>
+        Stop Recording
       </button>
     }
     @if (label()) {
-      <button type="button" class="btn-np-ghost btn-np-sm" (click)="clear()">Effacer</button>
+      <button type="button" class="btn-np-ghost btn-np-sm" (click)="clear()" i18n>Clear</button>
     }
   </div>
   @if (label()) {

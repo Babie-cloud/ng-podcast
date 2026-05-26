@@ -1,14 +1,14 @@
 <div class="np-page np-section">
 
   @if (!store.loading() && store.hasError()) {
-    <div class="np-alert np-alert-danger mb-4" role="alert">
-      Podcast introuvable ou non accessible.
+    <div class="np-alert np-alert-danger mb-4" role="alert" i18n>
+      Podcast not found or inaccessible.
       <div class="mt-2">
-        <a routerLink="/login" class="btn-np-outline btn-np-sm" [queryParams]="{ returnUrl: router.url }">
-          Se connecter
+        <a routerLink="/login" class="btn-np-outline btn-np-sm" [queryParams]="{ returnUrl: router.url }" i18n>
+           login
         </a>
-        <a routerLink="/signup" class="btn-np-outline btn-np-sm ms-2" [queryParams]="{ returnUrl: router.url }">
-          Créer un compte
+        <a routerLink="/signup" class="btn-np-outline btn-np-sm ms-2" [queryParams]="{ returnUrl: router.url }" i18n>
+          Create an account
         </a>
       </div>
     </div>
@@ -16,7 +16,7 @@
 
   @if (store.loading()) {
     <div class="np-loader-wrap">
-      <div class="np-spinner"></div>
+      <div class="np-spinner" i18n>Loading...</div>
     </div>
   }
 
@@ -24,7 +24,7 @@
 
     <!-- Header podcast -->
     <div class="np-detail-hero glass-card mb-4">
-      <div class="np-detail-cover-wrap">
+      <div class="np-detail-cover-wrap" i18n>
         <img
           [src]="podcast.coverUrl"
           [alt]="podcast.title"
@@ -32,54 +32,56 @@
         />
       </div>
       <div class="np-detail-info">
-        <span class="np-badge np-badge-primary mb-2">Podcast</span>
-        <h1 class="np-detail-title">{{ podcast.title }}</h1>
-        <p class="np-detail-author">par {{ podcast.authorName }}</p>
-        <p class="np-text-muted np-detail-desc">{{ podcast.description }}</p>
+        <span class="np-badge np-badge-primary mb-2" i18n>Podcast</span>
+        <h1 class="np-detail-title" i18n>{{ podcast.title }}</h1>
+        <p class="np-detail-author" i18n>par {{ podcast.authorName }}</p>
+        <p class="np-text-muted np-detail-desc" i18n>{{ podcast.description }}</p>
         <div class="d-flex gap-2 flex-wrap mt-3 align-items-center">
           <span
             class="np-badge"
             [class.np-badge-primary]="podcast.status === 'PUBLISHED'"
             [class.np-badge-muted]="podcast.status !== 'PUBLISHED'"
           >
-            {{ podcast.status === 'PUBLISHED' ? 'Podcast public' : 'Podcast brouillon (privé)' }}
+            {{ podcast.status === 'PUBLISHED' ? 'Podcast public' : 'Draft podcast (private)' }}
           </span>
-          <span class="np-badge np-badge-muted">
-            {{ podcast.episodes.length }} épisode(s)
+          <span class="np-badge np-badge-muted" i18n>
+            {{ podcast.episodes.length }} episode(s)
           </span>
-          <span class="np-badge np-badge-muted">
+          <span class="np-badge np-badge-muted" i18n>
+             Created on
             {{ podcast.createdAt | date:'dd/MM/yyyy' }}
           </span>
         </div>
         @if (auth.isLogged() && isOwner(podcast)) {
           <div class="d-flex flex-wrap gap-2 mt-3 align-items-center">
-            <a [routerLink]="['/podcasts', podcast.id, 'edit']" class="btn-np-outline btn-np-sm">
+            
+            <a [routerLink]="['/podcasts', podcast.id, 'edit']" class="btn-np-outline btn-np-sm" title="Edit reserved for creator" i18n>
               <i class="fa-solid fa-pen-to-square me-1" aria-hidden="true"></i>
-              Modifier
+              Edit
             </a>
-            <a [routerLink]="['/podcasts', podcast.id, 'studio']" class="btn-np btn-np-sm">
+            <a [routerLink]="['/podcasts', podcast.id, 'studio']" class="btn-np btn-np-sm" i18n>
               <i class="fa-solid fa-microphone-lines me-1" aria-hidden="true"></i>
-              Atelier audio
+              Audio workshop
             </a>
-            <a [routerLink]="['/podcasts', podcast.id, 'publish']" class="btn-np-ghost btn-np-sm">
-              Assistant publication
+            <a [routerLink]="['/podcasts', podcast.id, 'publish']" class="btn-np-ghost btn-np-sm" i18n>
+              Publication assistant
             </a>
           </div>
         }
       </div>
     </div>
 
-    <!-- Liste épisodes -->
+    <!-- NOTE :: Liste épisodes -->
     <div class="np-section-header mb-3">
       <h2 class="np-section-title">
-        Épisodes
+        Episodes
         <span class="np-badge np-badge-primary ms-2">
           {{ podcast.episodes.length }}
         </span>
       </h2>
       @if (auth.isLogged() && isOwner(podcast)) {
         <p class="np-text-muted small mb-0">
-          Les épisodes en <strong>brouillon</strong> ne sont visibles que par vous ; publiez-les pour les auditeurs.
+          Episodes in <strong>draft</strong> are only visible to you ; publish them for listeners.
         </p>
       }
     </div>
@@ -87,11 +89,11 @@
     <div class="np-episode-list">
       @for (ep of podcast.episodes; track ep.id) {
         <div class="np-episode-item glass"
-          [class.np-episode-active]="store.currentEpisode()?.id === ep.id">
-          <div class="np-episode-num np-gradient-text">
+          [class.np-episode-active]="store.currentEpisode()?.id === ep.id" i18n>
+          <div class="np-episode-num np-gradient-text" i18n>
             {{ $index + 1 }}
           </div>
-          <div class="np-episode-info flex-grow-1">
+          <div class="np-episode-info flex-grow-1" i18n>
             <p class="np-episode-title mb-1">{{ ep.title }}</p>
             <div class="d-flex flex-wrap gap-2 align-items-center">
               <span
@@ -99,24 +101,24 @@
                 [class.np-badge-primary]="episodeStatus(ep) === 'PUBLISHED'"
                 [class.np-badge-muted]="episodeStatus(ep) !== 'PUBLISHED'"
               >
-                {{ episodeStatus(ep) === 'PUBLISHED' ? 'Public' : 'Brouillon' }}
+                {{ episodeStatus(ep) === 'PUBLISHED' ? 'Public' : 'Draft' }}
               </span>
-              <p class="np-episode-meta mb-0">
+              <p class="np-episode-meta mb-0" i18n>
                 {{ formatDuration(ep.duration) }} —
                 {{ ep.createdAt | date:'dd/MM/yyyy' }}
               </p>
             </div>
           </div>
-          <div class="d-flex flex-wrap gap-2 align-items-center justify-content-end">
+          <div class="d-flex flex-wrap gap-2 align-items-center justify-content-end" i18n>
             @if (ep.audioUrl) {
               <button
                 type="button"
                 class="btn-np-outline btn-np-sm"
                 (click)="openEpisodePlay(podcast.id, ep)"
-                title="Ouvrir la page d’écoute"
+                title="Open episode player" i18n
               >
                 <i class="fa-solid fa-headphones-simple me-1" aria-hidden="true"></i>
-                Écouter
+                Play
               </button>
               @if (store.currentEpisode()?.id === ep.id && store.isPlaying()) {
                 <button
@@ -124,28 +126,30 @@
                   class="btn-np-ghost btn-np-sm"
                   (click)="store.pause()"
                   aria-label="Pause"
-                >
+                 i18n>
                   <i class="fa-solid fa-pause" aria-hidden="true"></i>
                 </button>
               }
             }
             @if (auth.isLogged() && isOwner(podcast)) {
-              <a [routerLink]="['/podcasts', podcast.id, 'edit']" class="btn-np-outline btn-np-sm" title="Montage réservé au créateur">
-                <i class="fa-solid fa-sliders me-1" aria-hidden="true"></i>Gérer
+              <a [routerLink]="['/podcasts', podcast.id, 'edit']" class="btn-np-outline btn-np-sm" title="Editing reserved for the creator" i18n>
+                <i class="fa-solid fa-sliders me-1" aria-hidden="true"></i>Manage
               </a>
             }
           </div>
         </div>
       } @empty {
         <div class="np-empty glass-card">
-          <p class="np-text-muted">Aucun épisode pour ce podcast.</p>
+          <p class="np-text-muted" i18n>
+            No episodes for this podcast.
+          </p>
           @if (auth.isLogged() && isOwner(podcast)) {
             <div class="d-flex flex-wrap gap-2 mt-2">
-              <a [routerLink]="['/podcasts', podcast.id, 'studio']" class="btn-np">
-                Atelier audio
+              <a [routerLink]="['/podcasts', podcast.id, 'studio']" class="btn-np" i18n>
+                Audio workshop
               </a>
-              <a [routerLink]="['/podcasts', podcast.id, 'publish']" class="btn-np-outline">
-                Assistant publication
+              <a [routerLink]="['/podcasts', podcast.id, 'publish']" class="btn-np-outline" i18n>
+                Publication assistant
               </a>
             </div>
           }
@@ -153,8 +157,8 @@
       }
     </div>
 
-    <a routerLink="/podcasts" class="btn-np-ghost mt-4 d-inline-flex">
-      Retour aux podcasts
+    <a routerLink="/podcasts" class="btn-np-ghost mt-4 d-inline-flex" i18n>
+      Return to podcasts list
     </a>
   }
 

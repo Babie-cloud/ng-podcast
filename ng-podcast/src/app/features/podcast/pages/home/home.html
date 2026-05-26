@@ -2,27 +2,27 @@
 
   <!-- Hero -->
   <div class="np-hero glass-card mb-5">
-    <p class="np-hero-eyebrow">Bienvenue sur ng-podcast</p>
-    <h1 class="np-gradient-text">Votre espace<br><em>créatif</em> audio</h1>
-    <p class="np-hero-desc">
-      Créez, partagez et découvrez des podcasts, poèmes et témoignages
-      qui font vibrer les âmes.
+    <p class="np-hero-eyebrow" i18n>Welcome to ng-podcast</p>
+    <h1 class="np-gradient-text">Your creative<br><em>audio</em> space</h1>
+    <p class="np-hero-desc" i18n>
+      Create, share and discover podcasts, poems and testimonials
+      that make souls vibrate.
     </p>
     <div class="d-flex gap-3 flex-wrap">
       @if (auth.isLogged()) {
-        <a routerLink="/podcasts/create" class="btn-np">
-          + Créer un podcast
+        <a routerLink="/podcasts/create" class="btn-np" i18n>
+          + Create a podcast
         </a>
       } @else {
         <a
           routerLink="/signup"
           class="btn-np"
           [queryParams]="{ returnUrl: '/podcasts/create' }"
-        >
-          Créer un compte pour publier
+         i18n>
+          Create an account to publish
         </a>
       }
-      <a routerLink="/podcasts/search" class="btn-np-outline">
+      <a routerLink="/podcasts/search" class="btn-np-outline" i18n  >
         Explorer
       </a>
     </div>
@@ -32,36 +32,36 @@
   <div class="np-stats-row mb-5">
     <div class="np-stat glass-card">
       <span class="np-stat-num np-gradient-text">{{ store.podcastCount() }}</span>
-      <span class="np-stat-lbl">Podcasts</span>
+      <span class="np-stat-lbl" i18n>Podcasts</span>
     </div>
     <div class="np-stat glass-card">
       <span class="np-stat-num np-gradient-text">142</span>
-      <span class="np-stat-lbl">Épisodes</span>
+      <span class="np-stat-lbl" i18n>Episodes</span>
     </div>
     <div class="np-stat glass-card">
       <span class="np-stat-num np-gradient-text">48k</span>
-      <span class="np-stat-lbl">Auditeurs</span>
+      <span class="np-stat-lbl" i18n>Listeners  </span>
     </div>
   </div>
 
   <!-- Section podcasts -->
   <div class="np-section-header mb-4">
     <div>
-      <span class="np-section-label">Derniers podcasts</span>
-      <h2 class="np-section-title">Tout juste <em>sortis</em></h2>
+      <span class="np-section-label" i18n>Last podcasts</span>
+      <h2 class="np-section-title" i18n>Just released</h2>
     </div>
-    <a routerLink="/podcasts/search" class="btn-np-ghost">Voir tout</a>
+    <a routerLink="/podcasts/search" class="btn-np-ghost" i18n>See all</a>
   </div>
 
   @if (store.loading()) {
     <div class="np-loader-wrap">
       <div class="np-spinner"></div>
-      <p class="np-text-muted mt-3">Chargement des podcasts...</p>
+      <p class="np-text-muted mt-3" i18n>Loading podcasts...</p>
     </div>
   }
 
   @if (store.hasError()) {
-    <div class="np-alert np-alert-danger">{{ store.error() }}</div>
+    <div class="np-alert np-alert-danger" i18n>{{ store.error() }}</div>
   }
 
   <div class="np-grid-3 mb-5">
@@ -73,18 +73,19 @@
     } @empty {
       @if (!store.loading()) {
         <div class="np-empty glass-card">
-          <p>Aucun podcast pour le moment.</p>
+          <p i18n>No podcast for the moment.</p>
           @if (auth.isLogged()) {
-            <a routerLink="/podcasts/create" class="btn-np">
-              Créer le premier
+            <a routerLink="/podcasts/create" class="btn-np" i18n>
+              Create the first one
             </a>
           } @else {
             <a
               routerLink="/signup"
               class="btn-np"
               [queryParams]="{ returnUrl: '/podcasts/create' }"
+              i18n
             >
-              Créer un compte pour publier
+              Create an account to publish  
             </a>
           }
         </div>
@@ -94,19 +95,20 @@
 
   <!-- Topics -->
   <div class="np-section-header mb-3">
-    <span class="np-section-label">Explorer par thème</span>
+    <span class="np-section-label" i18n>Explore by topic</span>
   </div>
   <div class="np-tags-wrap mb-5">
     @for (tag of topics; track tag) {
-      <button class="np-tag-pill">{{ tag }}</button>
+      <button class="np-tag-pill" i18n>{{ tag }}</button>
     }
   </div>
 
   <!-- Newsletter -->
   <div class="np-newsletter glass-card">
-    <h2>Ne manquez plus un épisode</h2>
-    <p class="np-text-muted">
-      Recevez les nouveaux épisodes chaque semaine directement dans votre boîte mail.
+    <h2 i18n>Never miss an episode</h2>
+    <p class="np-text-muted" i18n>
+      Receive the new episodes every week directly in your inbox.
+       We won’t spam you, and you can unsubscribe at any time. We might even share exclusive content with our newsletter subscribers, so make sure to subscribe and keep an eye on your inbox! And if you have any suggestions or topics you'd like us to cover in the newsletter, feel free to reach out. We're always looking for ways to make our content more valuable and relevant to our listeners.
     </p>
     <div class="np-nl-form">
       <input
@@ -114,7 +116,7 @@
         class="np-input"
         placeholder="votre@email.com"
       />
-      <button class="btn-np">S'abonner</button>
+      <button class="btn-np" i18n>Subscribe</button>
     </div>
   </div>
 
