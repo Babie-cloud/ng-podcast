@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpBackend, HttpClient, HttpParams } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { SSR_API_BASE_URL } from '../../core/tokens/ssr-api-base-url.token';
@@ -37,6 +37,7 @@ export type UpdateWritingPayload = CreateWritingPayload;
 @Injectable({ providedIn: 'root' })
 export class WritingService {
   private readonly http = inject(HttpClient);
+  private readonly publicHttp = new HttpClient(inject(HttpBackend));
   private readonly apiRoot =
     inject(SSR_API_BASE_URL, { optional: true }) ?? environment.apiUrl;
   private readonly base = `${this.apiRoot}/api/writings`;
@@ -51,7 +52,7 @@ export class WritingService {
       params = params.set('q', q.trim());
     }
     const rows = await firstValueFrom(
-      this.http.get<WritingApiDto[]>(this.base, { params })
+      this.publicHttp.get<WritingApiDto[]>(this.base, { params })
     );
     return rows.map((r) => this.mapRow(r));
   }

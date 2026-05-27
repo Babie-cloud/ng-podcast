@@ -2,7 +2,7 @@
 import { Component, signal, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthService, readApiErrorDetail } from '../../services/auth.service';
 
 @Component({
   selector: 'app-signin',
@@ -55,10 +55,8 @@ export class Signin {
       const returnUrl =
         this.route.snapshot.queryParamMap.get('returnUrl') ?? '/dashboard';
       await this.router.navigateByUrl(returnUrl);
-    } catch (e: any) {
-      this.error.set(
-        e?.error?.message ?? 'Erreur lors de l\'inscription.'
-      );
+    } catch (e: unknown) {
+      this.error.set(readApiErrorDetail(e, 'Erreur lors de l\'inscription.'));
     } finally {
       this.loading.set(false);
     }

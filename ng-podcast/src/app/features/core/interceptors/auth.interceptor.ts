@@ -25,13 +25,65 @@ function shouldSkipUnauthorizedLogout(reqUrl: string): boolean {
 }
 
 /**
- * Déconnexion : 401 général ; 403 uniquement pour les sous-ressources `.../mine` où un jeton périmé
- * est ignoré côté filtre JWT (requête anonyme) et Spring renvoie alors 403.
+ * Déconnexion : 401 général ; 403 anonyme après JWT périmé sur routes protégées (/mine, /users/me).
  */
+function pathnameFromRequestUrl(fullUrl: string): string {
+  const noQuery = fullUrl.split(/[?#]/)[0] ?? '';
+  try {
+    if (noQuery.startsWith('http://') || noQuery.startsWith('https://')) {
+      return new URL(noQuery).pathname;
+    }
+  } catch {
+    /* garder brute */
+  }
+  if (noQuery.startsWith('/')) {
+    return noQuery;
+  }
+  const slashApi = noQuery.indexOf('/api/');
+  if (slashApi >= 0) {
+    return noQuery.slice(slashApi);
+  }
+  return noQuery;
+}
+
+const PUBLIC_CATALOG_ROOTS = ['/api/writings', '/api/storytellings', '/api/podcasts'] as const;
+
+/**
+ * Lectures publiques du catalogue (listes + détail par id) : pas de Bearer.
+ * Évite qu’un JWT périmé fasse tomber la requête en 403 côté Spring alors que la route est permitAll.
+ */
+function isPublicCatalogRead(req: HttpRequest<unknown>): boolean {
+  const m = req.method;
+  if (m !== 'GET' && m !== 'HEAD') return false;
+  const path = pathnameFromRequestUrl(req.url).replace(/\/+$/, '');
+  if (path.includes('/mine')) return false;
+  return PUBLIC_CATALOG_ROOTS.some((base) => path === base || path.startsWith(`${base}/`));
+}
+
+/** Endpoints auth publics : ne jamais envoyer un vieux Bearer (sinon JwtFilter bloque le POST). */
+function isPublicAuthRequest(req: HttpRequest<unknown>): boolean {
+  const path = pathnameFromRequestUrl(req.url);
+  return (
+    path.startsWith('/auth/login') ||
+    path.startsWith('/auth/register') ||
+    path.startsWith('/auth/reset-password')
+  );
+}
+
 function shouldLogoutOnAuthFailure(err: HttpErrorResponse, reqUrl: string): boolean {
   if (shouldSkipUnauthorizedLogout(reqUrl)) return false;
   if (err.status === 401) return true;
-  return err.status === 403 && reqUrl.includes('/mine');
+  /*
+   * Anonymous sur route « authenticated » : Spring peut renvoyer 403 après que le JwtFilter
+   * a vidé un JWT périmé (GET). On déconnecte sur /mine et sur /users/me (hydrate).
+   */
+  if (
+    err.status === 403 &&
+    (reqUrl.includes('/mine') || reqUrl.includes('/users/me'))
+  ) {
+    return true;
+  }
+  return false;
 }
 
 /**
@@ -62,7 +114,15 @@ export class JwtAuthInterceptor implements HttpInterceptor {
   }
 
   private withBearerIfNeeded(req: HttpRequest<unknown>): HttpRequest<unknown> {
-    if (!isPlatformBrowser(this.platformId) || req.headers.has('Authorization')) {
+    if (!isPlatformBrowser(this.platformId)) {
+      return req;
+    }
+    if (isPublicCatalogRead(req) || isPublicAuthRequest(req)) {
+      return req.headers.has('Authorization')
+        ? req.clone({ headers: req.headers.delete('Authorization') })
+        : req;
+    }
+    if (req.headers.has('Authorization')) {
       return req;
     }
     let token = normalizeBearer(this.bridge.current() ?? '');

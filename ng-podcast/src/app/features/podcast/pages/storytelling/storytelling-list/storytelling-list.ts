@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe, SlicePipe } from '@angular/common';
 import { StorytellingStore } from '../../../store/storytelling.store';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-storytelling-list',
@@ -11,8 +12,14 @@ import { StorytellingStore } from '../../../store/storytelling.store';
 })
 export class StorytellingList implements OnInit {
   readonly store = inject(StorytellingStore);
+  readonly auth = inject(AuthService);
 
   ngOnInit(): void {
-    void this.store.loadPublished();
+    void this.load();
+  }
+
+  private async load(): Promise<void> {
+    await this.auth.whenAuthHydrated();
+    await this.store.loadPublished();
   }
 }

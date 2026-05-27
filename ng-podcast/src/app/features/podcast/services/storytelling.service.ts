@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpBackend, HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { SSR_API_BASE_URL } from '../../core/tokens/ssr-api-base-url.token';
@@ -36,12 +36,15 @@ export type UpdateStorytellingPayload = CreateStorytellingPayload;
 @Injectable({ providedIn: 'root' })
 export class StorytellingService {
   private readonly http = inject(HttpClient);
+  private readonly publicHttp = new HttpClient(inject(HttpBackend));
   private readonly apiRoot =
     inject(SSR_API_BASE_URL, { optional: true }) ?? environment.apiUrl;
   private readonly base = `${this.apiRoot}/api/storytellings`;
 
   async listPublished(): Promise<Storytelling[]> {
-    const rows = await firstValueFrom(this.http.get<StorytellingApiDto[]>(this.base));
+    const rows = await firstValueFrom(
+      this.publicHttp.get<StorytellingApiDto[]>(this.base)
+    );
     return rows.map((r) => this.mapRow(r));
   }
 
