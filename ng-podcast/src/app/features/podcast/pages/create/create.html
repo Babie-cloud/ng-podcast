@@ -15,7 +15,7 @@
     </p>
 
     <!-- Stepper -->
-    <div class="np-stepper mb-4" i18n>
+    <div class="np-stepper mb-4">
       @for (step of steps; track step.index) {
         <div class="np-step-item"
           [class.active]="currentStep() === step.index"
@@ -141,7 +141,7 @@
             [class.has-file]="audioFile()"
             (click)="audioInput.click()"
             (dragover)="$event.preventDefault()"
-            (drop)="onAudioDrop($event)" i18n>
+            (drop)="onAudioDrop($event)">
             @if (audioFile()) {
               <div class="np-audio-info">
                 <div>

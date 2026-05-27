@@ -1,7 +1,7 @@
 @if (store.currentEpisode(); as episode) {
   <div class="np-player">
 
-    <div class="np-player-left" i18n>
+    <div class="np-player-left">
       <a
         class="np-player-title-link np-player-title mb-1 d-block"
         [routerLink]="['/podcasts', episode.podcastId, 'episode', episode.id]"

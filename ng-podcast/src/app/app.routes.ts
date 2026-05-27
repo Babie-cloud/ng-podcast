@@ -35,14 +35,12 @@ export const routes: Routes = [
   {
     path: 'terms',
     loadComponent: () =>
-      import('./features/layout/legal/terms-page/terms-page').then(
-        (m) => m.TermsPage,
-      ),
+      import('./features/layout/terms/terms').then((m) => m.TermsPage),
   },
   {
     path: 'privacy',
     loadComponent: () =>
-      import('./features/layout/legal/privacy-page/privacy-page').then(
+      import('./features/layout/policy-privacy/policy-privacy').then(
         (m) => m.PrivacyPage,
       ),
   },

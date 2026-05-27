@@ -2,7 +2,7 @@
   @if (store.selected(); as podcast) {
     @if (episode(); as ep) {
       <div class="episode-play-layout glass-card">
-        <div class="episode-play-art-wrap" i18n>
+        <div class="episode-play-art-wrap">
           <img
             [src]="podcast.coverUrl || '/icons/favicon.svg'"
             alt=""
@@ -19,7 +19,7 @@
           </button>
         </div>
 
-        <div class="episode-play-main"  i18n>
+        <div class="episode-play-main">
           <p class="np-text-muted small mb-1">{{ podcast.title }}</p>
           <h1 class="episode-play-title">{{ ep.title }}</h1>
           <p class="np-text-muted small mb-4">{{ ep.createdAt | date:'longDate' }}</p>
@@ -28,7 +28,7 @@
             <p class="text-danger small mb-3">{{ audio.error() }}</p>
           }
 
-          <div class="episode-play-controls mb-4"  i18n>
+          <div class="episode-play-controls mb-4">
             <button
               type="button"
               class="btn-np btn-np-icon-lg"

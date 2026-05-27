@@ -86,13 +86,13 @@
       }
 
       @if (p.episodes.length > 0) {
-        <ul class="list-unstyled d-flex flex-column gap-3 mb-0" i18n>
+        <ul class="list-unstyled d-flex flex-column gap-3 mb-0">
           @for (ep of p.episodes; track ep.id) {
             <li
               class="d-flex flex-column gap-3 p-3 rounded"
               style="border: 1px solid color-mix(in srgb, var(--np-border, #444) 40%, transparent)"
-             i18n>
-              <div class="d-flex flex-wrap justify-content-between align-items-start gap-2" i18n>
+            >
+              <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
                 <div>
                   <div class="fw-semibold">{{ ep.title }}</div>
                   <div class="np-text-muted small" i18n>
@@ -114,9 +114,9 @@
                     (click)="toggleEpisodePublish(ep)"
                    i18n>
                     @if (isPublishedEpisode(ep)) {
-                      <i class="fa-solid fa-eye-slash me-1" aria-hidden="true" i18n></i>Draft
+                      <i class="fa-solid fa-eye-slash me-1" aria-hidden="true"></i>Draft
                     } @else {
-                      <i class="fa-solid fa-bullhorn me-1" aria-hidden="true" i18n></i>Publish 
+                      <i class="fa-solid fa-bullhorn me-1" aria-hidden="true"></i>Publish 
                     }
                   </button>
                   <button
@@ -126,7 +126,7 @@
                     [disabled]="store.loading()"
                     (click)="removeEpisode(ep)" i18n
                   >
-                    <i class="fa-solid fa-trash-can me-1" aria-hidden="true" i18n></i>
+                    <i class="fa-solid fa-trash-can me-1" aria-hidden="true"></i>
                     Delete
                   </button>
                 </div>
