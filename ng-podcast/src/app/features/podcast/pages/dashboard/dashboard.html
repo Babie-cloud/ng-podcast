@@ -15,6 +15,31 @@
     }
   </div>
 
+  @if (auth.user(); as u) {
+    @if (!u.emailVerified) {
+      <div class="np-alert np-alert-warning glass-card mb-4">
+        <strong>Confirmation email requise</strong>
+        <p class="mb-2 mt-2">
+          Votre compte est créé. Confirmez votre adresse email pour sécuriser votre compte.
+        </p>
+        @if (verificationMessage()) {
+          <p class="mb-2">{{ verificationMessage() }}</p>
+        }
+        <button
+          type="button"
+          class="btn-np-outline"
+          [disabled]="verificationSending()"
+          (click)="resendVerificationEmail()">
+          @if (verificationSending()) {
+            Envoi...
+          } @else {
+            Renvoyer le mail de confirmation
+          }
+        </button>
+      </div>
+    }
+  }
+
   <div class="np-stats-row mb-5">
     <div class="np-stat glass-card" i18n>
       <span class="np-stat-num np-gradient-text">{{ store.podcastCount() }}</span>

@@ -16,6 +16,7 @@ export interface AuthUser {
   role: 'USER' | 'ADMIN';
   name?: string;
   prenom?: string;
+  emailVerified: boolean;
 }
 
 interface LoginPayload    { email: string; password: string; }
@@ -149,6 +150,30 @@ export class AuthService {
     } finally {
       this._loading.set(false);
     }
+  }
+
+  // ─── Google Identity Services → POST /auth/google ─────────
+  async googleLogin(idToken: string): Promise<void> {
+    this._loading.set(true);
+    this._error.set(null);
+    try {
+      const res = await firstValueFrom(
+        this.http.post<AuthResponse>(`${this.base}/google`, { idToken })
+      );
+      this.saveSession(res);
+    } catch (e: unknown) {
+      const msg = readApiErrorDetail(e, 'Connexion Google impossible.');
+      this._error.set(msg);
+      throw e;
+    } finally {
+      this._loading.set(false);
+    }
+  }
+
+  async resendVerification(email: string): Promise<void> {
+    await firstValueFrom(
+      this.http.post<void>(`${this.base}/resend-verification`, { email })
+    );
   }
 
   // ─── Reset password → POST /auth/reset-password ──────────

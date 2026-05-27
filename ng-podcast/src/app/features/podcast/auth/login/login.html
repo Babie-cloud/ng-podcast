@@ -47,6 +47,9 @@
     @if (error()) {
       <div class="np-alert np-alert-danger">{{ error() }}</div>
     }
+    @if (info()) {
+      <div class="np-alert np-alert-success">{{ info() }}</div>
+    }
 
     <button class="btn-np np-auth-submit"
       [disabled]="loginForm.invalid || loading()"
@@ -61,6 +64,11 @@
     <div class="np-auth-separator">
       <span i18n>or</span>
     </div>
+
+    <app-google-signin-button
+      text="signin_with"
+      (credential)="onGoogleCredential($event)"
+    />
 
     <p class="np-auth-footer">
       Pas encore de compte ?

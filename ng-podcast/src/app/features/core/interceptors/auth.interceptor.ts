@@ -64,6 +64,7 @@ function isPublicCatalogRead(req: HttpRequest<unknown>): boolean {
 function isPublicAuthRequest(req: HttpRequest<unknown>): boolean {
   const path = pathnameFromRequestUrl(req.url);
   return (
+    path.startsWith('/auth/config') ||
     path.startsWith('/auth/login') ||
     path.startsWith('/auth/register') ||
     path.startsWith('/auth/reset-password')

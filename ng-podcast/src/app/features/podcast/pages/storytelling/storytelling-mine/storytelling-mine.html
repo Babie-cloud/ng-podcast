@@ -10,6 +10,13 @@
   <div class="np-alert np-alert-danger mb-3">{{ store.error() }}</div>
 }
 
+@if (createdId()) {
+  <div class="np-alert np-alert-success mb-3" role="status">
+    Your story was saved. Drafts are visible here in <strong>My Stories</strong>;
+    only published stories appear in <strong>Discover</strong>.
+  </div>
+}
+
 @if (store.loading()) {
   <div class="np-loader-wrap">
     <div class="np-spinner"></div>
@@ -19,11 +26,23 @@
 
 <div class="np-grid-3">
   @for (s of store.mine(); track s.id) {
-    <article class="glass-card">
+    <article
+      class="glass-card"
+      [style.borderColor]="isCreated(s.id) ? 'var(--np-primary)' : null"
+      [style.boxShadow]="isCreated(s.id) ? '0 0 0 1px var(--np-primary), var(--np-shadow-md)' : null"
+    >
       <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
         <span class="np-tag-pill">{{ s.type }}</span>
-        <span class="np-tag-pill">{{ s.status }}</span>
+        <span
+          class="np-tag-pill"
+          [class.np-badge-primary]="s.status === 'PUBLISHED'"
+        >
+          {{ s.status === 'PUBLISHED' ? 'Published' : 'Draft' }}
+        </span>
       </div>
+      @if (isCreated(s.id)) {
+        <p class="np-text-hint mb-2" style="font-size: 12px" i18n>Just saved</p>
+      }
       @if (s.anonymous) {
         <p class="np-text-hint mb-2" style="font-size: 12px" i18n>Anonymous publication</p>
       }
@@ -35,6 +54,7 @@
       </p>
       <div class="d-flex gap-2 flex-wrap">
         <a routerLink="/storytelling/{{ s.id }}" class="btn-np-outline btn-np-sm" i18n>Open</a>
+        <a routerLink="/storytelling/{{ s.id }}/edit" class="btn-np-ghost btn-np-sm" i18n>Edit</a>
         <button type="button" class="btn-np-ghost btn-np-sm np-btn-danger" (click)="confirmDelete(s.id, s.title)">
           <span i18n>Delete</span>
         </button>

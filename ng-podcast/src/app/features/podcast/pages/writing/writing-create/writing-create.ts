@@ -22,7 +22,7 @@ export class WritingCreate {
     title: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(200)]],
     content: ['', [Validators.required, Validators.minLength(5)]],
     type: ['POEM'],
-    status: ['DRAFT' as 'DRAFT' | 'PUBLISHED'],
+    status: ['PUBLISHED' as 'DRAFT' | 'PUBLISHED'],
     audioUrl: [''],
     coverUrl: [''],
     anonymousAuthor: [false],
@@ -48,7 +48,9 @@ export class WritingCreate {
       ...(category !== '' ? { podcastCategory: category } : { podcastCategory: null }),
     });
     if (id) {
-      await this.router.navigate(['/writing', id]);
+      await this.router.navigate(['/writing/mine'], {
+        queryParams: { created: id },
+      });
     }
   }
 }

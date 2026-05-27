@@ -70,6 +70,16 @@
         (input)="onVolumeChange($event)"
         aria-label="Volume"
         i18n />
+
+      <button
+        type="button"
+        class="np-player-btn-icon"
+        (click)="closePlayer()"
+        aria-label="Close player"
+        title="Close player"
+      >
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
     </div>
 
     @if (audio.loading()) {

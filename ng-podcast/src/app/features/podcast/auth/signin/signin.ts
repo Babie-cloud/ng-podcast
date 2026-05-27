@@ -3,11 +3,12 @@ import { Component, signal, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { AuthService, readApiErrorDetail } from '../../services/auth.service';
+import { GoogleSigninButton } from '../google-signin-button/google-signin-button';
 
 @Component({
   selector: 'app-signin',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, GoogleSigninButton],
   templateUrl: './signin.html',
   styleUrl: './signin.scss',
 })
@@ -19,6 +20,7 @@ export class Signin {
 
   readonly loading = signal(false);
   readonly error   = signal<string | null>(null);
+  readonly info    = signal<string | null>(null);
 
   loginForm = this.fb.group({
     name:            ['', Validators.required],
@@ -57,6 +59,21 @@ export class Signin {
       await this.router.navigateByUrl(returnUrl);
     } catch (e: unknown) {
       this.error.set(readApiErrorDetail(e, 'Erreur lors de l\'inscription.'));
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+  async onGoogleCredential(idToken: string): Promise<void> {
+    this.loading.set(true);
+    this.error.set(null);
+    try {
+      await this.auth.googleLogin(idToken);
+      const returnUrl =
+        this.route.snapshot.queryParamMap.get('returnUrl') ?? '/dashboard';
+      await this.router.navigateByUrl(returnUrl);
+    } catch (e: unknown) {
+      this.error.set(readApiErrorDetail(e, 'Connexion Google impossible.'));
     } finally {
       this.loading.set(false);
     }

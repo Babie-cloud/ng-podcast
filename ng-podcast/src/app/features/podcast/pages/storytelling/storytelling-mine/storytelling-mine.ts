@@ -1,5 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { StorytellingStore } from '../../../store/storytelling.store';
 
@@ -11,9 +11,16 @@ import { StorytellingStore } from '../../../store/storytelling.store';
 })
 export class StorytellingMine implements OnInit {
   readonly store = inject(StorytellingStore);
+  readonly createdId = signal<string | null>(null);
+  private readonly route = inject(ActivatedRoute);
 
   ngOnInit(): void {
+    this.createdId.set(this.route.snapshot.queryParamMap.get('created'));
     void this.store.loadMine();
+  }
+
+  isCreated(id: string): boolean {
+    return this.createdId() === id;
   }
 
   confirmDelete(id: string, title: string): void {

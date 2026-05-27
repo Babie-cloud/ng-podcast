@@ -22,6 +22,10 @@ export class Player {
       : this.store.play(this.store.currentEpisode()!);
   }
 
+  closePlayer(): void {
+    this.store.stopPlayback();
+  }
+
   onSeekClick(event: MouseEvent) {
     const bar = event.currentTarget as HTMLElement;
     const ratio = event.offsetX / bar.offsetWidth;

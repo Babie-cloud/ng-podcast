@@ -3,4 +3,5 @@
 export const environment = {
   production: true,
   apiUrl: 'https://CHANGE_ME_BACKEND_PUBLIC_URL',
+  googleClientId: 'CHANGE_ME_GOOGLE_CLIENT_ID',
 };

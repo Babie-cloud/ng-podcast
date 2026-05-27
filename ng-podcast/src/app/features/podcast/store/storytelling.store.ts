@@ -35,6 +35,15 @@ function httpMessage(e: unknown, fallback: string): string {
   return fallback;
 }
 
+function isPublished(story: Storytelling): boolean {
+  return story.status === 'PUBLISHED';
+}
+
+function upsertPublished(list: Storytelling[], story: Storytelling): Storytelling[] {
+  const without = list.filter((s) => s.id !== story.id);
+  return isPublished(story) ? [story, ...without] : without;
+}
+
 export const StorytellingStore = signalStore(
   { providedIn: 'root' },
   withState(initial),
@@ -89,6 +98,7 @@ export const StorytellingStore = signalStore(
         const created = await api.create(payload);
         patchState(store, {
           mine: [created, ...store.mine()],
+          published: upsertPublished(store.published(), created),
           loading: false,
         });
         return created.id;
@@ -107,7 +117,7 @@ export const StorytellingStore = signalStore(
         const updated = await api.update(id, payload);
         patchState(store, {
           mine: store.mine().map((s) => (s.id === id ? updated : s)),
-          published: store.published().map((s) => (s.id === id ? updated : s)),
+          published: upsertPublished(store.published(), updated),
           selected: store.selected()?.id === id ? updated : store.selected(),
           loading: false,
         });

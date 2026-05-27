@@ -259,6 +259,10 @@ export const PodcastStore = signalStore(
       patchState(store, { isPlaying: false });
     },
 
+    stopPlayback(): void {
+      patchState(store, { currentEpisode: null, isPlaying: false });
+    },
+
 
     setVolume(volume: number): void {
       patchState(store, { volume });

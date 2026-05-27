@@ -169,7 +169,7 @@ export class AudioService implements OnDestroy {
     });
 
     this.audio.addEventListener('ended', () => {
-      this.store.pause();
+      this.store.stopPlayback();
       this._state.update((s) => ({ ...s, currentTime: 0 }));
     });
 

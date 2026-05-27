@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { PodcastStore } from '../../store/podcast.store';
@@ -17,6 +17,8 @@ export class Dashboard implements OnInit {
   readonly store = inject(PodcastStore);
   readonly writings = inject(WritingStore);
   readonly stories = inject(StorytellingStore);
+  readonly verificationSending = signal(false);
+  readonly verificationMessage = signal<string | null>(null);
 
   ngOnInit(): void {
     void Promise.all([
@@ -36,6 +38,23 @@ export class Dashboard implements OnInit {
     const n = u.name?.trim();
     if (n) return n;
     return u.email;
+  }
+
+  async resendVerificationEmail(): Promise<void> {
+    const email = this.auth.user()?.email;
+    if (!email || this.verificationSending()) return;
+
+    this.verificationSending.set(true);
+    this.verificationMessage.set(null);
+
+    try {
+      await this.auth.resendVerification(email);
+      this.verificationMessage.set('Email de confirmation envoyé. Vérifiez votre boîte mail.');
+    } catch {
+      this.verificationMessage.set('Impossible d’envoyer le mail pour le moment.');
+    } finally {
+      this.verificationSending.set(false);
+    }
   }
 
 }

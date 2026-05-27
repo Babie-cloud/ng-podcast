@@ -20,7 +20,7 @@ export class StorytellingCreate {
     title: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(200)]],
     content: [''],
     type: ['TESTIMONY'],
-    status: ['DRAFT' as 'DRAFT' | 'PUBLISHED'],
+    status: ['PUBLISHED' as 'DRAFT' | 'PUBLISHED'],
     anonymous: [false],
   });
 
@@ -37,7 +37,9 @@ export class StorytellingCreate {
       anonymous: v.anonymous,
     });
     if (id) {
-      await this.router.navigate(['/storytelling', id]);
+      await this.router.navigate(['/storytelling/mine'], {
+        queryParams: { created: id },
+      });
     }
   }
 }

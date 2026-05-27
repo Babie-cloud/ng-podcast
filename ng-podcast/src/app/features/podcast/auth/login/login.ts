@@ -3,11 +3,12 @@ import { Component, signal, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
 import { AuthService, readApiErrorDetail } from '../../services/auth.service';
+import { GoogleSigninButton } from '../google-signin-button/google-signin-button';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, GoogleSigninButton],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
@@ -19,6 +20,7 @@ export class Login {
   showPassword = false;
   readonly loading = signal(false);
   readonly error   = signal<string | null>(null);
+  readonly info    = signal<string | null>(null);
 
   loginForm = this.fb.group({
     email:    ['', [Validators.required, Validators.email]],
@@ -38,15 +40,33 @@ export class Login {
       const { email, password } = this.loginForm.getRawValue();
       await this.auth.login({ email: email!, password: password! });
 
-      // Redirige vers returnUrl si présent, sinon tableau de bord
-      const params = new URLSearchParams(window.location.search);
-      const returnUrl = params.get('returnUrl') ?? '/dashboard';
-      this.router.navigateByUrl(returnUrl);
+      await this.router.navigateByUrl(this.returnUrl());
 
     } catch (e: unknown) {
       this.error.set(readApiErrorDetail(e, 'Email ou mot de passe incorrect.'));
     } finally {
       this.loading.set(false);
     }
+  }
+
+  async onGoogleCredential(idToken: string): Promise<void> {
+    this.error.set(null);
+    this.loading.set(true);
+    try {
+      await this.auth.googleLogin(idToken);
+      await this.router.navigateByUrl(this.returnUrl());
+    } catch (e: unknown) {
+      this.error.set(readApiErrorDetail(e, 'Connexion Google impossible.'));
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+  private returnUrl(): string {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('verified') === '1') {
+      this.info.set('Email confirmé, vous pouvez vous connecter.');
+    }
+    return params.get('returnUrl') ?? '/dashboard';
   }
 }
