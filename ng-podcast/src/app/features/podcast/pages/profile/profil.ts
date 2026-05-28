@@ -17,6 +17,9 @@ export class Profil {
   readonly editMode = signal(false);
   readonly saving = signal(false);
   readonly saveError = signal<string | null>(null);
+  readonly deleting = signal(false);
+  readonly deleteError = signal<string | null>(null);
+  readonly deleteConfirmation = signal('');
 
   readonly profileForm = this.fb.nonNullable.group({
     username: ['', [Validators.required, Validators.maxLength(160)]],
@@ -70,6 +73,25 @@ export class Profil {
       );
     } finally {
       this.saving.set(false);
+    }
+  }
+
+  async deleteProfile(): Promise<void> {
+    if (this.deleteConfirmation().trim().toUpperCase() !== 'SUPPRIMER') {
+      this.deleteError.set('Tapez SUPPRIMER pour confirmer la suppression du compte.');
+      return;
+    }
+
+    this.deleting.set(true);
+    this.deleteError.set(null);
+    try {
+      await this.auth.deleteAccount();
+    } catch (e: unknown) {
+      this.deleteError.set(
+        readApiErrorDetail(e, 'Impossible de supprimer le compte pour le moment.')
+      );
+    } finally {
+      this.deleting.set(false);
     }
   }
 }

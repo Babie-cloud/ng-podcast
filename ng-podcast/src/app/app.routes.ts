@@ -30,6 +30,12 @@ export const routes: Routes = [
       import('./features/podcast/auth/resetpassword/resetpassword')
         .then(m => m.Resetpassword)
   },
+  {
+    path: 'resetpassword/confirm',
+    loadComponent: () =>
+      import('./features/podcast/auth/resetpassword/resetpassword')
+        .then(m => m.Resetpassword)
+  },
 
   // ─── Légal / English canonical text (site UI may be localized) ──
   {

@@ -26,6 +26,9 @@ interface RegisterPayload {
   email:    string;
   password: string;
 }
+interface PasswordResetResponse {
+  resetToken?: string;
+}
 interface AuthResponse {
   token: string;
   user:  AuthUser;
@@ -177,12 +180,12 @@ export class AuthService {
   }
 
   // ─── Reset password → POST /auth/reset-password ──────────
-  async resetPassword(email: string): Promise<void> {
+  async resetPassword(email: string): Promise<PasswordResetResponse> {
     this._loading.set(true);
     this._error.set(null);
     try {
-      await firstValueFrom(
-        this.http.post<void>(`${this.base}/reset-password`, { email })
+      return await firstValueFrom(
+        this.http.post<PasswordResetResponse>(`${this.base}/reset-password`, { email })
       );
     } catch (e: unknown) {
       const msg = readApiErrorDetail(e, 'Erreur lors de la réinitialisation.');
@@ -191,6 +194,12 @@ export class AuthService {
     } finally {
       this._loading.set(false);
     }
+  }
+
+  async confirmResetPassword(token: string, newPassword: string): Promise<void> {
+    await firstValueFrom(
+      this.http.post<void>(`${this.base}/reset-password/confirm`, { token, newPassword })
+    );
   }
 
   // ─── GET /users/me ────────────────────────────────────────
@@ -211,6 +220,14 @@ export class AuthService {
       this.http.patch<AuthUser>(`${this.apiRoot}/users/me`, body)
     );
     this._user.set(user);
+  }
+
+  async deleteAccount(): Promise<void> {
+    await firstValueFrom(this.http.delete<void>(`${this.apiRoot}/users/me`));
+    this._token.set(null);
+    this._user.set(null);
+    this.jwtBridge.wipe();
+    await this.router.navigate(['/']);
   }
 
   // ─── Logout ───────────────────────────────────────────────

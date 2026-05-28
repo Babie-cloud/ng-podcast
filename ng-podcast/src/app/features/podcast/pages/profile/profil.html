@@ -180,6 +180,37 @@
           <a routerLink="/storytelling/mine" class="btn-np-outline" i18n>My stories </a>
         </nav>
       </aside>
+
+      <section class="glass-card profil-card profil-danger-zone">
+        <h2 class="profil-card-title">Zone dangereuse</h2>
+        <p class="profil-muted small mb-3">
+          Supprimer votre profil efface votre compte et vos podcasts/textes liés. Cette action est définitive.
+        </p>
+        <label class="np-label" for="delete-confirmation">
+          Tapez <strong>SUPPRIMER</strong> pour confirmer
+        </label>
+        <input
+          id="delete-confirmation"
+          type="text"
+          class="np-input w-100 mb-3"
+          [value]="deleteConfirmation()"
+          (input)="deleteConfirmation.set($any($event.target).value)"
+        />
+        @if (deleteError()) {
+          <p class="profil-form-error mb-3" role="alert">{{ deleteError() }}</p>
+        }
+        <button
+          type="button"
+          class="btn-np-outline btn-np-sm np-btn-danger"
+          [disabled]="deleting()"
+          (click)="deleteProfile()">
+          @if (deleting()) {
+            Suppression...
+          } @else {
+            Supprimer mon profil
+          }
+        </button>
+      </section>
     </div>
   } @else {
     <div class="glass-card profil-card profil-loading">

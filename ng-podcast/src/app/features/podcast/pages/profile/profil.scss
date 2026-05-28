@@ -13,6 +13,12 @@
   }
 }
 
+.profil-danger-zone {
+  @media (min-width: 900px) {
+    grid-column: 1 / -1;
+  }
+}
+
 .profil-card {
   padding: 1.5rem;
   border-radius: var(--np-radius-lg, 16px);
