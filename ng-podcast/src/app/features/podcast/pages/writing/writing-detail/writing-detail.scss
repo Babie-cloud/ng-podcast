@@ -4,6 +4,13 @@
   line-height: 1.75;
 }
 
+@media (max-width: 768px) {
+  .writing-body {
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+}
+
 .np-audio-native {
   border-radius: var(--np-radius-md, 12px);
   max-height: 54px;

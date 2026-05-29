@@ -99,6 +99,45 @@
   padding-top: 0.35rem;
 }
 
+@media (max-width: 576px) {
+  .profil-card {
+    padding: 0.85rem;
+  }
+
+  .profil-card-title {
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+  }
+
+  .profil-row dt {
+    font-size: 0.65rem;
+  }
+
+  .profil-row dd {
+    font-size: 0.9rem;
+  }
+
+  .profil-form-error,
+  .profil-field-hint,
+  .profil-field-hint-neutral {
+    font-size: 0.75rem;
+  }
+
+  .profil-role {
+    font-size: 0.8rem;
+  }
+
+  .profil-form-actions {
+    flex-direction: column;
+
+    .btn-np,
+    .btn-np-outline {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
+
 .profil-dl {
   margin: 0;
 }

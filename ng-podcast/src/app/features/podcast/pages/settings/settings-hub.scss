@@ -68,11 +68,11 @@
   border: 1px solid var(--np-border, rgba(139, 69, 19, 0.16));
   cursor: pointer;
   transition: var(--np-transition, 0.2s ease);
-  background: color-mix(in srgb, var(--np-surface, #fff) 92%, transparent);
+  background: color-mix(in srgb, var(--np-surface, #e4dac8) 92%, transparent);
 
   &:hover {
     border-color: color-mix(in srgb, var(--np-accent, #6366f1) 35%, var(--np-border));
-    background: var(--np-surface-hover, rgba(255, 255, 255, 0.65));
+    background: var(--np-surface-hover, rgba(235, 226, 212, 0.65));
   }
 
   &-active {
@@ -187,4 +187,33 @@
 .settings-aside {
   position: sticky;
   top: 5.5rem;
+}
+
+@media (max-width: 959px) {
+  .settings-aside {
+    position: static;
+  }
+}
+
+@media (max-width: 576px) {
+  .settings-card {
+    padding: 1rem;
+  }
+
+  .settings-choice {
+    padding: 0.75rem;
+  }
+
+  .settings-inline-actions {
+    align-items: stretch;
+
+    .btn-np,
+    .btn-np-outline,
+    .btn-np-ghost,
+    .np-btn-danger {
+      width: 100%;
+      justify-content: center;
+      text-align: center;
+    }
+  }
 }

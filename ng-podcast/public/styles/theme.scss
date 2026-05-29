@@ -134,9 +134,9 @@
   // Gradient brand — même axe que le mode sombre (cohérence marque café)
   --np-gradient: linear-gradient(135deg, #{$np-primary-light}, #{$np-primary});
 
-  // Lecteur : crème chaude + typo brun doré comme le corps de page (miroir du dark)
+  // Lecteur : parchemin chaud + typo brun doré (cohérent avec fonds sable)
   --np-beige: #{$np-text-light};
-  --np-player-muted: rgba(47, 31, 20, 0.52);
+  --np-player-muted: rgba(58, 40, 28, 0.50);
   --np-player-seek-track: rgba(139, 69, 19, 0.14);
   --np-player-seek-buffered: rgba(139, 69, 19, 0.22);
   --np-player-ctrl-icon: rgba(47, 31, 20, 0.72);

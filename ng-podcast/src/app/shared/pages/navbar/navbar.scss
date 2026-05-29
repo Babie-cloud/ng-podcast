@@ -111,6 +111,47 @@
   }
 
   .np-nav-actions {
-    gap: 8px;
+    gap: 6px;
+  }
+
+  .np-profile-menu-name {
+    font-size: 0.9rem;
+  }
+
+  .np-profile-menu-row {
+    font-size: 0.88rem;
+    padding: 0.4rem 0.05rem;
+  }
+
+  .np-profile-menu-hint {
+    font-size: 0.75rem;
+  }
+
+  .np-profile-menu {
+    position: fixed;
+    right: 12px;
+    left: 12px;
+    top: calc(56px + env(safe-area-inset-top, 0px));
+    min-width: 0;
+    max-width: calc(100vw - 24px);
+    max-height: calc(100dvh - 72px - env(safe-area-inset-bottom, 0px));
+    overflow-y: auto;
+  }
+
+  .np-mobile-menu {
+    top: calc(56px + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (max-width: 420px) {
+  .np-profile-trigger {
+    width: 34px;
+    height: 34px;
+    font-size: 17px;
+  }
+
+  .np-theme-icon {
+    font-size: 14px;
   }
 }

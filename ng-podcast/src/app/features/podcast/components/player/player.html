@@ -2,11 +2,22 @@
   <div class="np-player">
 
     <div class="np-player-left">
-      <a
-        class="np-player-title-link np-player-title mb-1 d-block"
-        [routerLink]="['/podcasts', episode.podcastId, 'episode', episode.id]"
-       i18n>{{ episode.title }}</a>
-      <p class="np-player-author mb-0" i18n>{{ audio.timeLabel() }}</p>
+      <div class="np-player-info min-w-0">
+        <a
+          class="np-player-title-link np-player-title mb-1 d-block"
+          [routerLink]="['/podcasts', episode.podcastId, 'episode', episode.id]"
+         i18n>{{ episode.title }}</a>
+        <p class="np-player-author mb-0" i18n>{{ audio.timeLabel() }}</p>
+      </div>
+      <button
+        type="button"
+        class="np-player-btn-icon np-player-close"
+        (click)="closePlayer()"
+        aria-label="Close player"
+        title="Close player"
+      >
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
     </div>
 
     <div class="np-player-center">
@@ -30,7 +41,7 @@
         <option value="2">2×</option>
       </select>
 
-      <button type="button" class="np-player-btn-icon"
+      <button type="button" class="np-player-btn-icon np-skip-control"
         (click)="audio.skipBackward()"
         aria-label="Go back 15 seconds"
         title="−15 s" i18n>
@@ -47,7 +58,7 @@
         }
       </button>
 
-      <button type="button" class="np-player-btn-icon"
+      <button type="button" class="np-player-btn-icon np-skip-control"
         (click)="audio.skipForward()"
         aria-label="Advance by 15 seconds"
         title="+15 s" i18n>
@@ -70,16 +81,6 @@
         (input)="onVolumeChange($event)"
         aria-label="Volume"
         i18n />
-
-      <button
-        type="button"
-        class="np-player-btn-icon"
-        (click)="closePlayer()"
-        aria-label="Close player"
-        title="Close player"
-      >
-        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-      </button>
     </div>
 
     @if (audio.loading()) {

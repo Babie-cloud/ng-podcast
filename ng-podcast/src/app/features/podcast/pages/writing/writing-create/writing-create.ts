@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { WritingStore } from '../../../store/writing.store';
 import { PODCAST_CONTENT_THEMES, WRITING_TYPE_OPTIONS } from '../../../constants/content-taxonomy';
+import { ContentUploadService } from '../../../services/content-upload.service';
 
 @Component({
   selector: 'app-writing-create',
@@ -14,6 +15,9 @@ export class WritingCreate {
   readonly store = inject(WritingStore);
   readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
+  private readonly uploads = inject(ContentUploadService);
+  readonly coverFile = signal<File | null>(null);
+  readonly uploadError = signal<string | null>(null);
 
   readonly typeOptions = WRITING_TYPE_OPTIONS;
   readonly podcastThemes = PODCAST_CONTENT_THEMES;
@@ -35,8 +39,17 @@ export class WritingCreate {
 
     const v = this.form.getRawValue();
     const audio = v.audioUrl.trim();
-    const cover = v.coverUrl.trim();
+    let cover = v.coverUrl.trim();
     const category = v.podcastCategory.trim();
+    this.uploadError.set(null);
+    if (this.coverFile()) {
+      try {
+        cover = await this.uploads.uploadImage(this.coverFile()!);
+      } catch {
+        this.uploadError.set("Impossible d'importer l'image. Vous pouvez essayer avec une URL.");
+        return;
+      }
+    }
     const id = await this.store.create({
       title: v.title,
       content: v.content,
@@ -52,5 +65,11 @@ export class WritingCreate {
         queryParams: { created: id },
       });
     }
+  }
+
+  onCoverFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.coverFile.set(input.files?.[0] ?? null);
+    this.uploadError.set(null);
   }
 }

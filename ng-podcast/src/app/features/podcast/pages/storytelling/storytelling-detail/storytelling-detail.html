@@ -52,6 +52,11 @@
       </span>
     </div>
     <h1 class="h3 np-gradient-text mb-2">{{ s.title }}</h1>
+    @if (s.coverUrl) {
+      <figure class="mb-4 rounded overflow-hidden" style="max-height: 360px">
+        <img class="img-fluid w-100 object-fit-cover" [src]="s.coverUrl" [attr.alt]="'Couverture : ' + s.title" loading="lazy" />
+      </figure>
+    }
     <p class="np-text-muted mb-4">
       {{ s.anonymous ? 'Anonymous' : 'By ' + s.authorName }} · {{ s.createdAt | date: 'medium' }}
     </p>

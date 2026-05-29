@@ -4,11 +4,12 @@ import { RouterLink, Router } from '@angular/router';
 import { PodcastStore } from '../../store/podcast.store';
 import { PodcastCard } from '../../components/podcast-card/podcast-card';
 import { AuthService } from '../../services/auth.service';
+import { NewsletterForm } from '../../../../shared/components/newsletter-form/newsletter-form';
 
 @Component({
   selector: 'app-landingpage',
   standalone: true,
-  imports: [RouterLink, PodcastCard],
+  imports: [RouterLink, PodcastCard, NewsletterForm],
   templateUrl: './landingpage.html',
   styleUrl: './landingpage.scss',
 })

@@ -1,0 +1,26 @@
+@if (feedback(); as msg) {
+  <p
+    class="np-alert np-nl-feedback"
+    [class.np-alert-success]="msg.type === 'success'"
+    [class.np-alert-danger]="msg.type === 'error'"
+    role="status"
+    aria-live="polite"
+  >{{ msg.text }}</p>
+}
+
+<form [class]="formClass()" (submit)="onSubmit($event)" novalidate>
+  <input
+    type="email"
+    class="np-input"
+    name="newsletter-email"
+    autocomplete="email"
+    [placeholder]="placeholder()"
+    [disabled]="submitting()"
+    [ngModel]="email()"
+    (ngModelChange)="email.set($event)"
+    required
+  />
+  <button type="submit" class="btn-np" [disabled]="submitting()" i18n>
+    {{ submitting() ? '…' : submitLabel() }}
+  </button>
+</form>

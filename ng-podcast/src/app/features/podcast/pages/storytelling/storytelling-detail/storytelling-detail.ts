@@ -20,10 +20,7 @@ export class StorytellingDetail implements OnInit, OnDestroy {
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) return;
-    void this.store.loadOne(id);
-    if (this.auth.isLogged()) {
-      void this.store.loadMine();
-    }
+    void this.loadAndCountView(id);
   }
 
   ngOnDestroy(): void {
@@ -44,6 +41,18 @@ export class StorytellingDetail implements OnInit, OnDestroy {
     if (!s || !this.auth.isLogged()) return false;
     if (this.canManage) return true;
     return this.store.mine().some((x) => x.id === s.id);
+  }
+
+  private async loadAndCountView(id: string): Promise<void> {
+    await this.auth.whenAuthHydrated();
+    await this.store.loadOne(id);
+    if (this.auth.isLogged()) {
+      await this.store.loadMine();
+    }
+    const selected = this.store.selected();
+    if (this.auth.isLogged() && selected?.status === 'PUBLISHED' && !this.canEdit) {
+      await this.store.registerView(id);
+    }
   }
 
   async remove(): Promise<void> {

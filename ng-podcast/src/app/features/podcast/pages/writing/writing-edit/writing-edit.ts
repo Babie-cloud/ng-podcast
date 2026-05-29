@@ -3,6 +3,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { WritingStore } from '../../../store/writing.store';
 import { PODCAST_CONTENT_THEMES, WRITING_TYPE_OPTIONS } from '../../../constants/content-taxonomy';
+import { ContentUploadService } from '../../../services/content-upload.service';
 
 @Component({
   selector: 'app-writing-edit',
@@ -15,10 +16,13 @@ export class WritingEdit implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
+  private readonly uploads = inject(ContentUploadService);
 
   readonly typeOptions = WRITING_TYPE_OPTIONS;
   readonly podcastThemes = PODCAST_CONTENT_THEMES;
   readonly id = signal<string>('');
+  readonly coverFile = signal<File | null>(null);
+  readonly uploadError = signal<string | null>(null);
 
   form = this.fb.nonNullable.group({
     title: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(200)]],
@@ -58,8 +62,17 @@ export class WritingEdit implements OnInit {
 
     const v = this.form.getRawValue();
     const audio = v.audioUrl.trim();
-    const cover = v.coverUrl.trim();
+    let cover = v.coverUrl.trim();
     const category = v.podcastCategory.trim();
+    this.uploadError.set(null);
+    if (this.coverFile()) {
+      try {
+        cover = await this.uploads.uploadImage(this.coverFile()!);
+      } catch {
+        this.uploadError.set("Impossible d'importer l'image. Vous pouvez essayer avec une URL.");
+        return;
+      }
+    }
 
     const ok = await this.store.update(rawId, {
       title: v.title,
@@ -74,5 +87,11 @@ export class WritingEdit implements OnInit {
     if (ok) {
       await this.router.navigate(['/writing', rawId]);
     }
+  }
+
+  onCoverFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.coverFile.set(input.files?.[0] ?? null);
+    this.uploadError.set(null);
   }
 }

@@ -53,3 +53,24 @@
   color: var(--np-text-muted);
   line-height: 1.45;
 }
+
+@media (max-width: 576px) {
+  .np-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .np-dashboard-actions {
+    align-items: stretch;
+
+    .btn-np,
+    .btn-np-outline {
+      width: 100%;
+      justify-content: center;
+      text-align: center;
+    }
+  }
+
+  .np-dash-tile {
+    padding: 1rem;
+  }
+}

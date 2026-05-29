@@ -36,14 +36,14 @@ $np-surface-dark-hover: rgba(255, 255, 255, 0.090);
 $np-surface-dark-active: rgba(139, 69, 19, 0.15);
 
 // ─── BACKGROUNDS LIGHT ────────────────────────────────────────
-// Même ambiance « café doré » que le dark : papier chaud, sable, biscuit (pas gris-vert).
-$np-bg-light:           #ccbca8;
-$np-bg-light-secondary: #e8dbca;
-$np-bg-light-tertiary:  #decfbb;
+// Café Profond — sable, biscuit, vélin (pas de blanc pur ni crème éclatante).
+$np-bg-light:           #b8a894;
+$np-bg-light-secondary: #cfc0ad;
+$np-bg-light-tertiary:  #c5b6a3;
 
-// Surfaces type crème / vélin — un peu plus claires que le fond pour le relief
-$np-surface-light:       rgba(255, 250, 242, 0.94);
-$np-surface-light-hover: rgba(255, 253, 248, 0.99);
+// Surfaces parchemin — relief doux sans éclat blanc
+$np-surface-light:       rgba(228, 218, 202, 0.88);
+$np-surface-light-hover: rgba(235, 226, 212, 0.94);
 $np-surface-light-active: rgba(139, 69, 19, 0.14);
 
 // ─── TEXTES DARK ──────────────────────────────────────────────
@@ -52,10 +52,10 @@ $np-text-dark-muted:   rgba(245, 236, 228, 0.55);
 $np-text-dark-hint:    rgba(245, 236, 228, 0.30);
 
 // ─── TEXTES LIGHT ─────────────────────────────────────────────
-// Brun espresso chaud — prolonge les tons du mode sombre en version jour.
-$np-text-light:        #2f1f14;
-$np-text-light-muted:  rgba(47, 31, 20, 0.62);
-$np-text-light-hint:   rgba(47, 31, 20, 0.36);
+// Brun espresso — contraste lisible mais moins agressif que noir pur.
+$np-text-light:        #3a281c;
+$np-text-light-muted:  rgba(58, 40, 28, 0.58);
+$np-text-light-hint:   rgba(58, 40, 28, 0.34);
 
 // ─── BORDURES DARK ────────────────────────────────────────────
 $np-border-dark:        rgba(255, 255, 255, 0.08);
@@ -69,11 +69,11 @@ $np-border-light-strong: rgba(61, 26, 0, 0.28);
 
 // ─── PLAYER ───────────────────────────────────────────────────
 $np-player-bg-dark:  rgba(5, 2, 1, 0.96);
-$np-player-bg-light: rgba(252, 246, 236, 0.94);
+$np-player-bg-light: rgba(220, 208, 192, 0.94);
 
 // ─── NAVBAR ───────────────────────────────────────────────────
 $np-navbar-bg-dark:  rgba(5, 2, 1, 0.88);
-$np-navbar-bg-light: rgba(250, 242, 230, 0.88);
+$np-navbar-bg-light: rgba(214, 202, 186, 0.90);
 
 // ─── GLASSMORPHISM ────────────────────────────────────────────
 $np-blur:         blur(16px);

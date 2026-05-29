@@ -92,6 +92,18 @@ export const WritingStore = signalStore(
       }
     },
 
+    async registerView(id: string): Promise<void> {
+      try {
+        const viewed = await api.registerView(id);
+        patchState(store, {
+          selected: store.selected()?.id === id ? viewed : store.selected(),
+          published: store.published().map((w) => (w.id === id ? viewed : w)),
+        });
+      } catch {
+        // Viewing must never block reading the content.
+      }
+    },
+
     async create(payload: CreateWritingPayload): Promise<string | null> {
       patchState(store, { loading: true, error: null });
       try {

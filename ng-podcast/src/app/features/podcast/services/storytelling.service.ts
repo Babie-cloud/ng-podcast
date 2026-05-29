@@ -58,6 +58,13 @@ export class StorytellingService {
     return this.mapRow(row);
   }
 
+  async registerView(id: string): Promise<Storytelling> {
+    const row = await firstValueFrom(
+      this.http.post<StorytellingApiDto>(`${this.base}/${id}/view`, {})
+    );
+    return this.mapRow(row);
+  }
+
   async create(payload: CreateStorytellingPayload): Promise<Storytelling> {
     const row = await firstValueFrom(
       this.http.post<StorytellingApiDto>(this.base, {

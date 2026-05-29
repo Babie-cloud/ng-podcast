@@ -2,6 +2,9 @@
   <div>
     <span class="np-section-label" i18n>Public</span>
     <h2 class="np-section-title" i18n>Published <em> stories</em></h2>
+    <p class="np-text-muted mb-0">
+      Les témoignages publiés sont visibles par tout le monde.
+    </p>
   </div>
 </div>
 
@@ -18,22 +21,34 @@
 
 <div class="np-grid-3">
   @for (s of store.published(); track s.id) {
-    <article class="glass-card">
-      <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+    <article class="glass-card np-content-card">
+      <a routerLink="/storytelling/{{ s.id }}" class="np-content-cover text-decoration-none">
+        @if (s.coverUrl) {
+          <img [src]="s.coverUrl" [alt]="s.title" loading="lazy" />
+        } @else {
+          <div class="np-content-cover-fallback">
+            <span>{{ s.type }}</span>
+          </div>
+        }
+      </a>
+      <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
         <span class="np-tag-pill">{{ s.type }}</span>
-        <span class="np-text-hint" style="font-size: 12px">
-          {{ s.views }} views · {{ s.likes }} likes
+        <span class="np-tag-pill">
+          {{ s.views }} vues · {{ s.likes }} likes
         </span>
       </div>
-      <h3 class="h6 mb-2">
-        <a routerLink="/storytelling/{{ s.id }}" class="text-decoration-none" i18n>{{ s.title }}</a>
+      <h3 class="h5 mb-2">
+        <a routerLink="/storytelling/{{ s.id }}" class="text-decoration-none">{{ s.title }}</a>
       </h3>
       <p class="np-text-muted mb-2" style="font-size: 13px">
         {{ s.anonymous ? 'Anonymously' : 'By ' + s.authorName }} · {{ s.createdAt | date: 'mediumDate' }}
       </p>
-      <p class="mb-0 np-text-muted" style="font-size: 14px">
+      <p class="mb-3 np-text-muted" style="font-size: 14px">
         {{ s.content | slice: 0 : 200 }}{{ s.content.length > 200 ? '…' : '' }}
       </p>
+      <a routerLink="/storytelling/{{ s.id }}" class="btn-np-outline btn-np-sm">
+        Lire l’histoire
+      </a>
     </article>
   } @empty {
     @if (!store.loading()) {

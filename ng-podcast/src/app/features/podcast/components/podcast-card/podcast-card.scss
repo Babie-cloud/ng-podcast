@@ -101,3 +101,62 @@
   padding: 7px 14px;
   font-size: 13px;
 }
+
+@media (hover: none) {
+  .np-card-overlay {
+    opacity: 1;
+    background: rgba(20, 10, 5, 0.25);
+  }
+
+  .np-podcast-card:hover .np-card-cover {
+    transform: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .np-card-cover-wrap {
+    height: 150px;
+  }
+
+  .np-card-body {
+    padding: 0.85rem;
+  }
+
+  .np-card-ep-count {
+    font-size: 10px;
+    margin-bottom: 0.3rem;
+  }
+
+  .np-card-title {
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+
+  .np-card-author {
+    font-size: 11px;
+    margin-bottom: 6px;
+  }
+
+  .np-card-desc {
+    font-size: 12px;
+    line-height: 1.45;
+    margin-bottom: 0.75rem;
+  }
+
+  .np-card-actions {
+    .btn-np,
+    .btn-np-outline {
+      flex:            1 1 calc(50% - 0.3rem);
+      justify-content: center;
+      text-align:      center;
+      font-size:       11px;
+      padding:         6px 8px;
+    }
+  }
+
+  .np-play-fab {
+    width:     44px;
+    height:    44px;
+    font-size: 0.9rem;
+  }
+}

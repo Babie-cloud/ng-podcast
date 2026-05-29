@@ -34,11 +34,18 @@
       <button
         type="button"
         class="np-theme-toggle"
+        [class.is-dark]="theme.isDark()"
         (click)="theme.toggle()"
+        role="switch"
+        [attr.aria-checked]="theme.isDark()"
         [attr.aria-label]="theme.isDark() ? 'Passer en mode clair' : 'Passer en mode sombre'"
         [title]="theme.isDark() ? 'Mode clair' : 'Mode sombre'"
       >
-        <span class="np-toggle-thumb"></span>
+        <span class="np-theme-toggle-track">
+          <i class="fa-solid fa-sun np-theme-icon np-theme-icon--light" aria-hidden="true"></i>
+          <i class="fa-solid fa-moon np-theme-icon np-theme-icon--dark" aria-hidden="true"></i>
+          <span class="np-toggle-thumb"></span>
+        </span>
       </button>
 
       @if (auth.isLogged()) {

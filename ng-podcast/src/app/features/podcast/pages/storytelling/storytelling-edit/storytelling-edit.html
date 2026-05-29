@@ -18,7 +18,7 @@
 }
 
 @if (store.selected(); as s) {  
-  <form class="glass-card" style="max-width: 720px" [formGroup]="form" (ngSubmit)="submit()">
+  <form class="glass-card np-form-narrow" [formGroup]="form" (ngSubmit)="submit()">
     <p class="np-text-muted small mb-3" i18n>
       Visibility status:  
       <strong>{{ s.status === 'PUBLISHED' ? 'Public' : 'Draft (private)' }}</strong>
@@ -55,6 +55,31 @@
     <div class="mb-3 form-check">
       <input id="se-anon" type="checkbox" class="form-check-input" formControlName="anonymous" />
       <label class="form-check-label" for="se-anon" i18n>Publish anonymously</label>
+    </div>
+
+    <div class="mb-4">
+      <label class="form-label" for="se-cover">Image de couverture (URL optionnelle)</label>
+      <input id="se-cover" type="url" class="np-input w-100" formControlName="coverUrl" placeholder="https://…" />
+      <div class="mt-3 np-upload-zone">
+        <label class="form-label d-block" for="se-cover-file">
+          Ou importer une nouvelle image
+        </label>
+        <input
+          id="se-cover-file"
+          type="file"
+          class="form-control"
+          accept="image/*"
+          (change)="onCoverFileSelected($event)"
+        />
+        @if (coverFile()) {
+          <p class="small np-text-muted mb-0 mt-2">
+            Image sélectionnée : {{ coverFile()!.name }}
+          </p>
+        }
+        @if (uploadError()) {
+          <div class="np-alert np-alert-danger mt-2">{{ uploadError() }}</div>
+        }
+      </div>
     </div>
 
     <div class="mb-4">

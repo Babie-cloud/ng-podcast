@@ -1,9 +1,31 @@
 // src/styles/global.scss
 // ═══════════════════════════════════════════════════════════════
-// GLOBAL — styles, composants, utilitaires
+// GLOBAL — classes réutilisables centralisées (un seul fichier)
+// ═══════════════════════════════════════════════════════════════
+// Sommaire :
+//   1.  BASE          — reset, body, glassmorphism
+//   2.  NAVBAR
+//   3.  BOUTONS
+//   4.  CARDS         — podcast card + badges
+//   5.  FORMULAIRES   — inputs, select, textarea, upload, content cards
+//   6.  PLAYER
+//   7.  THEME TOGGLE
+//   8.  AUTH
+//   9.  FORM FIELDS   — champs, stepper, cover preview
+//   10. FEEDBACK      — loader, alertes, empty state, breadcrumb
+//   11. DETAIL        — page détail, épisodes, mes podcasts
+//   12. LANDING       — hero, features, stats, sections, grilles, tags
+//   13. FOOTER
+//   14. UTILITAIRES   — helpers, gradient text, page / section, filtres
+//   15. NAV MOBILE    — hamburger + menu mobile
+//   16. RESPONSIVE    — mobile-first polish
 // ═══════════════════════════════════════════════════════════════
 @use 'variables' as *;
 @use 'theme';
+
+// ═══════════════════════════════════════════════════════════════
+// 1. BASE — reset, body, typographie de base, glassmorphism
+// ═══════════════════════════════════════════════════════════════
 
 // ─── BASE ─────────────────────────────────────────────────────
 *, *::before, *::after { box-sizing: border-box; }
@@ -24,9 +46,21 @@ body {
 [data-theme="light"] body {
   background-color: var(--np-bg);
   background-image:
-    radial-gradient(ellipse 900px 520px at 8% -10%, rgba(212, 160, 122, 0.22), transparent 58%),
-    radial-gradient(ellipse 760px 440px at 100% 0%, rgba(139, 69, 19, 0.09), transparent 52%);
+    radial-gradient(ellipse 880px 500px at 6% -8%, rgba(200, 144, 90, 0.14), transparent 60%),
+    radial-gradient(ellipse 720px 420px at 100% 4%, rgba(139, 69, 19, 0.06), transparent 54%);
   background-attachment: fixed;
+}
+
+[data-theme="light"] {
+  .glass,
+  .glass-card,
+  .glass-strong {
+    box-shadow: 0 1px 2px rgba(61, 26, 0.03), 0 6px 18px rgba(139, 69, 19, 0.06);
+  }
+
+  .np-toggle-thumb {
+    background: #e8ddd0;
+  }
 }
 
 // ─── Bootstrap : texte atténué = variables thème (clair / sombre)
@@ -82,7 +116,9 @@ body .text-secondary {
   }
 }
 
-// ─── NAVBAR ───────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+// 2. NAVBAR
+// ═══════════════════════════════════════════════════════════════
 .np-navbar {
   background:              var(--np-navbar-bg);
   backdrop-filter:         var(--np-blur-strong);
@@ -138,7 +174,9 @@ body .text-secondary {
   gap:         $np-space-md;
 }
 
-// ─── BOUTONS ──────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+// 3. BOUTONS
+// ═══════════════════════════════════════════════════════════════
 .btn-np {
   background:    var(--np-primary);
   color:         #fff;
@@ -244,6 +282,10 @@ body .text-secondary {
   &.sm { width: 32px; height: 32px; font-size: $np-text-xs; }
 }
 
+// ═══════════════════════════════════════════════════════════════
+// 4. CARDS — podcast card + badges
+// ═══════════════════════════════════════════════════════════════
+
 // ─── PODCAST CARD ─────────────────────────────────────────────
 .np-podcast-card {
   background:              var(--np-surface);
@@ -334,6 +376,7 @@ body .text-secondary {
     margin:             0 0 $np-space-sm;
     display:            -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp:         2;
     -webkit-box-orient: vertical;
     overflow:           hidden;
     line-height:        1.5;
@@ -380,6 +423,10 @@ body .text-secondary {
     border:     1px solid rgba(74, 158, 106, 0.25);
   }
 }
+
+// ═══════════════════════════════════════════════════════════════
+// 5. FORMULAIRES — inputs, select, textarea, upload, content cards
+// ═══════════════════════════════════════════════════════════════
 
 // ─── FORMULAIRES ──────────────────────────────────────────────
 .np-input {
@@ -494,7 +541,49 @@ body .text-secondary {
   }
 }
 
-// ─── PLAYER ───────────────────────────────────────────────────
+// ─── PUBLIC CONTENT CARDS ─────────────────────────────────────
+.np-content-card {
+  display: flex;
+  flex-direction: column;
+  gap: $np-space-sm;
+  overflow: hidden;
+}
+
+.np-content-cover {
+  display: block;
+  margin: calc(-1 * #{$np-space-lg}) calc(-1 * #{$np-space-lg}) $np-space-sm;
+  height: 190px;
+  background:
+    radial-gradient(circle at 20% 20%, var(--np-primary-soft), transparent 34%),
+    linear-gradient(135deg, var(--np-surface-hover), var(--np-surface));
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.35s ease;
+  }
+
+  &:hover img {
+    transform: scale(1.04);
+  }
+}
+
+.np-content-cover-fallback {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: var(--np-text-muted);
+  font-weight: $np-weight-semibold;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// 6. PLAYER
+// ═══════════════════════════════════════════════════════════════
 .np-player {
   background:              var(--np-player-bg);
   backdrop-filter:         var(--np-blur-strong);
@@ -512,6 +601,22 @@ body .text-secondary {
 
   .np-player-title  { font-size: $np-text-sm; font-weight: $np-weight-medium; margin: 0; }
   .np-player-author { font-size: $np-text-xs; color: var(--np-player-muted); margin: 0; }
+
+  .np-player-left {
+    display:     flex;
+    align-items: center;
+    gap:         $np-space-sm;
+    min-width:   0;
+  }
+
+  .np-player-info { flex: 1; min-width: 0; }
+
+  .np-player-close {
+    flex-shrink: 0;
+    opacity:     0.75;
+
+    &:hover { opacity: 1; }
+  }
 
   .np-player-center {
     display:        flex;
@@ -604,35 +709,99 @@ body .text-secondary {
   }
 }
 
-// ─── THEME TOGGLE ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+// 7. THEME TOGGLE
+// ═══════════════════════════════════════════════════════════════
 .np-theme-toggle {
-  width:         48px;
-  height:        26px;
-  border-radius: var(--np-radius-full);
-  background:    var(--np-surface);
-  border:        1px solid var(--np-border);
+  width:         56px;
+  height:        32px;
+  padding:       0;
+  border:        none;
+  background:    transparent;
   cursor:        pointer;
   position:      relative;
-  transition:    var(--np-transition);
   flex-shrink:   0;
+  border-radius: var(--np-radius-full);
 
-  &.dark { background: var(--np-primary-dark); }
+  &:focus-visible {
+    outline:        2px solid var(--np-primary-light);
+    outline-offset: 3px;
+  }
+
+  .np-theme-toggle-track {
+    display:       block;
+    width:         100%;
+    height:        100%;
+    border-radius: var(--np-radius-full);
+    background:    linear-gradient(135deg, var(--np-secondary-light), var(--np-secondary));
+    border:        1px solid var(--np-border);
+    position:      relative;
+    box-shadow:    inset 0 1px 3px rgba(61, 26, 0, 0.14);
+    transition:    background 0.32s ease, border-color 0.32s ease, box-shadow 0.32s ease;
+    overflow:      hidden;
+  }
+
+  &.is-dark .np-theme-toggle-track {
+    background: linear-gradient(135deg, var(--np-primary-dark), var(--np-primary));
+    border-color: rgba(139, 69, 19, 0.45);
+    box-shadow:   inset 0 1px 4px rgba(0, 0, 0, 0.35);
+  }
+
+  .np-theme-icon {
+    position:       absolute;
+    top:            50%;
+    transform:      translateY(-50%);
+    font-size:      11px;
+    line-height:    1;
+    pointer-events: none;
+    z-index:        1;
+    transition:     opacity 0.28s ease, color 0.28s ease;
+
+    &--light { left: 9px; }
+    &--dark  { right: 9px; }
+  }
+
+  &:not(.is-dark) {
+    .np-theme-icon--light { opacity: 1; color: #7a5030; }
+    .np-theme-icon--dark  { opacity: 0.38; color: #5a3a28; }
+  }
+
+  &.is-dark {
+    .np-theme-icon--light { opacity: 0.35; color: rgba(255, 210, 140, 0.55); }
+    .np-theme-icon--dark  { opacity: 1; color: rgba(245, 236, 228, 0.88); }
+  }
 
   .np-toggle-thumb {
-    width:         20px;
-    height:        20px;
+    width:         26px;
+    height:        26px;
     border-radius: 50%;
-    background:    #fff;
+    background:    linear-gradient(145deg, #fff9f2, #ebe0d2);
     position:      absolute;
-    top: 2px; left: 2px;
-    transition:    var(--np-transition);
-    box-shadow:    0 1px 4px rgba(0, 0, 0, 0.25);
+    top:           3px;
+    left:          3px;
+    transition:    transform 0.32s cubic-bezier(0.34, 1.2, 0.64, 1), background 0.32s ease, box-shadow 0.32s ease;
+    box-shadow:    0 2px 6px rgba(61, 26, 0, 0.22), 0 0 0 1px rgba(139, 69, 19, 0.08);
+    z-index:       2;
+  }
 
-    &.dark { transform: translateX(22px); }
+  &.is-dark .np-toggle-thumb {
+    transform:  translateX(24px);
+    background: linear-gradient(145deg, #f5ece4, var(--np-primary-light));
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35), 0 0 10px rgba(212, 160, 122, 0.28);
+  }
+
+  &:hover .np-toggle-thumb {
+    box-shadow: 0 3px 10px rgba(61, 26, 0, 0.28), 0 0 0 1px rgba(139, 69, 19, 0.12);
+  }
+
+  &.is-dark:hover .np-toggle-thumb {
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4), 0 0 14px rgba(212, 160, 122, 0.35);
   }
 }
 
-// ─── AUTH ─────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+// 8. AUTH
+// ═══════════════════════════════════════════════════════════════
 .np-auth-wrap {
   min-height:      100vh;
   display:         flex;
@@ -756,6 +925,10 @@ body .text-secondary {
   cursor:      pointer;
 }
 
+// ═══════════════════════════════════════════════════════════════
+// 9. FORM FIELDS — champs, stepper, cover preview
+// ═══════════════════════════════════════════════════════════════
+
 // ─── FORMULAIRE CHAMPS ────────────────────────────────────────
 .np-field       { margin-bottom: $np-space-md; }
 
@@ -878,6 +1051,10 @@ body .text-secondary {
   .np-upload-zone:hover & { opacity: 1; }
 }
 
+// ═══════════════════════════════════════════════════════════════
+// 10. FEEDBACK — loader, alertes, empty state, breadcrumb
+// ═══════════════════════════════════════════════════════════════
+
 // ─── LOADER ───────────────────────────────────────────────────
 .np-loader-wrap {
   display:         flex;
@@ -957,6 +1134,10 @@ body .text-secondary {
 }
 
 .np-breadcrumb-sep { color: var(--np-text-hint); }
+
+// ═══════════════════════════════════════════════════════════════
+// 11. DETAIL — page détail, épisodes, mes podcasts
+// ═══════════════════════════════════════════════════════════════
 
 // ─── DETAIL PAGE ──────────────────────────────────────────────
 .np-detail-hero {
@@ -1049,6 +1230,10 @@ body .text-secondary {
 
   &:hover { background: rgba(200, 74, 58, 0.12); }
 }
+
+// ═══════════════════════════════════════════════════════════════
+// 12. LANDING — hero, features, stats, sections, grilles, tags, newsletter
+// ═══════════════════════════════════════════════════════════════
 
 // ─── LANDING ──────────────────────────────────────────────────
 .np-landing             { overflow: hidden; }
@@ -1169,6 +1354,18 @@ body .text-secondary {
   margin:     $np-space-lg auto 0;
 }
 
+.np-nl-feedback {
+  max-width:  420px;
+  margin:     $np-space-md auto 0;
+  text-align: center;
+}
+
+.np-footer-nl .np-nl-feedback {
+  max-width: none;
+  margin:    $np-space-sm 0 0;
+  text-align: left;
+}
+
 // ─── LOGIN BANNER ─────────────────────────────────────────────
 .np-login-banner {
   display:     flex;
@@ -1182,7 +1379,9 @@ body .text-secondary {
   p { color: var(--np-text-muted); margin: 0; }
 }
 
-// ─── FOOTER ───────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+// 13. FOOTER
+// ═══════════════════════════════════════════════════════════════
 .np-footer {
   padding:    $np-space-2xl 0 $np-space-lg;
   margin-top: $np-space-2xl;
@@ -1250,7 +1449,9 @@ body .text-secondary {
 .np-footer-bottom-links { display: flex; gap: $np-space-lg; }
 .np-nl-form-footer      { display: flex; gap: $np-space-sm; }
 
-// ─── UTILITAIRES ──────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+// 14. UTILITAIRES — helpers, gradient text, page / section, filtres
+// ═══════════════════════════════════════════════════════════════
 .np-gradient-text {
   background:              var(--np-gradient);
   -webkit-background-clip: text;
@@ -1262,6 +1463,46 @@ body .text-secondary {
 .np-section { padding: $np-space-xl 0; }
 .np-divider { border: none; border-top: 1px solid var(--np-border); margin: $np-space-lg 0; }
 
+// Layout principal — espace pour le lecteur audio fixe sur mobile
+main {
+  min-height: calc(100dvh - 56px);
+  padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+}
+
+// Barre de recherche / filtres
+.np-filter-bar {
+  display:         flex;
+  flex-wrap:       wrap;
+  gap:             $np-space-sm;
+  align-items:     center;
+  margin-bottom:   $np-space-md;
+
+  .np-input {
+    flex:      1 1 180px;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .btn-np,
+  .btn-np-outline {
+    flex-shrink: 0;
+  }
+}
+
+// Groupe de boutons empilés sur mobile
+.np-action-row {
+  display:   flex;
+  gap:       $np-space-md;
+  flex-wrap: wrap;
+}
+
+// Formulaires centrés
+.np-form-narrow {
+  width:     100%;
+  max-width: 720px;
+  margin-inline: auto;
+}
+
 .np-scroll-hide {
   scrollbar-width: none;
   &::-webkit-scrollbar { display: none; }
@@ -1272,6 +1513,10 @@ body .text-secondary {
 .np-text-primary { color: var(--np-primary-light) !important; }
 
 .np-theme-icon { font-size: 16px; line-height: 1; }
+
+// ═══════════════════════════════════════════════════════════════
+// 15. NAV MOBILE — hamburger + menu mobile
+// ═══════════════════════════════════════════════════════════════
 
 // ─── HAMBURGER ────────────────────────────────────────────────
 .np-hamburger {
@@ -1343,136 +1588,391 @@ body .text-secondary {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// RESPONSIVE
+// 16. RESPONSIVE — mobile-first polish
 // ═══════════════════════════════════════════════════════════════
 
+// Pas d'effets hover sur écran tactile
+@media (hover: none) {
+  .glass:hover,
+  .glass-card:hover,
+  .glass-strong:hover,
+  .np-podcast-card:hover {
+    transform: none;
+    box-shadow: var(--np-shadow-sm);
+  }
+}
+
 @media (max-width: 768px) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  // ── Navbar ──
   .np-navbar {
-    padding:  0 16px;
-    height:   56px;
+    padding:        0 14px;
+    padding-left:   max(14px, env(safe-area-inset-left));
+    padding-right:  max(14px, env(safe-area-inset-right));
+    height:         56px;
   }
 
   .np-nav-links { display: none; }
+  .np-hamburger { display: flex; }
 
-  .np-nav-actions {
-    gap: 8px;
-
-    .btn-np-ghost   { display: none; }
-    .btn-np,
-    .btn-np-outline { padding: 6px 12px; font-size: 11px; }
+  .np-brand {
+    font-size:   15px;
+    flex-shrink: 1;
+    min-width:   0;
+    overflow:    hidden;
+    text-overflow: ellipsis;
   }
 
-  .np-brand      { font-size: 15px; }
-  .np-hamburger  { display: flex; }
+  .np-nav-actions {
+    gap:         6px;
+    flex-shrink: 0;
 
-  .np-page       { padding: 0 16px; }
-  .np-section    { padding: 24px 0; }
+    .btn-np-ghost { display: none; }
+  }
+
+  // ── Layout ──
+  .np-page {
+    padding:   0 16px;
+    width:     100%;
+    max-width: 100%;
+  }
+
+  .np-section { padding: 20px 0; }
+
+  main {
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .glass-card,
+  .glass-strong {
+    max-width:     100%;
+    padding:       16px;
+    border-radius: 16px;
+  }
+
+  // ── Typographie ──
+  body {
+    font-size: 14px;
+  }
+
+  .np-hero {
+    padding: 20px 16px;
+
+    h1 {
+      font-size:   clamp(1.25rem, 5.5vw, 1.55rem);
+      line-height: 1.2;
+    }
+  }
+
+  .np-hero-eyebrow { font-size: 11px; }
+
+  .np-hero-desc {
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+
+  .np-landing-hero        { padding: 14px 0; }
+  .np-landing-hero-inner  { padding: 20px 16px; }
+
+  .np-landing-title {
+    font-size:   clamp(1.2rem, 5vw, 1.5rem);
+    line-height: 1.22;
+  }
+
+  .np-landing-desc { font-size: 13px; }
+
+  .np-section-label { font-size: 10px; }
+
+  .np-section-title { font-size: clamp(1rem, 3.8vw, 1.15rem); }
+
+  .np-feature-icon  { font-size: 1.75rem; }
+  .np-feature-title { font-size: 14px; }
+  .np-feature-cta   { font-size: 12px; }
+
+  .btn-np,
+  .btn-np-outline,
+  .btn-np-ghost {
+    font-size: 13px;
+    padding:   8px 14px;
+  }
+
+  .btn-np-lg {
+    font-size: 14px;
+    padding:   10px 16px;
+  }
+
+  .np-footer-logo    { font-size: 16px; }
+  .np-footer-tagline,
+  .np-footer-link,
+  .np-footer-col-title { font-size: 12px; }
+
+  .np-auth-logo  { font-size: 17px; }
+  .np-auth-title { font-size: 16px; }
+  .np-auth-subtitle,
+  .np-auth-footer,
+  .np-auth-separator { font-size: 12px; }
+
+  .np-empty-icon { font-size: 1.75rem; }
+  .np-empty p    { font-size: 13px; }
+
+  .np-mobile-link { font-size: 15px; padding: 12px 14px; }
 
   .np-section-header {
     flex-direction: column;
     align-items:    flex-start;
-    gap:            8px;
+    gap:            10px;
+
+    .btn-np-ghost,
+    .btn-np-outline {
+      align-self: stretch;
+      justify-content: center;
+      text-align: center;
+    }
   }
 
-  .np-section-title { font-size: 20px; }
-
-  .np-landing-hero-inner {
-    padding:    24px 16px;
-    text-align: center;
-  }
-
-  .np-landing-title { font-size: 30px; line-height: 1.2; }
-  .np-landing-desc  { font-size: 13px; }
-
+  // ── Actions & formulaires ──
+  .np-action-row,
   .np-landing-actions {
     flex-direction: column;
     align-items:    stretch;
+    gap:            10px;
 
     .btn-np,
-    .btn-np-outline { text-align: center; }
+    .btn-np-outline,
+    .btn-np-lg {
+      width:           100%;
+      justify-content: center;
+      text-align:      center;
+    }
   }
 
-  .np-feature-card { padding: 16px; }
-
-  .np-newsletter {
-    padding:    24px 16px;
-    text-align: center;
-
-    h2 { font-size: 20px; }
-  }
-
-  .np-nl-form {
+  .np-filter-bar {
     flex-direction: column;
-    max-width:      100%;
+    align-items:    stretch;
+
+    .np-input,
+    .btn-np,
+    .btn-np-outline {
+      width: 100%;
+    }
+  }
+
+  .np-input,
+  .np-select,
+  .np-textarea {
+    font-size: 16px; // évite le zoom iOS
+    min-width: 0;
+  }
+
+  // ── Stats compactes (3 colonnes, pas empilées) ──
+  .np-stats-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap:                   8px;
+  }
+
+  .np-stat {
+    padding:       12px 6px;
+    border-radius: 12px;
+  }
+
+  .np-stat-num { font-size: clamp(0.95rem, 3.6vw, 1.15rem); }
+  .np-stat-lbl { font-size: 9px; line-height: 1.3; }
+
+  // ── Grilles ──
+  .np-grid-3 {
+    grid-template-columns: 1fr;
+    gap:                   14px;
+  }
+
+  .np-feature-card { padding: 18px 16px; }
+
+  // ── Cartes contenu ──
+  .np-content-cover {
+    height:        160px;
+    margin:        -16px -16px 10px;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .np-content-card {
+    .btn-np-outline {
+      width:           100%;
+      justify-content: center;
+    }
+  }
+
+  // ── Lecteur audio fixe ──
+  .np-player {
+    position:        fixed;
+    left:            0;
+    right:           0;
+    bottom:          0;
+    z-index:         $np-z-player;
+    padding:         10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+    gap:             6px;
+    grid-template-columns: 1fr;
+    grid-template-rows:    auto auto auto;
+
+    .np-player-left {
+      grid-column: 1;
+      grid-row:    1;
+      display:     flex;
+      align-items: center;
+      justify-content: space-between;
+      gap:         8px;
+      min-width:   0;
+    }
+
+    .np-player-right {
+      grid-column:     1;
+      grid-row:        2;
+      justify-content: center;
+      flex-wrap:       wrap;
+      gap:             4px;
+    }
+
+    .np-player-center {
+      grid-column: 1;
+      grid-row:    3;
+      gap:         4px;
+    }
+
+    .np-player-wave { display: none; }
+
+    .np-player-title {
+      font-size:     13px;
+      overflow:      hidden;
+      text-overflow: ellipsis;
+      white-space:   nowrap;
+      flex:          1;
+      min-width:     0;
+    }
+
+    .np-player-author {
+      font-size:     11px;
+      flex-shrink:   0;
+      margin-left:   auto;
+    }
+
+    .np-rate-select,
+    .np-volume-slider { display: none; }
+
+    .np-player-btn-main {
+      width:  44px;
+      height: 44px;
+    }
+
+    .np-player-btn-icon {
+      padding: 0.4rem;
+    }
+
+    .np-seek-bar { height: 5px; }
+  }
+
+  // ── Footer ──
+  .np-footer {
+    margin-top:    24px;
+    padding:       24px 0 calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .np-footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap:                   20px 16px;
+  }
+
+  .np-footer-brand,
+  .np-footer-nl { grid-column: 1 / -1; }
+
+  .np-nl-form,
+  .np-nl-form-footer {
+    flex-direction: column;
 
     .np-input,
     .btn-np { width: 100%; }
   }
 
-  .np-player {
-    grid-template-columns: 1fr auto;
-    grid-template-rows:    auto auto;
-    padding:               8px 16px;
-    gap:                   8px;
+  .np-newsletter {
+    padding:    20px 16px;
+    text-align: center;
 
-    .np-player-left   { grid-column: 1; grid-row: 1; }
-    .np-player-right  { grid-column: 2; grid-row: 1; }
-    .np-player-center { grid-column: 1 / -1; grid-row: 2; }
+    h2 { font-size: 15px; }
 
-    .np-rate-select   { display: none; }
-    .np-volume-slider { width: 60px; }
+    p  { font-size: 12px; }
   }
 
-  .np-footer-grid {
-    grid-template-columns: 1fr 1fr;
-    gap:                   24px;
+  // ── Détail podcast ──
+  .np-detail-hero {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap:                   16px;
   }
 
-  .np-footer-brand { grid-column: 1 / -1; }
-  .np-footer-nl    { grid-column: 1 / -1; }
-
-  .np-nl-form-footer {
-    flex-direction: column;
-
-    .np-input,
-    button { width: 100%; }
+  .np-detail-cover {
+    width:         100%;
+    max-width:     280px;
+    height:        auto;
+    aspect-ratio:  1;
+    margin-inline: auto;
   }
 
-  .np-detail-hero { grid-template-columns: 1fr; text-align: center; }
-  .np-detail-cover { width: 100%; height: 200px; }
-  .np-detail-title { font-size: 20px; }
-}
+  .np-detail-title  { font-size: clamp(1rem, 4.2vw, 1.2rem); }
+  .np-detail-author,
+  .np-detail-desc   { font-size: 12px; }
+  .np-my-title      { font-size: 14px; }
+  .np-episode-title { font-size: 12px; }
+  .np-episode-meta  { font-size: 10px; }
 
-@media (max-width: 576px) {
-  .np-grid-3 { grid-template-columns: 1fr; }
-
-  .np-stats-row { gap: 8px; }
-  .np-stat-num  { font-size: 24px; }
-
+  // ── Auth ──
   .np-auth-wrap {
     padding:     16px;
     align-items: flex-start;
-    padding-top: 40px;
+    padding-top: 32px;
+    min-height:  auto;
   }
 
-  .np-auth-card     { padding: 24px 16px; border-radius: 20px; }
-  .np-auth-title    { font-size: 17px; }
-  .np-auth-subtitle { font-size: 11px; }
-  .np-fields-row    { grid-template-columns: 1fr; }
+  .np-auth-card {
+    padding:       22px 16px;
+    border-radius: 18px;
+  }
+
+  .np-fields-row { grid-template-columns: 1fr; }
+
+  .np-my-item {
+    flex-wrap: wrap;
+    gap:       10px;
+    padding:   12px;
+  }
+
+  .np-my-actions {
+    width:           100%;
+    flex-wrap:       wrap;
+    justify-content: flex-start;
+    gap:             6px;
+
+    .btn-np,
+    .btn-np-outline,
+    .btn-np-ghost,
+    .np-btn-danger {
+      flex:            1 1 calc(50% - 3px);
+      justify-content: center;
+      text-align:      center;
+      font-size:       12px;
+      padding:         8px 10px;
+    }
+  }
+
+  .np-my-cover { width: 52px; height: 52px; }
+
+  .np-episode-item { flex-wrap: wrap; gap: 8px; }
 
   .np-auth-options {
     flex-direction: column;
     align-items:    flex-start;
     gap:            8px;
   }
-
-  .np-my-item    { flex-wrap: wrap; gap: 8px; }
-  .np-my-actions { width: 100%; justify-content: flex-end; }
-  .np-my-cover   { width: 48px; height: 48px; }
-
-  .np-episode-item { flex-wrap: wrap; gap: 8px; }
-
-  .np-form-wrap { padding: 0; }
 
   .np-stepper {
     flex-direction: column;
@@ -1485,19 +1985,11 @@ body .text-secondary {
     }
   }
 
-  .np-search-hero { padding: 24px 16px; border-radius: 20px; }
+  .np-form-wrap { padding: 0; }
 
-  .np-footer-grid { grid-template-columns: 1fr; }
-
-  .np-footer-bottom {
-    flex-direction: column;
-    text-align:     center;
-    gap:            16px;
-  }
-
-  .np-hide-mobile            { display: none !important; }
-  .np-text-center-mobile     { text-align: center; }
-  .np-full-mobile            { width: 100%; }
+  .np-hide-mobile        { display: none !important; }
+  .np-text-center-mobile { text-align: center; }
+  .np-full-mobile        { width: 100%; }
 }
 
 @media (min-width: 576px) and (max-width: 992px) {
@@ -1509,12 +2001,39 @@ body .text-secondary {
 }
 
 @media (max-width: 480px) {
-  .np-player .np-volume-slider { display: none; }
+  .np-page { padding: 0 12px; }
+
+  .np-navbar { padding: 0 12px; }
+
+  .np-player {
+    .np-skip-control { display: none; }
+  }
 
   .np-footer-grid { grid-template-columns: 1fr; }
 
   .np-footer-bottom {
-    flex-direction: column;
-    text-align:     center;
+    flex-direction:  column;
+    text-align:      center;
+    gap:             12px;
   }
+
+  .np-footer-bottom-links {
+    flex-direction:  column;
+    gap:             8px;
+  }
+
+  .np-tag-pill {
+    font-size: 12px;
+    padding:   5px 10px;
+  }
+}
+
+@media (max-width: 360px) {
+  .np-brand { font-size: 13px; }
+
+  .np-stat-lbl { font-size: 8px; }
+
+  .np-landing-title { font-size: clamp(1.1rem, 4.8vw, 1.35rem); }
+
+  .np-player .np-player-author { display: none; }
 }

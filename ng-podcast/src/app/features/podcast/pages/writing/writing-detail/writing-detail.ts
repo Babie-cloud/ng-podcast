@@ -20,7 +20,7 @@ export class WritingDetail implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
-    if (id) void this.store.loadOne(id);
+    if (id) void this.loadAndCountView(id);
   }
 
   ngOnDestroy(): void {
@@ -35,6 +35,15 @@ export class WritingDetail implements OnInit, OnDestroy {
 
   labelType(code: string): string {
     return writingTypeLabel(code);
+  }
+
+  private async loadAndCountView(id: string): Promise<void> {
+    await this.auth.whenAuthHydrated();
+    await this.store.loadOne(id);
+    const selected = this.store.selected();
+    if (this.auth.isLogged() && selected?.status === 'PUBLISHED' && !this.canManage) {
+      await this.store.registerView(id);
+    }
   }
 
   async remove(): Promise<void> {

@@ -71,6 +71,13 @@ export class WritingService {
     return this.mapRow(row);
   }
 
+  async registerView(id: string): Promise<Writing> {
+    const row = await firstValueFrom(
+      this.http.post<WritingApiDto>(`${this.base}/${id}/view`, {})
+    );
+    return this.mapRow(row);
+  }
+
   async create(payload: CreateWritingPayload): Promise<Writing> {
     const row = await firstValueFrom(
       this.http.post<WritingApiDto>(this.base, {

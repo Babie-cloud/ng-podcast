@@ -223,9 +223,17 @@
 @media (max-width: 640px) {
   .player-bar {
     grid-template-columns: 1fr auto;
-    padding: .75rem 1rem;
+    padding: .65rem 0.85rem;
 
     .player-wave { display: none; }
+
+    .player-title {
+      font-size: 12.5px;
+    }
+
+    .player-time {
+      font-size: 10px;
+    }
 
     .player-controls {
       .volume-ctrl { display: none; }

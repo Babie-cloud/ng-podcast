@@ -122,3 +122,109 @@
 .episode-play-cues-fallback {
   padding: 1rem;
 }
+
+@media (max-width: 767px) {
+  .episode-play-layout {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .episode-play-title {
+    font-size: clamp(1.05rem, 4.5vw, 1.25rem);
+  }
+
+  .episode-play-pill {
+    font-size: 0.72rem;
+    padding: 0.3rem 0.7rem;
+  }
+
+  .episode-play-cue {
+    font-size: 0.9rem;
+    padding: 0.55rem 0.75rem;
+  }
+
+  .episode-play-time {
+    font-size: 0.72rem;
+  }
+
+  .episode-play-art-wrap {
+    max-width: 260px;
+    margin-inline: auto;
+  }
+
+  .episode-play-controls {
+    justify-content: center;
+  }
+
+  .episode-play-seek-wrap {
+    flex-basis: 100%;
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .episode-play-seek-wrap .episode-play-mini {
+    grid-row: 2;
+  }
+
+  .episode-play-seek-wrap .episode-play-mini:nth-last-child(2) {
+    grid-column: 1 / 2;
+  }
+
+  .episode-play-seek-wrap .episode-play-mini:last-child {
+    grid-column: 3 / 4;
+  }
+}
+
+@media (max-width: 480px) {
+  .episode-play-layout {
+    padding: 0.65rem;
+  }
+
+  .episode-play-title {
+    font-size: clamp(0.98rem, 4.2vw, 1.12rem);
+  }
+
+  .episode-play-cue {
+    font-size: 0.85rem;
+  }
+
+  .episode-play-art-wrap {
+    max-width: 220px;
+  }
+
+  .episode-play-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .episode-play-seek-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .episode-play-bar {
+    order: 1;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .episode-play-time {
+    order: 2;
+    text-align: center;
+    width: 100%;
+  }
+
+  .episode-play-seek-wrap .episode-play-mini {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .btn-np-icon-lg {
+    width: 48px;
+    height: 48px;
+    align-self: center;
+  }
+}
