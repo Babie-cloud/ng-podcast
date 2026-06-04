@@ -12,7 +12,12 @@ const serverConfig: ApplicationConfig = {
     provideServerRendering(
       withRoutes(serverRoutes)
     ),
-    { provide: SSR_API_BASE_URL, useValue: 'http://127.0.0.1:8080' },
+    {
+      provide: SSR_API_BASE_URL,
+      useValue:
+        process.env['API_URL']?.replace(/\/$/, '') ??
+        'https://CHANGE_ME_BACKEND_PUBLIC_URL',
+    },
   ]
 };
 

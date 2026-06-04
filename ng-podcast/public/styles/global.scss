@@ -1,33 +1,7 @@
-// src/styles/global.scss
-// ═══════════════════════════════════════════════════════════════
-// GLOBAL — classes réutilisables centralisées (un seul fichier)
-// ═══════════════════════════════════════════════════════════════
-// Sommaire :
-//   1.  BASE          — reset, body, glassmorphism
-//   2.  NAVBAR
-//   3.  BOUTONS
-//   4.  CARDS         — podcast card + badges
-//   5.  FORMULAIRES   — inputs, select, textarea, upload, content cards
-//   6.  PLAYER
-//   7.  THEME TOGGLE
-//   8.  AUTH
-//   9.  FORM FIELDS   — champs, stepper, cover preview
-//   10. FEEDBACK      — loader, alertes, empty state, breadcrumb
-//   11. DETAIL        — page détail, épisodes, mes podcasts
-//   12. LANDING       — hero, features, stats, sections, grilles, tags
-//   13. FOOTER
-//   14. UTILITAIRES   — helpers, gradient text, page / section, filtres
-//   15. NAV MOBILE    — hamburger + menu mobile
-//   16. RESPONSIVE    — mobile-first polish
-// ═══════════════════════════════════════════════════════════════
 @use 'variables' as *;
 @use 'theme';
 
-// ═══════════════════════════════════════════════════════════════
-// 1. BASE — reset, body, typographie de base, glassmorphism
-// ═══════════════════════════════════════════════════════════════
 
-// ─── BASE ─────────────────────────────────────────────────────
 *, *::before, *::after { box-sizing: border-box; }
 
 html { scroll-behavior: smooth; }
@@ -73,7 +47,6 @@ body .text-secondary {
   color: var(--np-text-muted) !important;
 }
 
-// ─── GLASSMORPHISM ────────────────────────────────────────────
 .glass {
   background:              var(--np-surface);
   border:                  1px solid var(--np-border);
@@ -116,9 +89,7 @@ body .text-secondary {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════
 // 2. NAVBAR
-// ═══════════════════════════════════════════════════════════════
 .np-navbar {
   background:              var(--np-navbar-bg);
   backdrop-filter:         var(--np-blur-strong);
@@ -174,9 +145,8 @@ body .text-secondary {
   gap:         $np-space-md;
 }
 
-// ═══════════════════════════════════════════════════════════════
+
 // 3. BOUTONS
-// ═══════════════════════════════════════════════════════════════
 .btn-np {
   background:    var(--np-primary);
   color:         #fff;
