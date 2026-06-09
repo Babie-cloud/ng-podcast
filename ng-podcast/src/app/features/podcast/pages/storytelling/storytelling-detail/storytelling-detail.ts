@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { StorytellingStore } from '../../../store/storytelling.store';
@@ -9,6 +9,7 @@ import { AuthService } from '../../../services/auth.service';
   standalone: true,
   imports: [RouterLink, DatePipe],
   templateUrl: './storytelling-detail.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './storytelling-detail.scss',
 })
 export class StorytellingDetail implements OnInit, OnDestroy {

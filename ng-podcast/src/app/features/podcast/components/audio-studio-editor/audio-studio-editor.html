@@ -1,0 +1,231 @@
+<section class="audio-studio glass-card">
+  <header class="audio-studio__header">
+    <div>
+      <span class="np-section-label" i18n>Audio studio</span>
+      <h2 class="h5 np-gradient-text mb-1">
+        <i class="fa-solid fa-sliders me-2" aria-hidden="true"></i>
+        <span i18n>Multi-track editor</span>
+      </h2>
+      <p class="np-text-muted small mb-0" i18n>
+        Import audio, record your voice, layer background music, trim sections, then export an MP3 mix.
+      </p>
+    </div>
+  </header>
+
+  @if (studio.error(); as err) {
+    <div class="np-alert np-alert-danger mb-3 d-flex align-items-center justify-content-between gap-2">
+      <span>{{ err }}</span>
+      <button type="button" class="btn-np-ghost btn-np-sm" (click)="studio.clearError()" i18n>Dismiss</button>
+    </div>
+  }
+
+  <div class="audio-studio__waveform-wrap">
+    <div #waveformContainer class="audio-studio__waveform" role="img" aria-label="Waveform"></div>
+    @if (!waveReady() && !studio.hasTracks()) {
+      <p class="audio-studio__waveform-placeholder np-text-muted small" i18n>
+        Load or record audio to see the waveform.
+      </p>
+    }
+  </div>
+
+  <div class="audio-studio__trim glass-strong">
+    <span class="np-label mb-0">
+      <i class="fa-solid fa-scissors me-1" aria-hidden="true"></i>
+      <span i18n>Trim region</span>
+    </span>
+    <div class="audio-studio__trim-actions">
+      @if (studio.trimRegion(); as region) {
+        <span class="small np-text-muted">
+          {{ formatTrackTime(region.start) }} – {{ formatTrackTime(region.end) }}
+        </span>
+      }
+      <button type="button" class="btn-np-outline btn-np-sm" (click)="studio.setTrimStart()" i18n>
+        Set start
+      </button>
+      <button type="button" class="btn-np-outline btn-np-sm" (click)="studio.setTrimEnd()" i18n>
+        Set end
+      </button>
+      <button
+        type="button"
+        class="btn-np btn-np-sm"
+        (click)="studio.cutSelection()"
+        [disabled]="!studio.trimRegion()"
+        i18n
+      >
+        Cut selection
+      </button>
+    </div>
+  </div>
+
+  <div class="audio-studio__transport">
+    <button
+      type="button"
+      class="btn-np btn-np-sm"
+      (click)="studio.togglePlay()"
+      [disabled]="!studio.hasTracks()"
+      [attr.aria-label]="studio.playback().isPlaying ? 'Pause' : 'Play'"
+    >
+      @if (studio.playback().isPlaying) {
+        <i class="fa-solid fa-pause me-1" aria-hidden="true"></i>
+        <span i18n>Pause</span>
+      } @else {
+        <i class="fa-solid fa-play me-1" aria-hidden="true"></i>
+        <span i18n>Play</span>
+      }
+    </button>
+
+    <input
+      type="range"
+      class="audio-studio__seek np-range flex-grow-1"
+      min="0"
+      max="100"
+      step="0.1"
+      [value]="seekPercent()"
+      (input)="onSeekInput($event)"
+      [disabled]="!studio.hasTracks()"
+      aria-label="Seek"
+    />
+
+    <span class="audio-studio__time small np-text-muted">{{ studio.timeLabel() }}</span>
+  </div>
+
+  <div class="audio-studio__sources">
+    <div class="audio-studio__source-group">
+      <label class="np-label" for="studio-import">
+        <i class="fa-solid fa-file-audio me-1" aria-hidden="true"></i>
+        <span i18n>Import audio</span>
+      </label>
+      <input
+        id="studio-import"
+        type="file"
+        class="np-input w-100"
+        accept="audio/*"
+        (change)="onFileSelected($event)"
+      />
+    </div>
+    <div class="audio-studio__source-group">
+      <label class="np-label" for="studio-music">
+        <i class="fa-solid fa-music me-1" aria-hidden="true"></i>
+        <span i18n>Background music</span>
+      </label>
+      <input
+        id="studio-music"
+        type="file"
+        class="np-input w-100"
+        accept="audio/*"
+        (change)="onMusicFileSelected($event)"
+      />
+    </div>
+    <div class="audio-studio__source-group">
+      <span class="np-label">
+        <i class="fa-solid fa-microphone me-1" aria-hidden="true"></i>
+        <span i18n>Microphone</span>
+      </span>
+      @if (!studio.recording()) {
+        <button type="button" class="btn-np-outline btn-np-sm" (click)="studio.startRecording()" i18n>
+          Record
+        </button>
+      } @else {
+        <button type="button" class="btn-np btn-np-sm np-btn-danger" (click)="studio.stopRecording()" i18n>
+          <i class="fa-solid fa-stop me-1" aria-hidden="true"></i>
+          Stop recording
+        </button>
+      }
+    </div>
+  </div>
+
+  <app-sound-library />
+
+  @if (studio.tracks().length) {
+    <ul class="audio-studio__tracks list-unstyled mb-0">
+      @for (track of studio.tracks(); track track.id) {
+        <li
+          class="audio-studio__track"
+          [class.audio-studio__track--active]="studio.activeTrackId() === track.id"
+        >
+          <button
+            type="button"
+            class="audio-studio__track-select"
+            (click)="selectTrack(track.id)"
+          >
+            <span class="audio-studio__track-name">{{ track.name }}</span>
+            <span class="audio-studio__track-meta np-text-muted small">
+              {{ trackTypeLabel(track.type) }} · {{ formatTrackTime(track.duration) }}
+            </span>
+          </button>
+
+          <div class="audio-studio__track-controls">
+            <button
+              type="button"
+              class="btn-np-ghost btn-np-sm"
+              (click)="studio.toggleMute(track.id)"
+              [attr.aria-pressed]="track.muted"
+              [attr.aria-label]="track.muted ? 'Unmute' : 'Mute'"
+            >
+              @if (track.muted) {
+                <i class="fa-solid fa-volume-xmark" aria-hidden="true"></i>
+              } @else {
+                <i class="fa-solid fa-volume-high" aria-hidden="true"></i>
+              }
+            </button>
+            <label class="audio-studio__volume">
+              <span class="visually-hidden" i18n>Volume</span>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                [value]="track.volume * 100"
+                (input)="onVolumeChange(track.id, $event)"
+              />
+              <span class="small np-text-muted">{{ (track.volume * 100) | number:'1.0-0' }}%</span>
+            </label>
+            <button
+              type="button"
+              class="btn-np-ghost btn-np-sm text-danger"
+              (click)="studio.removeTrack(track.id)"
+              aria-label="Remove track"
+            >
+              <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+            </button>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+
+  <footer class="audio-studio__footer">
+    <button
+      type="button"
+      class="btn-np"
+      (click)="onExport()"
+      [disabled]="!studio.hasTracks() || studio.exporting()"
+    >
+      @if (studio.exporting()) {
+        <i class="fa-solid fa-spinner fa-spin me-1" aria-hidden="true"></i>
+        <span i18n>Exporting…</span>
+      } @else {
+        <i class="fa-solid fa-download me-1" aria-hidden="true"></i>
+        <span i18n>Export MP3</span>
+      }
+    </button>
+
+    @if (studio.exporting() && ffmpegExport.progress() > 0) {
+      <div class="audio-studio__export-progress mt-2">
+        <div
+          class="audio-studio__export-bar"
+          role="progressbar"
+          [attr.aria-valuenow]="ffmpegExport.progress()"
+          aria-valuemin="0"
+          aria-valuemax="100"
+        >
+          <span [style.width.%]="ffmpegExport.progress()"></span>
+        </div>
+        <span class="small np-text-muted">{{ ffmpegExport.progress() }}%</span>
+      </div>
+    }
+
+    @if (exportLabel()) {
+      <p class="np-text-muted small mb-0 mt-2">{{ exportLabel() }}</p>
+    }
+  </footer>
+</section>

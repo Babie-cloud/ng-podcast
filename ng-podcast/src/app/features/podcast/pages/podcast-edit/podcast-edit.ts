@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
@@ -9,6 +9,7 @@ import { Episode } from '../../models/podcast.model';
   selector: 'app-podcast-edit',
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink, DatePipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './podcast-edit.html',
 })
 export class PodcastEdit implements OnInit {

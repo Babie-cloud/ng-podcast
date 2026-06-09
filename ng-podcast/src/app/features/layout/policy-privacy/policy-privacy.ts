@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -6,6 +6,7 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [RouterLink],
   templateUrl: './policy-privacy.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './policy-privacy.scss',
 })
 export class PrivacyPage {}

@@ -5,6 +5,7 @@ import {
   signal,
   PLATFORM_ID,
   OnDestroy,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
@@ -12,6 +13,7 @@ import { isPlatformBrowser } from '@angular/common';
   selector: 'app-audio-recorder',
   standalone: true,
   templateUrl: './audio-recorder.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './audio-recorder.scss',
 })
 export class AudioRecorder implements OnDestroy {
@@ -50,12 +52,11 @@ export class AudioRecorder implements OnDestroy {
     this.label.set(null);
     try {
       this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mime =
-        MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
-          ? 'audio/webm;codecs=opus'
-          : MediaRecorder.isTypeSupported('audio/webm')
-            ? 'audio/webm'
-            : '';
+      const mime = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+        ? 'audio/webm;codecs=opus'
+        : MediaRecorder.isTypeSupported('audio/webm')
+          ? 'audio/webm'
+          : '';
       this.mediaRecorder = mime
         ? new MediaRecorder(this.stream, { mimeType: mime })
         : new MediaRecorder(this.stream);
@@ -78,8 +79,7 @@ export class AudioRecorder implements OnDestroy {
       this.mediaRecorder.start();
       this.recording.set(true);
     } catch (e: unknown) {
-      const msg =
-        e instanceof Error ? e.message : "Micro inaccessible ou refusé.";
+      const msg = e instanceof Error ? e.message : 'Micro inaccessible ou refusé.';
       this.error.set(msg);
       this.stopTracks();
     }

@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { StorytellingStore } from '../../../store/storytelling.store';
@@ -8,6 +8,7 @@ import { ContentUploadService } from '../../../services/content-upload.service';
   selector: 'app-storytelling-create',
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './storytelling-create.html',
 })
 export class StorytellingCreate {

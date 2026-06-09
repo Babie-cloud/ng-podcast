@@ -1,5 +1,5 @@
 // features/podcast/pages/create/create.component.ts
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { PodcastStore } from '../../store/podcast.store';
@@ -11,6 +11,7 @@ import { PODCAST_CONTENT_THEMES } from '../../constants/content-taxonomy';
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './create.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./create.scss'],
 })
 export class Create {

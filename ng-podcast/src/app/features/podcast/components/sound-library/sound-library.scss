@@ -1,0 +1,96 @@
+.sound-library {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--np-radius-md, 12px);
+}
+
+.sound-library__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.sound-library__search {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.sound-library__category {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.sound-library__category--active {
+  border-color: var(--np-primary);
+  color: var(--np-primary);
+  background: color-mix(in srgb, var(--np-primary) 12%, transparent);
+}
+
+.sound-library__query {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sound-library__loading {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.5rem 0;
+}
+
+.sound-library__meta {
+  font-variant-numeric: tabular-nums;
+}
+
+.sound-library__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.sound-library__item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: var(--np-radius-sm, 8px);
+  border: 1px solid var(--np-border);
+  background: var(--np-surface);
+}
+
+.sound-library__item-main {
+  flex: 1 1 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.sound-library__name {
+  font-size: var(--np-text-sm, 0.875rem);
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.sound-library__duration {
+  font-variant-numeric: tabular-nums;
+}
+
+.sound-library__item-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}

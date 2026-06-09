@@ -1,4 +1,11 @@
-import { Component, OnInit, inject, computed, signal } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  computed,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { PodcastStore } from '../../store/podcast.store';
@@ -11,6 +18,7 @@ import { CaptionCue, parseCaptionCues } from './caption-cues';
   standalone: true,
   imports: [RouterLink, DatePipe],
   templateUrl: './episode-play.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './episode-play.scss',
 })
 export class EpisodePlay implements OnInit {

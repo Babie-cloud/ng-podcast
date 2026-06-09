@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { StorytellingStore } from '../../../store/storytelling.store';
@@ -8,6 +8,7 @@ import { ContentUploadService } from '../../../services/content-upload.service';
   selector: 'app-storytelling-edit',
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './storytelling-edit.html',
 })
 export class StorytellingEdit implements OnInit {

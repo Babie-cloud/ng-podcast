@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe, SlicePipe } from '@angular/common';
 import { StorytellingStore } from '../../../store/storytelling.store';
@@ -8,6 +8,7 @@ import { AuthService } from '../../../services/auth.service';
   selector: 'app-storytelling-list',
   standalone: true,
   imports: [RouterLink, DatePipe, SlicePipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './storytelling-list.html',
 })
 export class StorytellingList implements OnInit {

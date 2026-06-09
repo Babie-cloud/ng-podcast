@@ -1,0 +1,66 @@
+<div class="np-notif-wrap">
+  <button
+    type="button"
+    class="np-notif-trigger"
+    (click)="togglePanel($event)"
+    [attr.aria-expanded]="panelOpen()"
+    aria-label="Notifications"
+    title="Notifications"
+  >
+    <i class="fa-solid fa-bell" aria-hidden="true"></i>
+    @if (notifications.hasUnread()) {
+      <span class="np-notif-badge" aria-hidden="true">
+        {{ notifications.unreadCount() > 99 ? '99+' : notifications.unreadCount() }}
+      </span>
+    }
+  </button>
+
+  @if (panelOpen()) {
+    <div class="np-notif-panel glass-card" role="dialog" aria-label="Notifications">
+      <div class="np-notif-panel-head">
+        <h2 class="np-notif-panel-title">Notifications</h2>
+        @if (notifications.hasUnread()) {
+          <button
+            type="button"
+            class="np-notif-mark-all"
+            (click)="notifications.markAllAsRead()"
+          >
+            Tout marquer lu
+          </button>
+        }
+      </div>
+
+      @if (notifications.loading() && notifications.notifications().length === 0) {
+        <p class="np-notif-state">Chargement…</p>
+      } @else if (notifications.error()) {
+        <p class="np-notif-state np-notif-state--error">{{ notifications.error() }}</p>
+        <button type="button" class="np-notif-retry" (click)="notifications.refresh()">
+          Réessayer
+        </button>
+      } @else if (notifications.notifications().length === 0) {
+        <p class="np-notif-state">Aucune notification.</p>
+      } @else {
+        <ul class="np-notif-list">
+          @for (n of notifications.notifications(); track n.id) {
+            <li>
+              <a
+                href="#"
+                class="np-notif-item"
+                [class.is-unread]="!n.read"
+                (click)="onNotificationClick(n, $event)"
+              >
+                <span class="np-notif-item-icon" aria-hidden="true">
+                  <i [class]="iconFor(n.type)"></i>
+                </span>
+                <span class="np-notif-item-body">
+                  <span class="np-notif-item-message">{{ n.message }}</span>
+                  <span class="np-notif-item-time">{{ n.createdAt | date: 'short' }}</span>
+                </span>
+              </a>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  }
+</div>

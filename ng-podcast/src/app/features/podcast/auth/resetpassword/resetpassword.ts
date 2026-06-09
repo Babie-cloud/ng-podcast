@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService, readApiErrorDetail } from '../../services/auth.service';
@@ -8,6 +8,7 @@ import { AuthService, readApiErrorDetail } from '../../services/auth.service';
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './resetpassword.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './resetpassword.scss',
 })
 export class Resetpassword {

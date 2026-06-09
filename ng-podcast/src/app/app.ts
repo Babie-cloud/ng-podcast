@@ -1,5 +1,5 @@
 // src/app/app.ts
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Navbar } from './shared/pages/navbar/navbar';
 import { Player } from './features/podcast/components/player/player';
@@ -9,6 +9,7 @@ import { Footer } from './features/layout/footer/footer';
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, Navbar, Player, Footer],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <app-navbar />
     <main>
@@ -16,6 +17,6 @@ import { Footer } from './features/layout/footer/footer';
     </main>
     <app-player />
     <app-footer />
-  `
+  `,
 })
 export class App {}

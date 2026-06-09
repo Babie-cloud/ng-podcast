@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe, SlicePipe } from '@angular/common';
 import { WritingStore } from '../../../store/writing.store';
@@ -8,6 +8,7 @@ import { AuthService } from '../../../services/auth.service';
   selector: 'app-writing-list',
   standalone: true,
   imports: [RouterLink, DatePipe, SlicePipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './writing-list.html',
 })
 export class WritingList implements OnInit {

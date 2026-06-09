@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { PodcastStore } from '../../store/podcast.store';
@@ -13,6 +13,7 @@ import { AudioRecorder } from '../../components/audio-recorder/audio-recorder';
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink, AudioRecorder],
   templateUrl: './episode-studio.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './episode-studio.scss',
 })
 export class EpisodeStudio implements OnInit {
@@ -74,7 +75,7 @@ export class EpisodeStudio implements OnInit {
     if (this.form.invalid || !audio || !pid) {
       if (!audio && this.form.valid) {
         this.localError.set(
-          'Choisissez un fichier audio ou enregistrez au micro — le dernier média utilisé est conservé.'
+          'Choisissez un fichier audio ou enregistrez au micro — le dernier média utilisé est conservé.',
         );
       }
       return;
@@ -94,8 +95,7 @@ export class EpisodeStudio implements OnInit {
       void this.router.navigate(['/podcasts', pid]);
     } catch (err: unknown) {
       const e = err as { error?: { detail?: string }; message?: string };
-      const message =
-        e.error?.detail ?? e.message ?? 'Impossible d\'ajouter l\'épisode.';
+      const message = e.error?.detail ?? e.message ?? "Impossible d'ajouter l'épisode.";
       this.localError.set(message);
     } finally {
       this.busy.set(false);

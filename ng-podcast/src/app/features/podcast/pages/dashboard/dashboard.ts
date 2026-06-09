@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { PodcastStore } from '../../store/podcast.store';
@@ -10,6 +10,7 @@ import { StorytellingStore } from '../../store/storytelling.store';
   standalone: true,
   imports: [RouterLink],
   templateUrl: './dashboard.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './dashboard.scss',
 })
 export class Dashboard implements OnInit {
@@ -21,11 +22,7 @@ export class Dashboard implements OnInit {
   readonly verificationMessage = signal<string | null>(null);
 
   ngOnInit(): void {
-    void Promise.all([
-      this.store.loadMine(),
-      this.writings.loadMine(),
-      this.stories.loadMine(),
-    ]);
+    void Promise.all([this.store.loadMine(), this.writings.loadMine(), this.stories.loadMine()]);
   }
 
   displayName(): string {
@@ -56,5 +53,4 @@ export class Dashboard implements OnInit {
       this.verificationSending.set(false);
     }
   }
-
 }
