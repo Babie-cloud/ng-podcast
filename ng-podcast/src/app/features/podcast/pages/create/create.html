@@ -2,60 +2,67 @@
 <div class="np-page np-section">
   <div class="np-form-wrap">
 
-    <!-- Breadcrumb -->
     <div class="np-breadcrumb mb-4">
       <a routerLink="/podcasts" class="np-breadcrumb-link" i18n>Podcasts</a>
       <span class="np-breadcrumb-sep"></span>
-      <span i18n>New podcast</span>
+      <span i18n>Création de podcast</span>
     </div>
 
-    <h1 class="np-gradient-text mb-1"  i18n>Create a podcast</h1>
+    <h1 class="np-gradient-text mb-1" i18n>Création de podcast</h1>
     <p class="np-text-muted mb-4" i18n>
-      Fill in the information and publish your first episode.
+      Décrivez votre émission, ajoutez une couverture, puis enregistrez ou importez vos épisodes audio.
+      Chaque audio ajouté devient un épisode du podcast.
     </p>
 
-    <!-- Stepper -->
     <div class="np-stepper mb-4">
       @for (step of steps; track step.index) {
-        <div class="np-step-item"
+        <div
+          class="np-step-item"
           [class.active]="currentStep() === step.index"
-          [class.done]="currentStep() > step.index">
-          <span class="np-step-dot" i18n>
+          [class.done]="currentStep() > step.index"
+        >
+          <span class="np-step-dot">
             {{ currentStep() > step.index ? '✓' : step.index + 1 }}
           </span>
-          <span class="np-step-label" i18n>{{ step.label }}</span>
+          <span class="np-step-label">{{ step.label }}</span>
         </div>
       }
     </div>
 
-    <!-- STEP 0 : Infos -->
     @if (currentStep() === 0) {
       <div class="glass-card mb-3">
-        <h5 class="np-card-section-title" i18n>General information</h5>
+        <h5 class="np-card-section-title" i18n>Informations générales</h5>
+        <p class="np-text-muted small mb-3" i18n>
+          Le podcast est le conteneur de votre émission. Les audios que vous ajouterez ensuite seront vos épisodes.
+        </p>
 
         <div class="np-field">
-          <label class="np-label" i18n>Title *</label>
-          <input class="np-input"
+          <label class="np-label" i18n>Titre du podcast *</label>
+          <input
+            class="np-input"
             [class.np-input-error]="isInvalid('title')"
-            placeholder="Ex : The Angular Show — Angular developers talk about everything Angular!"
+            placeholder="Ex. : Voix du quartier — histoires et témoignages"
             [formControl]="form.controls.title"
           />
           @if (isInvalid('title')) {
-            <span class="np-error-msg" i18n>Minimum 3 caracters required.</span>
+            <span class="np-error-msg" i18n>Minimum 3 caractères.</span>
           }
         </div>
 
         <div class="np-field">
           <label class="np-label" i18n>Description *</label>
-          <textarea class="np-input np-textarea"
+          <textarea
+            class="np-input np-textarea"
             [class.np-input-error]="isInvalid('description')"
-            placeholder="What is your podcast about?"
+            placeholder="De quoi parle votre podcast ? Pour qui est-il fait ?"
             [formControl]="form.controls.description"
           ></textarea>
           <div class="np-field-meta">
             @if (isInvalid('description')) {
-              <span class="np-error-msg" i18n>Minimum 10 caracters required.</span>
-            } @else { <span></span> }
+              <span class="np-error-msg" i18n>Minimum 10 caractères.</span>
+            } @else {
+              <span></span>
+            }
             <span class="np-text-hint">
               {{ form.controls.description.value?.length ?? 0 }} / 500
             </span>
@@ -63,9 +70,9 @@
         </div>
 
         <div class="np-field">
-          <label class="np-label" i18n>Category</label>
+          <label class="np-label" i18n>Thème / catégorie</label>
           <select class="np-input np-select" [formControl]="form.controls.category">
-            <option value="">Select...</option>
+            <option value="" i18n>Choisir…</option>
             @for (cat of categories; track cat) {
               <option [value]="cat">{{ cat }}</option>
             }
@@ -73,7 +80,7 @@
         </div>
 
         <div class="np-field">
-          <label class="np-label" i18n>Language</label>
+          <label class="np-label" i18n>Langue</label>
           <select class="np-input np-select" [formControl]="form.controls.language">
             <option value="fr" i18n>Français</option>
             <option value="en" i18n>English</option>
@@ -83,109 +90,184 @@
       </div>
 
       <div class="d-flex justify-content-end">
-        <button class="btn-np" [disabled]="step0Invalid()" (click)="nextStep()">
+        <button type="button" class="btn-np" [disabled]="step0Invalid()" (click)="nextStep()" i18n>
           Suivant
         </button>
       </div>
     }
 
-    <!-- STEP 1 : Couverture -->
     @if (currentStep() === 1) {
       <div class="glass-card mb-3">
-        <h5 class="np-card-section-title" i18n>Cover Image</h5>
-        <div class="np-upload-zone"
+        <h5 class="np-card-section-title" i18n>Image de couverture</h5>
+        <p class="np-text-muted small mb-3" i18n>
+          Optionnelle mais recommandée — elle apparaît dans le catalogue et sur la fiche du podcast.
+        </p>
+        <div
+          class="np-upload-zone"
           [class.has-file]="coverPreview()"
           (click)="coverInput.click()"
           (dragover)="$event.preventDefault()"
-          (drop)="onCoverDrop($event)">
+          (drop)="onCoverDrop($event)"
+        >
           @if (coverPreview()) {
-            <img [src]="coverPreview()!" alt="Aperçu" class="np-cover-preview" />
-            <div class="np-cover-overlay" i18n>Change image</div>
+            <img [src]="coverPreview()!" alt="Aperçu couverture" class="np-cover-preview" />
+            <div class="np-cover-overlay" i18n>Changer l’image</div>
           } @else {
-            <p class="mb-1 fw-semibold" i18n>Drop your image here</p>
+            <p class="mb-1 fw-semibold" i18n>Déposez votre image ici</p>
             <small class="np-text-hint" i18n>JPG, PNG, WebP — 5 Mo max</small>
           }
         </div>
-        <input #coverInput type="file" accept="image/*"
-          class="d-none" (change)="onCoverChange($event)" />
+        <input #coverInput type="file" accept="image/*" class="d-none" (change)="onCoverChange($event)" />
         @if (coverError()) {
           <div class="np-alert np-alert-danger mt-2">{{ coverError() }}</div>
         }
       </div>
 
       <div class="d-flex justify-content-between">
-        <button class="btn-np-ghost" (click)="prevStep()" i18n>Return</button>
-        <button class="btn-np" (click)="nextStep()" i18n>Next</button>
+        <button type="button" class="btn-np-ghost" (click)="prevStep()" i18n>Retour</button>
+        <button type="button" class="btn-np" (click)="nextStep()" i18n>Suivant</button>
       </div>
     }
 
-    <!-- STEP 2 : Épisode -->
     @if (currentStep() === 2) {
       <div class="glass-card mb-3">
-        <h5 class="np-card-section-title">
-          First episode
-          <span class="np-badge np-badge-muted ms-2">Optionnal</span>
-        </h5>
+        <h5 class="np-card-section-title" i18n>Épisodes audio</h5>
+        <p class="np-text-muted small mb-3" i18n>
+          <strong>1 audio = 1 épisode.</strong> Importez un fichier, enregistrez au micro ou montez votre piste
+          dans l’atelier, puis ajoutez-la à la liste. Vous pourrez en ajouter d’autres après la création.
+        </p>
+
+        @if (draftEpisodes().length) {
+          <ul class="create-episode-list list-unstyled mb-4">
+            @for (ep of draftEpisodes(); track ep.id) {
+              <li class="create-episode-list__item">
+                <div>
+                  <span class="fw-semibold">{{ ep.title }}</span>
+                  <span class="np-text-muted small d-block">
+                    {{ ep.audio.name }} · {{ formatSize(ep.audio.size) }}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  class="btn-np-ghost btn-np-sm text-danger"
+                  (click)="removeDraftEpisode(ep.id)"
+                  i18n
+                >
+                  Retirer
+                </button>
+              </li>
+            }
+          </ul>
+        }
 
         <div class="np-field">
-          <label class="np-label" i18n>Title of the episode</label>
-          <input class="np-input"
-            placeholder="Ex : Introduction — Bienvenue !"
+          <label class="np-label" for="create-ep-title" i18n>Titre de l’épisode</label>
+          <input
+            id="create-ep-title"
+            class="np-input"
+            placeholder="Ex. : Épisode 1 — Bienvenue"
             [formControl]="form.controls.episodeTitle"
           />
         </div>
 
-        <div class="np-field">
-          <label class="np-label" i18n>File audio</label>
-          <div class="np-upload-zone np-upload-audio"
-            [class.has-file]="audioFile()"
-            (click)="audioInput.click()"
-            (dragover)="$event.preventDefault()"
-            (drop)="onAudioDrop($event)">
-            @if (audioFile()) {
-              <div class="np-audio-info">
-                <div>
-                  <p class="mb-0 fw-semibold">{{ audioFile()!.name }}</p>
-                  <small class="np-text-muted">{{ formatSize(audioFile()!.size) }}</small>
+        <div class="create-audio-sources">
+          <div class="np-field mb-0">
+            <label class="np-label" i18n>Fichier audio</label>
+            <div
+              class="np-upload-zone np-upload-audio"
+              [class.has-file]="audioPick()"
+              (click)="audioInput.click()"
+              (dragover)="$event.preventDefault()"
+              (drop)="onAudioDrop($event)"
+            >
+              @if (audioPick()) {
+                <div class="np-audio-info">
+                  <div>
+                    <p class="mb-0 fw-semibold">{{ audioPick()!.name }}</p>
+                    <small class="np-text-muted">{{ formatSize(audioPick()!.size) }}</small>
+                  </div>
+                  <button type="button" class="btn-np-ghost ms-auto" (click)="clearCurrentAudio($event)" i18n>
+                    Retirer
+                  </button>
                 </div>
-                <button class="btn-np-ghost ms-auto"
-                  (click)="removeAudio($event)" i18n>Remove</button>
-              </div>
-            } @else {
-              <p class="mb-1 fw-semibold" i18n>Drop your audio here</p>
-              <small class="np-text-hint" i18n>MP3, WAV, OGG — 200 Mo max</small>
-            }
+              } @else {
+                <p class="mb-1 fw-semibold" i18n>Déposez votre fichier audio</p>
+                <small class="np-text-hint" i18n>MP3, WAV, OGG — 200 Mo max</small>
+              }
+            </div>
+            <input #audioInput type="file" accept="audio/*" class="d-none" (change)="onAudioChange($event)" />
           </div>
-          <input #audioInput type="file" accept="audio/*"
-            class="d-none" (change)="onAudioChange($event)" />
+
+          <div class="np-field mb-0">
+            <label class="np-label" i18n>Microphone</label>
+            <app-audio-recorder (fileReady)="onRecorded($event)" />
+          </div>
         </div>
+
+        @if (pickedAudioLabel(); as audioLabel) {
+          <p class="small np-text-muted mt-2 mb-0">
+            <span i18n>Audio sélectionné :</span> {{ audioLabel }} —
+            <button type="button" class="btn btn-link btn-sm p-0 align-baseline" (click)="clearCurrentAudio()" i18n>
+              Retirer
+            </button>
+          </p>
+        }
+
+        <div class="create-studio mt-3">
+          <button type="button" class="btn-np-outline btn-np-sm" (click)="toggleAudioStudio()" i18n>
+            <i class="fa-solid fa-sliders me-1" aria-hidden="true"></i>
+            @if (showAudioStudio()) {
+              Masquer l’atelier multi-pistes
+            } @else {
+              Ouvrir l’atelier multi-pistes
+            }
+          </button>
+          @if (showAudioStudio()) {
+            <div class="mt-3">
+              <app-audio-studio-editor (audioReady)="onStudioExport($event)" />
+            </div>
+          }
+        </div>
+
+        <button type="button" class="btn-np-outline btn-np-sm mt-3" (click)="addDraftEpisode()" i18n>
+          <i class="fa-solid fa-plus me-1" aria-hidden="true"></i>
+          Ajouter cet épisode à la liste
+        </button>
       </div>
 
-      <!-- Récap -->
       <div class="np-recap glass-card mb-3">
-        <h6 class="np-card-section-title" i18n>Summary</h6>
+        <h6 class="np-card-section-title" i18n>Récapitulatif</h6>
         <div class="np-recap-grid">
-          <span class="np-text-muted" i18n>Title</span>
+          <span class="np-text-muted" i18n>Podcast</span>
           <strong>{{ form.controls.title.value }}</strong>
-          <span class="np-text-muted" i18n>Category</span>
+          <span class="np-text-muted" i18n>Catégorie</span>
           <strong>{{ form.controls.category.value || '—' }}</strong>
-          <span class="np-text-muted" i18n>Cover</span>
-          <strong>{{ coverPreview() ? 'Yes' : 'No' }}</strong>
-          <span class="np-text-muted" i18n>Episode</span>
-          <strong>{{ audioFile()?.name || '—' }}</strong>
+          <span class="np-text-muted" i18n>Couverture</span>
+          <strong>{{ coverPreview() ? 'Oui' : 'Non' }}</strong>
+          <span class="np-text-muted" i18n>Épisodes</span>
+          <strong>
+            @if (draftEpisodes().length) {
+              {{ draftEpisodes().length }}
+              @if (pickedAudio()) {
+                <span class="np-text-muted fw-normal" i18n> (+ 1 en cours)</span>
+              }
+            } @else if (pickedAudio()) {
+              <span i18n>1 en cours</span>
+            } @else {
+              —
+            }
+          </strong>
         </div>
       </div>
 
-      <!-- Progress upload -->
       @if (store.uploadProgress() > 0 && store.loading()) {
         <div class="np-progress-wrap mb-3">
           <div class="d-flex justify-content-between mb-1">
-            <small class="np-text-muted" i18n>Upload in progress...</small>
+            <small class="np-text-muted" i18n>Envoi en cours…</small>
             <small class="np-text-muted">{{ store.uploadProgress() }}%</small>
           </div>
           <div class="np-progress-bar">
-            <div class="np-progress-fill"
-              [style.width.%]="store.uploadProgress()" i18n></div>
+            <div class="np-progress-fill" [style.width.%]="store.uploadProgress()"></div>
           </div>
         </div>
       }
@@ -198,13 +280,14 @@
         <div class="np-alert np-alert-danger mb-3">{{ store.error() }}</div>
       }
 
-      <div class="d-flex justify-content-between">
-        <button class="btn-np-ghost" (click)="prevStep()" i18n>Return</button>
-        <button class="btn-np" [disabled]="store.loading()" (click)="submit()">
+      <div class="d-flex justify-content-between flex-wrap gap-2">
+        <button type="button" class="btn-np-ghost" (click)="prevStep()" i18n>Retour</button>
+        <button type="button" class="btn-np" [disabled]="store.loading()" (click)="submit()">
           @if (store.loading()) {
-            <span class="np-spinner-sm" i18n></span> Creating...
+            <span class="np-spinner-sm"></span>
+            <span i18n>Création…</span>
           } @else {
-            Create my podcast
+            <span i18n>Créer mon podcast</span>
           }
         </button>
       </div>

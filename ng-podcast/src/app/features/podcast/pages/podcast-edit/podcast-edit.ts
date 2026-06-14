@@ -4,18 +4,25 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { PodcastStore } from '../../store/podcast.store';
 import { Episode } from '../../models/podcast.model';
+import { MusixmatchService } from '../../services/musixmatch.service';
+import type { MusixmatchTrack } from '../../models/musixmatch.types';
+import { lyricsToCaptionCues } from '../../utils/lyrics-to-cues.util';
+import { AudioRecorder } from '../../components/audio-recorder/audio-recorder';
+import { AudioStudioEditor } from '../../components/audio-studio-editor/audio-studio-editor';
 
 @Component({
   selector: 'app-podcast-edit',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, DatePipe],
+  imports: [ReactiveFormsModule, RouterLink, DatePipe, AudioRecorder, AudioStudioEditor],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './podcast-edit.html',
+  styleUrl: './podcast-edit.scss',
 })
 export class PodcastEdit implements OnInit {
   readonly store = inject(PodcastStore);
   private readonly route = inject(ActivatedRoute);
   private readonly fb = inject(FormBuilder);
+  private readonly musixmatch = inject(MusixmatchService);
 
   readonly podcastId = signal('');
   readonly categories = [
@@ -30,6 +37,20 @@ export class PodcastEdit implements OnInit {
 
   readonly episodeLocalError = signal<string | null>(null);
   readonly captionsBusyId = signal<string | null>(null);
+  readonly musixmatchBusyId = signal<string | null>(null);
+  readonly musixmatchImportId = signal<number | null>(null);
+  readonly musixmatchError = signal<string | null>(null);
+  readonly musixmatchResults = signal<MusixmatchTrack[]>([]);
+  readonly musixmatchQueryTrack = signal('');
+  readonly musixmatchQueryArtist = signal('');
+  readonly musixmatchActiveEpisodeId = signal<string | null>(null);
+  readonly musixmatchConfigured = signal<boolean | null>(null);
+
+  readonly episodeAddBusy = signal(false);
+  readonly showAudioStudio = signal(false);
+  readonly audioPick = signal<File | null>(null);
+  readonly recordedFile = signal<File | null>(null);
+  readonly studioFile = signal<File | null>(null);
 
   form = this.fb.nonNullable.group({
     title: ['', [Validators.required, Validators.minLength(3)]],
@@ -37,6 +58,12 @@ export class PodcastEdit implements OnInit {
     category: [''],
     language: ['fr'],
     status: ['DRAFT' as 'DRAFT' | 'PUBLISHED'],
+  });
+
+  episodeForm = this.fb.nonNullable.group({
+    title: ['', [Validators.required, Validators.minLength(2)]],
+    description: [''],
+    publishNow: [false],
   });
 
   async ngOnInit(): Promise<void> {
@@ -53,6 +80,16 @@ export class PodcastEdit implements OnInit {
       language: p.language ?? 'fr',
       status: p.status === 'PUBLISHED' ? 'PUBLISHED' : 'DRAFT',
     });
+    void this.loadMusixmatchConfig();
+  }
+
+  private async loadMusixmatchConfig(): Promise<void> {
+    try {
+      const cfg = await this.musixmatch.getConfig();
+      this.musixmatchConfigured.set(cfg.configured);
+    } catch {
+      this.musixmatchConfigured.set(false);
+    }
   }
 
   isPublishedEpisode(ep: Episode): boolean {
@@ -116,5 +153,175 @@ export class PodcastEdit implements OnInit {
       return;
     }
     await this.store.loadOne(pid);
+  }
+
+  onAudioChange(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    this.audioPick.set(file);
+    this.recordedFile.set(null);
+    this.studioFile.set(null);
+    this.episodeLocalError.set(null);
+  }
+
+  onRecorded(file: File | null): void {
+    this.recordedFile.set(file);
+    if (file) {
+      this.audioPick.set(null);
+      this.studioFile.set(null);
+      this.episodeLocalError.set(null);
+    }
+  }
+
+  onStudioExport(file: File | null): void {
+    this.studioFile.set(file);
+    if (file) {
+      this.audioPick.set(null);
+      this.recordedFile.set(null);
+      this.episodeLocalError.set(null);
+    }
+  }
+
+  clearPickedAudio(): void {
+    this.audioPick.set(null);
+    this.recordedFile.set(null);
+    this.studioFile.set(null);
+  }
+
+  pickedAudioLabel(): string | null {
+    const file = this.pickedAudio();
+    if (!file) return null;
+    return `${file.name} (${(file.size / 1024).toFixed(0)} Ko)`;
+  }
+
+  pickedAudio(): File | null {
+    return this.studioFile() ?? this.recordedFile() ?? this.audioPick();
+  }
+
+  toggleAudioStudio(): void {
+    this.showAudioStudio.update((open) => !open);
+  }
+
+  async addEpisode(): Promise<void> {
+    this.episodeForm.markAllAsTouched();
+    const pid = this.podcastId();
+    const audio = this.pickedAudio();
+
+    if (!pid || this.episodeForm.invalid || !audio) {
+      if (!audio && this.episodeForm.valid) {
+        this.episodeLocalError.set(
+          'Choisissez un fichier, enregistrez au micro ou exportez depuis l’atelier audio.',
+        );
+      }
+      return;
+    }
+
+    this.episodeLocalError.set(null);
+    this.episodeAddBusy.set(true);
+
+    try {
+      const vals = this.episodeForm.getRawValue();
+      const ok = await this.store.addEpisode(pid, {
+        title: vals.title.trim(),
+        description: vals.description?.trim(),
+        publishNow: vals.publishNow,
+        audio,
+      });
+      if (!ok) {
+        this.episodeLocalError.set(this.store.error() ?? "Impossible d'ajouter l'épisode.");
+        return;
+      }
+
+      this.episodeForm.reset({ title: '', description: '', publishNow: false });
+      this.clearPickedAudio();
+      this.showAudioStudio.set(false);
+      await this.store.loadOne(pid);
+    } finally {
+      this.episodeAddBusy.set(false);
+    }
+  }
+
+  openMusixmatchSearch(ep: Episode): void {
+    this.musixmatchActiveEpisodeId.set(ep.id);
+    this.musixmatchError.set(null);
+    this.musixmatchResults.set([]);
+    this.musixmatchQueryTrack.set(ep.title);
+    this.musixmatchQueryArtist.set('');
+    if (this.musixmatchConfigured() === false) {
+      this.musixmatchError.set(
+        'Musixmatch n’est pas configuré côté serveur. Ajoutez MUSIXMATCH_API_KEY dans sdk-podcast/mon-api/.env puis redémarrez l’API.',
+      );
+    }
+  }
+
+  closeMusixmatchSearch(): void {
+    this.musixmatchActiveEpisodeId.set(null);
+    this.musixmatchResults.set([]);
+    this.musixmatchError.set(null);
+  }
+
+  isMusixmatchOpen(ep: Episode): boolean {
+    return this.musixmatchActiveEpisodeId() === ep.id;
+  }
+
+  async searchMusixmatch(ep: Episode): Promise<void> {
+    if (this.musixmatchConfigured() === false) {
+      this.musixmatchError.set(
+        'Musixmatch n’est pas configuré côté serveur. Ajoutez MUSIXMATCH_API_KEY dans sdk-podcast/mon-api/.env puis redémarrez l’API.',
+      );
+      return;
+    }
+
+    const qTrack = this.musixmatchQueryTrack().trim();
+    if (!qTrack) {
+      this.musixmatchError.set('Indiquez au moins le titre du morceau.');
+      return;
+    }
+
+    this.musixmatchBusyId.set(ep.id);
+    this.musixmatchError.set(null);
+    this.musixmatchActiveEpisodeId.set(ep.id);
+
+    try {
+      const results = await this.musixmatch.searchTracks(
+        qTrack,
+        this.musixmatchQueryArtist().trim() || undefined,
+      );
+      this.musixmatchResults.set(results);
+      if (!results.length) {
+        this.musixmatchError.set('Aucun titre trouvé. Essayez un autre titre ou artiste.');
+      }
+    } catch (err: unknown) {
+      this.musixmatchResults.set([]);
+      this.musixmatchError.set(this.musixmatch.formatError(err));
+    } finally {
+      this.musixmatchBusyId.set(null);
+    }
+  }
+
+  async importMusixmatchLyrics(ep: Episode, track: MusixmatchTrack): Promise<void> {
+    const capTa = document.getElementById(`caps-${ep.id}`) as HTMLTextAreaElement | null;
+    if (!capTa) {
+      this.musixmatchError.set('Zone de paroles introuvable.');
+      return;
+    }
+
+    this.musixmatchImportId.set(track.track_id);
+    this.musixmatchError.set(null);
+
+    try {
+      const lyricsBody = await this.musixmatch.getLyricsBody(track.track_id);
+      const duration = ep.duration > 0 ? ep.duration : 180;
+      const cues = lyricsToCaptionCues(lyricsBody, duration);
+      if (!cues.length) {
+        throw new Error('Les paroles récupérées sont vides ou invalides.');
+      }
+      capTa.value = JSON.stringify(cues, null, 2);
+      this.musixmatchError.set(null);
+    } catch (err: unknown) {
+      this.musixmatchError.set(this.musixmatch.formatError(err));
+    } finally {
+      this.musixmatchImportId.set(null);
+    }
   }
 }

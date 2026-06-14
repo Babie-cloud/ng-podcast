@@ -4,12 +4,17 @@ import {
   inject,
   computed,
   signal,
+  effect,
+  ViewChildren,
+  QueryList,
+  ElementRef,
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { PodcastStore } from '../../store/podcast.store';
 import { AudioService } from '../../services/audio';
+import { AuthService } from '../../services/auth.service';
 import { Episode } from '../../models/podcast.model';
 import { CaptionCue, parseCaptionCues } from './caption-cues';
 
@@ -24,11 +29,23 @@ import { CaptionCue, parseCaptionCues } from './caption-cues';
 export class EpisodePlay implements OnInit {
   readonly store = inject(PodcastStore);
   readonly audio = inject(AudioService);
+  readonly auth = inject(AuthService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
+  @ViewChildren('cueLine') private cueLines!: QueryList<ElementRef<HTMLElement>>;
+
   readonly cues = signal<CaptionCue[]>([]);
   readonly episode = signal<Episode | null>(null);
+
+  constructor() {
+    effect(() => {
+      const idx = this.activeCueIndex();
+      if (idx < 0) return;
+      const el = this.cueLines?.get(idx)?.nativeElement;
+      el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  }
 
   readonly activeCueIndex = computed(() => {
     const list = this.cues();
@@ -86,5 +103,10 @@ export class EpisodePlay implements OnInit {
     if (i === active) return 'episode-play-cue episode-play-cue-active';
     if (i === active + 1) return 'episode-play-cue episode-play-cue-soon';
     return 'episode-play-cue episode-play-cue-idle';
+  }
+
+  isOwner(podcast: { authorId: string }): boolean {
+    const u = this.auth.user();
+    return !!u && podcast.authorId === u.id;
   }
 }

@@ -37,6 +37,14 @@ export class Home implements OnInit {
   ];
 
   ngOnInit() {
-    this.store.loadAll();
+    void this.store.loadHomeCatalog(this.auth.isLogged());
+  }
+
+  draftPodcasts() {
+    return this.store.podcasts().filter((p) => p.status !== 'PUBLISHED');
+  }
+
+  publishedPodcasts() {
+    return this.store.podcasts().filter((p) => p.status === 'PUBLISHED');
   }
 }

@@ -151,7 +151,7 @@ export class PodcastService {
       id: r.id,
       title: r.title,
       description: r.description ?? '',
-      coverUrl: r.coverUrl ?? '',
+      coverUrl: this.normalizeMediaUrl(r.coverUrl ?? ''),
       authorId: r.authorId,
       authorName: r.authorName,
       episodes: [],
@@ -172,12 +172,30 @@ export class PodcastService {
     return {
       id: e.id,
       title: e.title,
-      audioUrl: e.audioUrl ?? '',
+      audioUrl: this.normalizeMediaUrl(e.audioUrl ?? ''),
       duration: e.duration ?? 0,
       podcastId: e.podcastId,
       createdAt: new Date(e.createdAt),
       status: e.status ?? 'DRAFT',
       captions: e.captions ?? undefined,
     };
+  }
+
+  /** Aligne localhost / 127.0.0.1 sur l’origine API utilisée par le frontend. */
+  private normalizeMediaUrl(url: string): string {
+    if (!url) return '';
+    try {
+      const apiOrigin = new URL(this.apiRoot).origin;
+      const parsed = new URL(url);
+      if (parsed.pathname.startsWith('/files/')) {
+        return `${apiOrigin}${parsed.pathname}`;
+      }
+      if (parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1') {
+        return `${apiOrigin}${parsed.pathname}${parsed.search}`;
+      }
+    } catch {
+      /* URL relative ou invalide — renvoyer tel quel */
+    }
+    return url;
   }
 }

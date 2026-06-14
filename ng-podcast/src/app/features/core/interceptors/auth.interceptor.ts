@@ -49,15 +49,16 @@ function pathnameFromRequestUrl(fullUrl: string): string {
 const PUBLIC_CATALOG_ROOTS = ['/api/writings', '/api/storytellings', '/api/podcasts'] as const;
 
 /**
- * Lectures publiques du catalogue (listes + détail par id) : pas de Bearer.
- * Évite qu’un JWT périmé fasse tomber la requête en 403 côté Spring alors que la route est permitAll.
+ * Lectures publiques des listes catalogue uniquement : pas de Bearer.
+ * Les pages détail (/api/podcasts/:id) envoient le JWT si disponible pour que
+ * le créateur voie ses brouillons ; sans JWT, seuls les contenus publiés sont visibles.
  */
 function isPublicCatalogRead(req: HttpRequest<unknown>): boolean {
   const m = req.method;
   if (m !== 'GET' && m !== 'HEAD') return false;
   const path = pathnameFromRequestUrl(req.url).replace(/\/+$/, '');
   if (path.includes('/mine')) return false;
-  return PUBLIC_CATALOG_ROOTS.some((base) => path === base || path.startsWith(`${base}/`));
+  return PUBLIC_CATALOG_ROOTS.some((base) => path === base);
 }
 
 /** Endpoints auth publics : ne jamais envoyer un vieux Bearer (sinon JwtFilter bloque le POST). */
