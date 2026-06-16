@@ -1,0 +1,65 @@
+<section class="container py-4">
+  <div class="glass-strong p-4 np-chat-shell">
+    <h1 class="h4 mb-3">Chat Premium</h1>
+
+    <div class="d-flex gap-2 mb-3">
+      <button
+        type="button"
+        class="btn-np-sm"
+        [class.btn-np]="tab() === 'community'"
+        [class.btn-np-outline]="tab() !== 'community'"
+        (click)="setTab('community')"
+      >
+        Salon communautaire
+      </button>
+      <button
+        type="button"
+        class="btn-np-sm"
+        [class.btn-np]="tab() === 'dm'"
+        [class.btn-np-outline]="tab() !== 'dm'"
+        (click)="setTab('dm')"
+      >
+        Message privé
+      </button>
+    </div>
+
+    @if (tab() === 'dm') {
+      <div class="mb-3">
+        <label class="np-label small">ID utilisateur destinataire</label>
+        <input
+          class="np-input"
+          [ngModel]="peerId()"
+          (ngModelChange)="peerId.set($event)"
+          placeholder="UUID du membre Premium"
+        />
+      </div>
+    }
+
+    @if (error(); as err) {
+      <div class="np-alert np-alert-danger small">{{ err }}</div>
+    }
+
+    <div class="np-chat-log glass mb-3">
+      @for (m of messages(); track m.id) {
+        <article class="np-chat-msg">
+          <strong>{{ m.senderName }}</strong>
+          <span class="np-text-muted small ms-2">{{ m.createdAt | date: 'short' }}</span>
+          <p class="mb-0 mt-1">{{ m.body }}</p>
+        </article>
+      } @empty {
+        <p class="np-text-muted small mb-0">Aucun message pour l’instant.</p>
+      }
+    </div>
+
+    <div class="d-flex gap-2">
+      <input
+        class="np-input flex-grow-1"
+        [ngModel]="draft()"
+        (ngModelChange)="draft.set($event)"
+        placeholder="Votre message…"
+        (keydown.enter)="$event.preventDefault(); send()"
+      />
+      <button type="button" class="btn-np" [disabled]="busy()" (click)="send()">Envoyer</button>
+    </div>
+  </div>
+</section>

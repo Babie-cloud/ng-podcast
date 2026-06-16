@@ -7,8 +7,10 @@
     </div>
 
     <h2 class="np-auth-title" i18n>Create an account</h2>
-    <p class="np-text-muted np-auth-subtitle" i18n>
-      Join the community of content creators.
+    <p class="np-text-muted np-auth-subtitle">
+      Abonnement Premium {{ planLabel() }} — enregistrez votre carte bancaire
+      (Visa, Mastercard…) pour démarrer l'essai gratuit d'un mois.
+      Annulable à tout moment.
     </p>
 
     <div class="np-fields-row">
@@ -60,9 +62,9 @@
       [disabled]="loginForm.invalid || loading()"
       (click)="onSubmit()">
       @if (loading()) {
-        <span class="np-spinner-sm"></span> Creating...
+        <span class="np-spinner-sm"></span> Redirection vers le paiement…
       } @else {
-        <span i18n>Create account</span>
+        <span i18n>Créer mon compte et payer</span>
       }
     </button>
 
@@ -74,6 +76,10 @@
       text="signup_with"
       (credential)="onGoogleCredential($event)"
     />
+
+    <p class="np-auth-footer">
+      <a routerLink="/" fragment="tarifs">← Voir les tarifs</a>
+    </p>
 
     <p class="np-auth-footer" i18n>
        By creating an account, you agree to our

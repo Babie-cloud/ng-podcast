@@ -1,6 +1,7 @@
 // src/app/features/podcast/podcast.routes.ts
 import { Routes } from '@angular/router';
 import { authGuard } from '../core/guard/auth.guard';
+import { subscriptionGuard } from '../core/guard/subscription.guard';
 import { podcastOwnerGuard } from '../core/guard/podcast-owner.guard';
 
 export const PODCAST_ROUTES: Routes = [
@@ -16,13 +17,13 @@ export const PODCAST_ROUTES: Routes = [
   },
   {
     path: 'mine',
-    canActivate: [authGuard],
+    canActivate: [authGuard, subscriptionGuard],
     loadComponent: () =>
       import('./pages/my-podcasts/my-podcasts').then(m => m.MyPodcasts),
   },
   {
     path: 'create',
-    canActivate: [authGuard],
+    canActivate: [authGuard, subscriptionGuard],
     loadComponent: () =>
       import('./pages/create/create').then(m => m.Create),
   },
@@ -34,19 +35,19 @@ export const PODCAST_ROUTES: Routes = [
   },
   {
     path: ':id/studio',
-    canActivate: [authGuard, podcastOwnerGuard],
+    canActivate: [authGuard, subscriptionGuard, podcastOwnerGuard],
     loadComponent: () =>
       import('./pages/episode-studio/episode-studio').then((m) => m.EpisodeStudio),
   },
   {
     path: ':id/edit',
-    canActivate: [authGuard, podcastOwnerGuard],
+    canActivate: [authGuard, subscriptionGuard, podcastOwnerGuard],
     loadComponent: () =>
       import('./pages/podcast-edit/podcast-edit').then(m => m.PodcastEdit),
   },
   {
     path: ':id/publish',
-    canActivate: [authGuard, podcastOwnerGuard],
+    canActivate: [authGuard, subscriptionGuard, podcastOwnerGuard],
     loadComponent: () =>
       import('./pages/publish/publish').then(m => m.Publish),
   },

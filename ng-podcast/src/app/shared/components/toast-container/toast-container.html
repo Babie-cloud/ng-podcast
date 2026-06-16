@@ -1,0 +1,21 @@
+<div class="np-toast-stack" aria-live="polite" aria-relevant="additions">
+  @for (t of toastService.toasts(); track t.id) {
+    <div class="np-toast np-toast--{{ t.kind }}" role="alert">
+      <i class="fa-solid {{ icon(t.kind) }} np-toast-icon" aria-hidden="true"></i>
+      <div class="np-toast-body">
+        <strong class="np-toast-title">{{ t.title }}</strong>
+        @if (t.detail) {
+          <p class="np-toast-detail mb-0">{{ t.detail }}</p>
+        }
+      </div>
+      <button
+        type="button"
+        class="np-toast-close"
+        (click)="toastService.dismiss(t.id)"
+        aria-label="Fermer"
+      >
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </div>
+  }
+</div>

@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { AuthService, readApiErrorDetail } from '../../services/auth.service';
 import { GoogleSigninButton } from '../google-signin-button/google-signin-button';
+import { BillingFlowService, type BillingInterval } from '../../services/billing-flow.service';
 
 @Component({
   selector: 'app-signin',
@@ -17,11 +18,16 @@ export class Signin {
   private fb = new FormBuilder();
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private billingFlow = inject(BillingFlowService);
   readonly auth = inject(AuthService);
 
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
   readonly info = signal<string | null>(null);
+
+  readonly selectedPlan = signal<BillingInterval>(
+    this.billingFlow.parseInterval(this.route.snapshot.queryParamMap.get('plan')),
+  );
 
   loginForm = this.fb.group({
     name: ['', Validators.required],
@@ -30,6 +36,10 @@ export class Signin {
     password: ['', [Validators.required, Validators.minLength(6)]],
     confirmPassword: ['', Validators.required],
   });
+
+  planLabel(): string {
+    return this.selectedPlan() === 'yearly' ? 'annuel' : 'mensuel';
+  }
 
   async onSubmit(): Promise<void> {
     if (this.loginForm.invalid) {
@@ -54,8 +64,7 @@ export class Signin {
         email: email!,
         password: password!,
       });
-      const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '/dashboard';
-      await this.router.navigateByUrl(returnUrl);
+      await this.billingFlow.redirectToCheckout(this.selectedPlan());
     } catch (e: unknown) {
       this.error.set(readApiErrorDetail(e, "Erreur lors de l'inscription."));
     } finally {
@@ -68,8 +77,12 @@ export class Signin {
     this.error.set(null);
     try {
       await this.auth.googleLogin(idToken);
-      const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '/dashboard';
-      await this.router.navigateByUrl(returnUrl);
+      if (this.auth.user()?.premium) {
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '/dashboard';
+        await this.router.navigateByUrl(returnUrl);
+        return;
+      }
+      await this.billingFlow.redirectToCheckout(this.selectedPlan());
     } catch (e: unknown) {
       this.error.set(readApiErrorDetail(e, 'Connexion Google impossible.'));
     } finally {

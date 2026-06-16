@@ -1,6 +1,8 @@
 // src/app/app.routes.ts
 import { Routes } from '@angular/router';
 import { authGuard } from './features/core/guard/auth.guard';
+import { premiumGuard } from './features/core/guard/premium.guard';
+import { subscriptionGuard } from './features/core/guard/subscription.guard';
 
 export const routes: Routes = [
   // ─── Landing (publique) ─────────────────────────────────
@@ -78,7 +80,7 @@ export const routes: Routes = [
   // ─── Tableau de bord (connecté) ──────────────────────────
   {
     path: 'dashboard',
-    canActivate: [authGuard],
+    canActivate: [authGuard, subscriptionGuard],
     loadComponent: () =>
       import('./features/podcast/pages/dashboard/dashboard')
         .then(m => m.Dashboard),
@@ -86,14 +88,14 @@ export const routes: Routes = [
 
   {
     path: 'profil',
-    canActivate: [authGuard],
+    canActivate: [authGuard, subscriptionGuard],
     loadComponent: () =>
       import('./features/podcast/pages/profile/profil').then((m) => m.Profil),
   },
 
   {
     path: 'settings',
-    canActivate: [authGuard],
+    canActivate: [authGuard, subscriptionGuard],
     loadComponent: () =>
       import('./features/podcast/pages/settings/settings-hub').then(
         (m) => m.SettingsHub,
@@ -107,11 +109,44 @@ export const routes: Routes = [
       import('./features/podcast/podcast.routes').then((m) => m.PODCAST_ROUTES),
   },
 
+  // ─── Pages d'erreur ───────────────────────────────────────
+  {
+    path: 'error/not-found',
+    loadComponent: () =>
+      import('./shared/pages/error-page/error-page').then((m) => m.ErrorPage),
+    data: { kind: 'not-found' },
+  },
+  {
+    path: 'error/server',
+    loadComponent: () =>
+      import('./shared/pages/error-page/error-page').then((m) => m.ErrorPage),
+    data: { kind: 'server' },
+  },
+  {
+    path: 'error/unavailable',
+    loadComponent: () =>
+      import('./shared/pages/error-page/error-page').then((m) => m.ErrorPage),
+    data: { kind: 'unavailable' },
+  },
+
+  {
+    path: 'premium',
+    redirectTo: '',
+    pathMatch: 'full',
+  },
+
+  {
+    path: 'chat',
+    canActivate: [authGuard, subscriptionGuard, premiumGuard],
+    loadComponent: () =>
+      import('./features/podcast/pages/chat/chat').then((m) => m.Chat),
+  },
+
   // ─── 404 ─────────────────────────────────────────────────
   {
     path: '**',
     loadComponent: () =>
-      import('./shared/pages/not-found/not-found')
-        .then(m => m.NotFound)
-  }
+      import('./shared/pages/error-page/error-page').then((m) => m.ErrorPage),
+    data: { kind: 'not-found' },
+  },
 ];

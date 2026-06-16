@@ -1,0 +1,11 @@
+<section class="np-error-page container py-5">
+  <div class="np-error-card glass-strong text-center mx-auto">
+    <p class="np-error-code mb-2">{{ copy.code }}</p>
+    <h1 class="np-error-title mb-3">{{ copy.title }}</h1>
+    <p class="np-error-message np-text-muted mb-4">{{ copy.message }}</p>
+    <div class="d-flex flex-wrap justify-content-center gap-2">
+      <a routerLink="/podcasts" class="btn-np">Retour aux podcasts</a>
+      <button type="button" class="btn-np-outline" onclick="history.back()">Page précédente</button>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,32 @@
+.np-error-page {
+  min-height: calc(100vh - 180px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.np-error-card {
+  max-width: 520px;
+  width: 100%;
+  padding: 2.5rem 2rem;
+}
+
+.np-error-code {
+  font-size: clamp(3rem, 12vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1;
+  background: var(--np-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.np-error-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.np-error-message {
+  font-size: 1rem;
+  line-height: 1.6;
+}

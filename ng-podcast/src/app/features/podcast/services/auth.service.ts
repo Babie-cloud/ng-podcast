@@ -17,6 +17,8 @@ export interface AuthUser {
   name?: string;
   prenom?: string;
   emailVerified: boolean;
+  planTier?: 'FREE' | 'PREMIUM' | string;
+  premium?: boolean;
 }
 
 interface LoginPayload    { email: string; password: string; }
