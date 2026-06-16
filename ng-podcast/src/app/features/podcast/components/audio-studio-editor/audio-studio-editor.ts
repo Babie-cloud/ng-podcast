@@ -85,9 +85,9 @@ export class AudioStudioEditor implements AfterViewInit, OnDestroy {
 
     this.wavesurfer = WaveSurfer.create({
       container,
-      waveColor: 'rgba(193, 122, 78, 0.35)',
-      progressColor: 'rgba(193, 122, 78, 0.9)',
-      cursorColor: 'rgba(139, 69, 19, 0.85)',
+      waveColor: 'rgba(45, 212, 191, 0.35)',
+      progressColor: 'rgba(217, 119, 6, 0.88)',
+      cursorColor: 'rgba(217, 119, 6, 0.82)',
       barWidth: 2,
       barGap: 2,
       barRadius: 2,
@@ -156,7 +156,7 @@ export class AudioStudioEditor implements AfterViewInit, OnDestroy {
     this.trimRegion = this.regionsPlugin.addRegion({
       start,
       end,
-      color: 'rgba(193, 122, 78, 0.25)',
+      color: 'rgba(15, 118, 110, 0.20)',
       drag: true,
       resize: true,
     });

@@ -5,7 +5,7 @@
 .np-notif-trigger {
   position: relative;
   border: none;
-  background: var(--np-primary-soft, rgba(99, 102, 241, 0.12));
+  background: var(--np-primary-soft);
   color: inherit;
   width: 40px;
   height: 40px;
@@ -73,7 +73,7 @@
 .np-notif-mark-all {
   border: none;
   background: none;
-  color: var(--np-primary, #6366f1);
+  color: var(--np-primary);
   font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
@@ -119,11 +119,11 @@
   border-top: 1px solid rgba(127, 127, 127, 0.15);
 
   &:hover {
-    background: var(--np-primary-soft, rgba(99, 102, 241, 0.12));
+    background: var(--np-primary-soft);
   }
 
   &.is-unread {
-    background: rgba(99, 102, 241, 0.08);
+    background: var(--np-primary-soft);
   }
 }
 
@@ -133,7 +133,7 @@
   border-radius: 999px;
   display: grid;
   place-items: center;
-  background: var(--np-primary-soft, rgba(99, 102, 241, 0.12));
+  background: var(--np-primary-soft);
   flex-shrink: 0;
   font-size: 0.82rem;
 }

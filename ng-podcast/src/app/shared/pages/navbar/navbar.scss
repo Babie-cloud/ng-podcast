@@ -10,7 +10,7 @@
 
 .np-profile-trigger {
   border: none;
-  background: var(--np-primary-soft, rgba(99, 102, 241, 0.12));
+  background: var(--np-primary-soft);
   color: inherit;
   width: 40px;
   height: 40px;
@@ -75,7 +75,7 @@
   font-size: 0.95rem;
 
   &:hover {
-    background: var(--np-primary-soft, rgba(99, 102, 241, 0.12));
+    background: var(--np-primary-soft);
   }
 }
 

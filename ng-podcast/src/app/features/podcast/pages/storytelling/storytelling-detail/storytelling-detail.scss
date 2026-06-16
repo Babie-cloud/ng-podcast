@@ -17,8 +17,8 @@
   border-radius: var(--np-radius-md);
 
   &.public {
-    border: 1px solid color-mix(in srgb, var(--np-primary, #6366f1) 35%, var(--np-border));
-    background: color-mix(in srgb, var(--np-primary-soft, rgba(99, 102, 241, 0.15)) 80%, transparent);
+    border: 1px solid color-mix(in srgb, var(--np-primary) 35%, var(--np-border));
+    background: color-mix(in srgb, var(--np-primary-soft) 80%, transparent);
   }
 
   &.private {

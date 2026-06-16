@@ -21,6 +21,6 @@
 
   &.active {
     color: var(--np-primary-light);
-    background: color-mix(in srgb, var(--np-accent, #6366f1) 22%, transparent);
+    background: color-mix(in srgb, var(--np-accent) 22%, transparent);
   }
 }
