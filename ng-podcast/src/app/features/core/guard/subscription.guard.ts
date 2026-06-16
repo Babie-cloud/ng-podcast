@@ -10,6 +10,7 @@ export const subscriptionGuard: CanActivateFn = async () => {
   const toast = inject(ToastService);
 
   await auth.whenAuthHydrated();
+  await auth.refreshPremiumStatus();
 
   const user = auth.user();
   if (user?.premium || user?.role === 'ADMIN') {

@@ -11,14 +11,11 @@
   padding: 2.5rem 2rem;
 }
 
-.np-error-code {
-  font-size: clamp(3rem, 12vw, 4.5rem);
-  font-weight: 700;
-  line-height: 1;
-  background: var(--np-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.np-error-icon {
+  display: block;
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 1.25rem;
 }
 
 .np-error-title {

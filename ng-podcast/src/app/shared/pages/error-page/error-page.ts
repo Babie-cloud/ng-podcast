@@ -4,24 +4,24 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 export type ErrorPageKind = 'not-found' | 'server' | 'unavailable';
 
 interface ErrorCopy {
-  code: string;
+  icon: string;
   title: string;
   message: string;
 }
 
 const COPY: Record<ErrorPageKind, ErrorCopy> = {
   'not-found': {
-    code: '404',
+    icon: '/icons/error-not-found.svg',
     title: 'Page introuvable',
     message: 'Ce contenu n’existe pas ou a été déplacé.',
   },
   server: {
-    code: '500',
+    icon: '/icons/error-server.svg',
     title: 'Erreur serveur',
     message: 'Une erreur interne s’est produite. Réessayez dans quelques instants.',
   },
   unavailable: {
-    code: '503',
+    icon: '/icons/service-unavailable.svg',
     title: 'Service indisponible',
     message: 'Le serveur ne répond pas ou vous êtes hors ligne. Vérifiez votre connexion.',
   },

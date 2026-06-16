@@ -14,6 +14,44 @@
   background: color-mix(in srgb, var(--np-accent) 25%, transparent);
 }
 
+.np-dashboard-badge-premium {
+  background: color-mix(in srgb, var(--np-primary) 30%, transparent);
+  color: var(--np-primary-light);
+}
+
+.np-dashboard-badge-admin {
+  background: color-mix(in srgb, var(--np-accent) 25%, transparent);
+}
+
+.np-dashboard-hero-premium {
+  border: 1px solid color-mix(in srgb, var(--np-primary) 35%, transparent);
+}
+
+.np-dashboard-premium-panel {
+  padding: 1.25rem 1.5rem;
+}
+
+.np-dashboard-premium-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.np-dashboard-premium-perks {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--np-text-muted);
+  font-size: 0.92rem;
+}
+
+.np-dash-tile-premium {
+  border: 2px solid var(--np-primary);
+  background: color-mix(in srgb, var(--np-primary) 8%, transparent);
+}
+
 .np-dashboard-actions {
   display: flex;
   flex-wrap: wrap;

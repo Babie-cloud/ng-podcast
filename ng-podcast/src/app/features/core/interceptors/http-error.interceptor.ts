@@ -17,6 +17,7 @@ const SKIP_ERROR_UI_SEGMENTS = [
   '/auth/login',
   '/auth/register',
   '/auth/reset-password',
+  '/api/billing',
   '/api/billing/webhook',
   '/api/musixmatch/config',
   '/api/notifications',
@@ -61,12 +62,18 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         const detail = readApiErrorDetail(err, '');
 
         if (err.status === 0) {
-          void router.navigateByUrl('/error/unavailable');
+          toast.warning(
+            'Connexion impossible',
+            detail || 'Le serveur ne répond pas. Vérifiez que l’API est démarrée.',
+          );
           return throwError(() => err);
         }
 
         if (err.status === 502 || err.status === 503 || err.status === 504) {
-          void router.navigateByUrl('/error/unavailable');
+          toast.warning(
+            'Service temporairement indisponible',
+            detail || 'Réessayez dans quelques instants.',
+          );
           return throwError(() => err);
         }
 

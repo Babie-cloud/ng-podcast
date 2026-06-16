@@ -38,8 +38,15 @@ export class Landingpage implements OnInit {
     if (qp.get('checkout') === 'success') {
       this.toast.success(
         'Abonnement Premium',
-        'Merci ! Votre carte est enregistrée — votre compte sera activé sous peu.',
+        'Merci ! Votre carte est enregistrée — votre compte Premium est activé.',
       );
+      if (this.auth.isLogged()) {
+        const premium = await this.auth.refreshPremiumStatus();
+        if (premium) {
+          await this.router.navigate(['/dashboard']);
+          return;
+        }
+      }
     }
     if (qp.get('checkout') === 'canceled') {
       this.toast.info(

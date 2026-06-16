@@ -1,6 +1,13 @@
 <section class="np-error-page container py-5">
   <div class="np-error-card glass-strong text-center mx-auto">
-    <p class="np-error-code mb-2">{{ copy.code }}</p>
+    <img
+      class="np-error-icon"
+      [src]="copy.icon"
+      [alt]="copy.title"
+      width="96"
+      height="96"
+      decoding="async"
+    />
     <h1 class="np-error-title mb-3">{{ copy.title }}</h1>
     <p class="np-error-message np-text-muted mb-4">{{ copy.message }}</p>
     <div class="d-flex flex-wrap justify-content-center gap-2">

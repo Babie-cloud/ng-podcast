@@ -224,6 +224,35 @@ export class AuthService {
     this._user.set(user);
   }
 
+  /** Met à jour le flag premium en mémoire (ex. après sync Stripe). */
+  updatePremiumFlags(premium: boolean, planTier?: string): void {
+    const u = this._user();
+    if (!u) return;
+    this._user.set({
+      ...u,
+      premium,
+      planTier: planTier ?? u.planTier,
+    });
+  }
+
+  /** Recharge profil + statut billing pour refléter un paiement Stripe récent. */
+  async refreshPremiumStatus(): Promise<boolean> {
+    try {
+      await this.fetchMe();
+    } catch {
+      return false;
+    }
+    try {
+      const status = await firstValueFrom(
+        this.http.get<{ premium: boolean; planTier: string }>(`${this.apiRoot}/api/billing/status`),
+      );
+      this.updatePremiumFlags(status.premium, status.planTier);
+      return status.premium;
+    } catch {
+      return this._user()?.premium ?? false;
+    }
+  }
+
   async deleteAccount(): Promise<void> {
     await firstValueFrom(this.http.delete<void>(`${this.apiRoot}/users/me`));
     this._token.set(null);

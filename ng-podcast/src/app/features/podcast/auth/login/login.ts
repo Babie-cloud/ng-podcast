@@ -65,6 +65,8 @@ export class Login {
   }
 
   private async afterAuth(): Promise<void> {
+    await this.auth.refreshPremiumStatus();
+
     if (this.auth.user()?.premium) {
       await this.router.navigateByUrl(this.returnUrl());
       return;

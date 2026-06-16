@@ -10,6 +10,7 @@ export interface BillingStatus {
   subscriptionStatus: string;
   trialEndsAt: string | null;
   premiumUntil: string | null;
+  legacyPremium?: boolean;
   quota: {
     premium: boolean;
     planTier: string;
