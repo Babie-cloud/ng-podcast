@@ -13,9 +13,9 @@ export const premiumGuard: CanActivateFn = () => {
     return true;
   }
 
-  toast.warning(
-    'Premium requis',
-    'Le chat et les quotas illimités sont réservés aux abonnés Premium.',
+  toast.info(
+    'Premium bientôt disponible',
+    'Le chat et les quotas illimités arriveront avec l’abonnement Premium.',
   );
-  return router.createUrlTree(['/'], { fragment: 'tarifs' });
+  return router.createUrlTree(['/']);
 };

@@ -258,7 +258,7 @@ export class AuthService {
     this._token.set(null);
     this._user.set(null);
     this.jwtBridge.wipe();
-    await this.router.navigate(['/']);
+    await this.router.navigate(['/signup']);
   }
 
   // ─── Logout ───────────────────────────────────────────────
@@ -266,7 +266,7 @@ export class AuthService {
     this._token.set(null);
     this._user.set(null);
     this.jwtBridge.wipe();
-    this.router.navigate(['/']);
+    this.router.navigate(['/signup']);
   }
 
   // ─── Interne ──────────────────────────────────────────────

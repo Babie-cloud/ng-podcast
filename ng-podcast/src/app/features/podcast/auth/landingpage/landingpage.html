@@ -16,22 +16,12 @@
         </p>
 
         <div class="np-landing-actions">
-          @if (auth.isLogged()) {
-            <a routerLink="/podcasts" class="btn-np btn-np-lg" i18n>
-              Your podcast
-            </a>
-            <a routerLink="/podcasts/create" class="btn-np-outline btn-np-lg" i18n>
-              + Create podcast
-            </a>
-          } @else {
-            <a routerLink="/signup" class="btn-np btn-np-lg"
-              [queryParams]="signupQueryParams('monthly')" i18n>
-              S'abonner — essai gratuit
-            </a>
-            <a routerLink="/login" class="btn-np-outline btn-np-lg" i18n>
-              Log in
-            </a>
-          }
+          <a routerLink="/dashboard" class="btn-np btn-np-lg">
+            Mon tableau de bord
+          </a>
+          <a routerLink="/podcasts/create" class="btn-np-outline btn-np-lg" i18n>
+            + Create podcast
+          </a>
         </div>
 
         <!-- Stats -->
@@ -53,91 +43,15 @@
     </div>
   </section>
 
-  <!-- Tarifs Premium -->
+  <!-- Premium — prochainement -->
   <section id="tarifs" class="np-section np-pricing-section">
     <div class="np-page">
-      <div class="np-section-header mb-4">
-        <div>
-          <span class="np-section-label">Abonnement</span>
-          <h2 class="np-section-title">
-            ng-podcast <em>Premium</em>
-          </h2>
-          <p class="np-text-muted mb-0">
-            1 mois d'essai gratuit · annulable à tout moment
-          </p>
-        </div>
-      </div>
-
-      <div class="row g-3 mb-3">
-        <div class="col-md-6">
-          <div class="glass-card np-pricing-card h-100">
-            <p class="np-pricing-label">Mensuel</p>
-            <p class="np-pricing-price">
-              <strong>{{ pricing().monthlyEur }} €</strong>
-              <span class="np-text-muted"> / mois</span>
-            </p>
-            <ul class="np-pricing-features">
-              <li>Quotas illimités (podcasts, writings, storytellings)</li>
-              <li>Chat privé + salon communautaire</li>
-              <li>{{ pricing().trialDays }} jours d'essai gratuit</li>
-            </ul>
-            @if (isPremium()) {
-              <button type="button" class="btn-np-outline w-100" [disabled]="billingBusy()"
-                (click)="manageSubscription()">
-                Gérer mon abonnement
-              </button>
-            } @else {
-              <button type="button" class="btn-np w-100" [disabled]="billingBusy()"
-                (click)="startCheckout('monthly')">
-                @if (auth.isLogged()) {
-                  Enregistrer ma carte — mensuel
-                } @else {
-                  S'inscrire — mensuel
-                }
-              </button>
-            }
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="glass-card np-pricing-card np-pricing-card-featured h-100">
-            <p class="np-pricing-label">Annuel</p>
-            <p class="np-pricing-price">
-              <strong>{{ pricing().yearlyEur }} €</strong>
-              <span class="np-text-muted"> / an</span>
-            </p>
-            <ul class="np-pricing-features">
-              <li>Tout Premium, facturé une fois par an</li>
-              <li>Économisez par rapport au mensuel</li>
-              <li>{{ pricing().trialDays }} jours d'essai gratuit</li>
-            </ul>
-            @if (isPremium()) {
-              <button type="button" class="btn-np-outline w-100" [disabled]="billingBusy()"
-                (click)="manageSubscription()">
-                Gérer mon abonnement
-              </button>
-            } @else {
-              <button type="button" class="btn-np w-100" [disabled]="billingBusy()"
-                (click)="startCheckout('yearly')">
-                @if (auth.isLogged()) {
-                  Enregistrer ma carte — annuel
-                } @else {
-                  S'inscrire — annuel
-                }
-              </button>
-            }
-          </div>
-        </div>
-      </div>
-
-      <div class="glass-card np-pricing-note p-3">
-        <p class="mb-2">
-          <strong>Carte bancaire requise</strong> pour démarrer l'essai gratuit
-          (Visa, Mastercard, American Express…).
-        </p>
-        <p class="np-text-muted small mb-0">
-          Vous serez redirigé vers Stripe pour enregistrer votre carte en toute sécurité.
-          L'abonnement peut être annulé à n'importe quel moment depuis votre espace client,
-          sans engagement au-delà de la période en cours.
+      <div class="glass-card np-pricing-coming-soon p-4 p-md-5 text-center mx-auto">
+        <span class="np-section-label d-block mb-2">Premium</span>
+        <h2 class="np-section-title mb-2">Abonnement <em>Premium</em> — bientôt</h2>
+        <p class="np-text-muted mb-0 mx-auto" style="max-width: 36rem">
+          Quotas illimités, chat communautaire et fonctionnalités avancées arriveront prochainement.
+          En attendant, profitez librement de votre compte créateur.
         </p>
       </div>
     </div>
@@ -181,9 +95,7 @@
             Write and share your poems, stories and creative texts
             with the community.
           </p>
-          <span class="np-feature-cta">
-            {{ auth.isLogged() ? 'Access →' : ' Login required' }}
-          </span>
+          <span class="np-feature-cta">Accéder →</span>
         </div>
 
         <!-- Feature Storytelling -->
@@ -196,9 +108,7 @@
             Share your testimonies, confessions and life stories
             in audio or text.
           </p>
-          <span class="np-feature-cta">
-            {{ auth.isLogged() ? 'Access →' : ' Login required' }}
-          </span>
+          <span class="np-feature-cta">Accéder →</span>
         </div>
 
       </div>
@@ -234,14 +144,6 @@
           }
         }
       </div>
-
-      @if (!auth.isLogged()) {
-        <p class="np-text-muted small mt-4 mb-0" i18n>
-          To <strong>publish</strong> or <strong>modify</strong> the audio, you must
-          <a routerLink="/signup" [queryParams]="signupQueryParams('monthly')">subscribe to Premium</a>
-          then log in. In read-only mode, explore the cards and listen to public episodes.
-        </p>
-      }
     </div>
   </section>
 

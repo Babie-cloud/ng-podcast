@@ -4,21 +4,19 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { AuthService, readApiErrorDetail } from '../../services/auth.service';
 import { GoogleSigninButton } from '../google-signin-button/google-signin-button';
-import { BillingFlowService } from '../../services/billing-flow.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink, GoogleSigninButton],
   templateUrl: './login.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './login.scss',
 })
 export class Login {
   private fb = new FormBuilder();
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  private billingFlow = inject(BillingFlowService);
   readonly auth = inject(AuthService);
 
   showPassword = false;
@@ -43,7 +41,7 @@ export class Login {
     try {
       const { email, password } = this.loginForm.getRawValue();
       await this.auth.login({ email: email!, password: password! });
-      await this.afterAuth();
+      await this.router.navigateByUrl(this.returnUrl());
     } catch (e: unknown) {
       this.error.set(readApiErrorDetail(e, 'Email ou mot de passe incorrect.'));
     } finally {
@@ -56,26 +54,11 @@ export class Login {
     this.loading.set(true);
     try {
       await this.auth.googleLogin(idToken);
-      await this.afterAuth();
+      await this.router.navigateByUrl(this.returnUrl());
     } catch (e: unknown) {
       this.error.set(readApiErrorDetail(e, 'Connexion Google impossible.'));
     } finally {
       this.loading.set(false);
-    }
-  }
-
-  private async afterAuth(): Promise<void> {
-    await this.auth.refreshPremiumStatus();
-
-    if (this.auth.user()?.premium) {
-      await this.router.navigateByUrl(this.returnUrl());
-      return;
-    }
-
-    const plan = this.billingFlow.parseInterval(this.route.snapshot.queryParamMap.get('plan'));
-    const redirected = await this.billingFlow.redirectToCheckout(plan);
-    if (!redirected) {
-      await this.router.navigate(['/'], { fragment: 'tarifs' });
     }
   }
 

@@ -1,79 +1,127 @@
-<div class="np-auth-wrap">
-  <div class="np-auth-card glass-strong">
-
-    <div class="np-auth-logo">
-      <span class="np-gradient-text" i18n>ng-podcast</span>
+<div class="np-auth-page">
+  <aside class="np-auth-brand">
+    <div class="np-auth-brand-bg" aria-hidden="true">
+      <div class="np-auth-brand-orb np-auth-brand-orb--1"></div>
+      <div class="np-auth-brand-orb np-auth-brand-orb--2"></div>
+      <div class="np-auth-brand-orb np-auth-brand-orb--3"></div>
+      <div class="np-auth-brand-grid"></div>
     </div>
 
-    <h2 class="np-auth-title" i18n> Welcome back</h2>
-    <p class="np-text-muted np-auth-subtitle" i18n>
-      Connect to your account to create and manage your podcasts, access your dashboard and more.
-    </p>
+    <div class="np-auth-brand-inner">
+      <div class="np-auth-brand-logo">
+        <img src="/icons/favicon.svg" alt="" width="38" height="38" />
+        <span>ng-podcast</span>
+      </div>
 
-    <div class="np-field">
-      <label class="np-label" i18n>Email</label>
-      <input class="np-input" type="email"
-        placeholder="your@email.com"
-        [formControl]="loginForm.controls.email"
-      />
+      <img class="np-auth-brand-visual" src="/icons/auth-wave.svg" alt="" width="352" height="234" />
+
+      <h1 class="np-auth-brand-title">
+        Heureux de vous<br><em>revoir</em>
+      </h1>
+      <p class="np-auth-brand-lead">
+        Retrouvez vos podcasts, brouillons et publications.
+        Votre espace créateur est à un clic.
+      </p>
+
+      <ul class="np-auth-brand-features">
+        <li>
+          <i class="fa-solid fa-gauge-high" aria-hidden="true"></i>
+          <span>Tableau de bord et statistiques</span>
+        </li>
+        <li>
+          <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
+          <span>Tous vos projets au même endroit</span>
+        </li>
+        <li>
+          <i class="fa-solid fa-lock" aria-hidden="true"></i>
+          <span>Connexion sécurisée</span>
+        </li>
+      </ul>
     </div>
 
-    <div class="np-field">
-      <label class="np-label" i18n>Password</label>
-      <div class="np-input-password">
-        <input class="np-input"
-          [type]="showPassword ? 'text' : 'password'"
-          placeholder="••••••••"
-          [formControl]="loginForm.controls.password"
-        />
-        <button type="button" class="np-input-eye"
-          (click)="showPassword = !showPassword"
-          [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'" i18n>
-          {{ showPassword ? 'Hide' : 'Show' }}
+    <div class="np-auth-brand-foot">
+      <span class="np-auth-brand-pill">Créateurs</span>
+      <span class="np-auth-brand-pill">Communauté</span>
+    </div>
+  </aside>
+
+  <section class="np-auth-panel">
+    <div class="np-auth-panel-inner">
+      <div class="np-auth-mobile-hero">
+        <img src="/icons/auth-wave.svg" alt="" width="120" height="80" />
+        <p>Connectez-vous pour accéder à votre espace.</p>
+      </div>
+
+      <div class="np-auth-card glass-strong">
+        <header class="np-auth-card-head">
+          <span class="np-auth-step">
+            <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
+            Connexion
+          </span>
+          <h2 class="np-auth-title">Bon retour parmi nous</h2>
+          <p class="np-auth-subtitle">
+            Entrez vos identifiants pour accéder à ng-podcast.
+          </p>
+        </header>
+
+        <div class="np-auth-field">
+          <label class="np-label" for="login-email">Email</label>
+          <div class="np-auth-input-wrap">
+            <i class="fa-regular fa-envelope np-auth-input-icon" aria-hidden="true"></i>
+            <input id="login-email" class="np-input" type="email" placeholder="vous@email.com"
+              [formControl]="loginForm.controls.email" autocomplete="email" />
+          </div>
+        </div>
+
+        <div class="np-auth-field">
+          <label class="np-label" for="login-password">Mot de passe</label>
+          <div class="np-auth-input-wrap">
+            <i class="fa-solid fa-lock np-auth-input-icon" aria-hidden="true"></i>
+            <input id="login-password" class="np-input"
+              [type]="showPassword ? 'text' : 'password'"
+              placeholder="••••••••"
+              [formControl]="loginForm.controls.password"
+              autocomplete="current-password" />
+            <button type="button" class="np-input-eye"
+              (click)="showPassword = !showPassword"
+              [attr.aria-label]="showPassword ? 'Masquer' : 'Afficher'">
+              {{ showPassword ? 'Masquer' : 'Voir' }}
+            </button>
+          </div>
+        </div>
+
+        <div class="np-auth-options">
+          <span></span>
+          <a routerLink="/resetpassword" class="np-auth-link">Mot de passe oublié ?</a>
+        </div>
+
+        @if (error()) {
+          <div class="np-alert np-alert-danger">{{ error() }}</div>
+        }
+        @if (info()) {
+          <div class="np-alert np-alert-success">{{ info() }}</div>
+        }
+
+        <button type="button" class="btn-np np-auth-submit"
+          [disabled]="loginForm.invalid || loading()"
+          (click)="onSubmit()">
+          @if (loading()) {
+            <span class="np-spinner-sm"></span> Connexion…
+          } @else {
+            <span>Se connecter</span>
+            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          }
         </button>
+
+        <div class="np-auth-separator"><span>ou continuer avec</span></div>
+
+        <app-google-signin-button text="signin_with" (credential)="onGoogleCredential($event)" />
+
+        <div class="np-auth-switch">
+          Pas encore de compte ?
+          <a routerLink="/signup" class="np-auth-link">Créer un compte gratuit</a>
+        </div>
       </div>
     </div>
-
-    <div class="np-auth-options">
-      <label class="np-checkbox-label">
-        <input type="checkbox" style="accent-color:var(--np-primary)">
-        <span i18n>Remember me</span>
-      </label>
-      <a routerLink="/resetpassword" class="np-auth-link" i18n>
-        Forgot password?
-      </a>
-    </div>
-
-    @if (error()) {
-      <div class="np-alert np-alert-danger">{{ error() }}</div>
-    }
-    @if (info()) {
-      <div class="np-alert np-alert-success">{{ info() }}</div>
-    }
-
-    <button class="btn-np np-auth-submit"
-      [disabled]="loginForm.invalid || loading()"
-      (click)="onSubmit()">
-      @if (loading()) {
-        <span class="np-spinner-sm"></span> Connexion...
-      } @else {
-        <span i18n>Sign in</span>
-      }
-    </button>
-
-    <div class="np-auth-separator">
-      <span i18n>or</span>
-    </div>
-
-    <app-google-signin-button
-      text="signin_with"
-      (credential)="onGoogleCredential($event)"
-    />
-
-    <p class="np-auth-footer">
-      Pas encore de compte ?
-      <a routerLink="/signup" class="np-auth-link" i18n>Sign up</a>
-    </p>
-
-  </div>
+  </section>
 </div>

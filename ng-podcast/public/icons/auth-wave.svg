@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 320" fill="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="aw-g1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2dd4bf"/>
+      <stop offset="100%" stop-color="#fcd34d"/>
+    </linearGradient>
+    <linearGradient id="aw-g2" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#14b8a6" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#0f766e" stop-opacity="0.2"/>
+    </linearGradient>
+  </defs>
+  <circle cx="380" cy="60" r="120" fill="url(#aw-g2)"/>
+  <circle cx="60" cy="260" r="90" fill="url(#aw-g2)" opacity="0.5"/>
+  <rect x="200" y="48" width="80" height="130" rx="40" stroke="url(#aw-g1)" stroke-width="4" fill="rgba(255,255,255,0.04)"/>
+  <path d="M168 176v8c0 28 26 46 72 46s72-18 72-46v-8" stroke="url(#aw-g1)" stroke-width="4" stroke-linecap="round"/>
+  <path d="M248 230v36M224 266h48" stroke="url(#aw-g1)" stroke-width="4" stroke-linecap="round"/>
+  <path d="M48 160 Q120 120 192 160 T336 160 T432 160" stroke="#2dd4bf" stroke-width="3" stroke-linecap="round" opacity="0.55"/>
+  <path d="M32 200 Q104 168 176 200 T320 200 T448 200" stroke="#fcd34d" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+  <path d="M64 128 Q136 96 208 128 T352 128" stroke="#99f6e4" stroke-width="2" stroke-linecap="round" opacity="0.35"/>
+</svg>

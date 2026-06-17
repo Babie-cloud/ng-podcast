@@ -1,45 +1,39 @@
 // src/app/app.routes.ts
 import { Routes } from '@angular/router';
 import { authGuard } from './features/core/guard/auth.guard';
+import { guestGuard } from './features/core/guard/guest.guard';
 import { premiumGuard } from './features/core/guard/premium.guard';
-import { subscriptionGuard } from './features/core/guard/subscription.guard';
 
 export const routes: Routes = [
-  // ─── Landing (publique) ─────────────────────────────────
-  {
-    path: '',
-    loadComponent: () =>
-      import('./features/podcast/auth/landingpage/landingpage')
-        .then(m => m.Landingpage)
-  },
-
-  // ─── Auth (publiques) ────────────────────────────────────
-  {
-    path: 'login',
-    loadComponent: () =>
-      import('./features/podcast/auth/login/login')
-        .then(m => m.Login)
-  },
+  // ─── Auth (visiteurs uniquement) ───────────────────────────
   {
     path: 'signup',
+    canActivate: [guestGuard],
     loadComponent: () =>
-      import('./features/podcast/auth/signin/signin')
-        .then(m => m.Signin)
+      import('./features/podcast/auth/signin/signin').then((m) => m.Signin),
+  },
+  {
+    path: 'login',
+    canActivate: [guestGuard],
+    loadComponent: () =>
+      import('./features/podcast/auth/login/login').then((m) => m.Login),
   },
   {
     path: 'resetpassword',
     loadComponent: () =>
-      import('./features/podcast/auth/resetpassword/resetpassword')
-        .then(m => m.Resetpassword)
+      import('./features/podcast/auth/resetpassword/resetpassword').then(
+        (m) => m.Resetpassword,
+      ),
   },
   {
     path: 'resetpassword/confirm',
     loadComponent: () =>
-      import('./features/podcast/auth/resetpassword/resetpassword')
-        .then(m => m.Resetpassword)
+      import('./features/podcast/auth/resetpassword/resetpassword').then(
+        (m) => m.Resetpassword,
+      ),
   },
 
-  // ─── Légal / English canonical text (site UI may be localized) ──
+  // ─── Légal (accessible pendant l'inscription) ──────────────
   {
     path: 'terms',
     loadComponent: () =>
@@ -51,62 +45,6 @@ export const routes: Routes = [
       import('./features/layout/policy-privacy/policy-privacy').then(
         (m) => m.PrivacyPage,
       ),
-  },
-
-  // ─── Search (publique — visible sans connexion) ──────────
-  {
-    path: 'search',
-    loadComponent: () =>
-      import('./features/podcast/pages/search/search')
-        .then(m => m.Search)
-  },
-
-  // ─── Écriture / Storytelling (protégé pour création — fil public dans les enfants) ──
-  {
-    path: 'writing',
-    loadChildren: () =>
-      import('./features/podcast/pages/writing/writing.routes').then(
-        (m) => m.WRITING_ROUTES
-      ),
-  },
-  {
-    path: 'storytelling',
-    loadChildren: () =>
-      import('./features/podcast/pages/storytelling/storytelling.routes').then(
-        (m) => m.STORYTELLING_ROUTES
-      ),
-  },
-
-  // ─── Tableau de bord (connecté) ──────────────────────────
-  {
-    path: 'dashboard',
-    canActivate: [authGuard, subscriptionGuard],
-    loadComponent: () =>
-      import('./features/podcast/pages/dashboard/dashboard')
-        .then(m => m.Dashboard),
-  },
-
-  {
-    path: 'profil',
-    canActivate: [authGuard, subscriptionGuard],
-    loadComponent: () =>
-      import('./features/podcast/pages/profile/profil').then((m) => m.Profil),
-  },
-
-  {
-    path: 'settings',
-    canActivate: [authGuard, subscriptionGuard],
-    loadComponent: () =>
-      import('./features/podcast/pages/settings/settings-hub').then(
-        (m) => m.SettingsHub,
-      ),
-  },
-
-  // ─── Podcasts : accueil + détail publics ; création / édition gardés dans podcast.routes.ts ───
-  {
-    path: 'podcasts',
-    loadChildren: () =>
-      import('./features/podcast/podcast.routes').then((m) => m.PODCAST_ROUTES),
   },
 
   // ─── Pages d'erreur ───────────────────────────────────────
@@ -129,20 +67,77 @@ export const routes: Routes = [
     data: { kind: 'unavailable' },
   },
 
+  // ─── Toute la plateforme exige un compte ───────────────────
+  {
+    path: '',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/podcast/auth/landingpage/landingpage').then(
+        (m) => m.Landingpage,
+      ),
+  },
+  {
+    path: 'search',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/podcast/pages/search/search').then((m) => m.Search),
+  },
+  {
+    path: 'dashboard',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/podcast/pages/dashboard/dashboard').then(
+        (m) => m.Dashboard,
+      ),
+  },
+  {
+    path: 'profil',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/podcast/pages/profile/profil').then((m) => m.Profil),
+  },
+  {
+    path: 'settings',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/podcast/pages/settings/settings-hub').then(
+        (m) => m.SettingsHub,
+      ),
+  },
+  {
+    path: 'writing',
+    canActivate: [authGuard],
+    loadChildren: () =>
+      import('./features/podcast/pages/writing/writing.routes').then(
+        (m) => m.WRITING_ROUTES,
+      ),
+  },
+  {
+    path: 'storytelling',
+    canActivate: [authGuard],
+    loadChildren: () =>
+      import('./features/podcast/pages/storytelling/storytelling.routes').then(
+        (m) => m.STORYTELLING_ROUTES,
+      ),
+  },
+  {
+    path: 'podcasts',
+    canActivate: [authGuard],
+    loadChildren: () =>
+      import('./features/podcast/podcast.routes').then((m) => m.PODCAST_ROUTES),
+  },
   {
     path: 'premium',
     redirectTo: '',
     pathMatch: 'full',
   },
-
   {
     path: 'chat',
-    canActivate: [authGuard, subscriptionGuard, premiumGuard],
+    canActivate: [authGuard, premiumGuard],
     loadComponent: () =>
       import('./features/podcast/pages/chat/chat').then((m) => m.Chat),
   },
 
-  // ─── 404 ─────────────────────────────────────────────────
   {
     path: '**',
     loadComponent: () =>
