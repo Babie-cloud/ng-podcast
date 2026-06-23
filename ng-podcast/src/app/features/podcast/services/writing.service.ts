@@ -1,8 +1,9 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpBackend, HttpClient, HttpParams } from '@angular/common/http';
+import { HttpBackend, HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { SSR_API_BASE_URL } from '../../core/tokens/ssr-api-base-url.token';
+import { MediaUrlService } from '../../core/services/media-url.service';
 import { Writing } from '../models/writing.model';
 
 interface WritingApiDto {
@@ -37,6 +38,7 @@ export type UpdateWritingPayload = CreateWritingPayload;
 @Injectable({ providedIn: 'root' })
 export class WritingService {
   private readonly http = inject(HttpClient);
+  private readonly mediaUrls = inject(MediaUrlService);
   private readonly publicHttp = new HttpClient(inject(HttpBackend));
   private readonly apiRoot =
     inject(SSR_API_BASE_URL, { optional: true }) ?? environment.apiUrl;
@@ -122,8 +124,8 @@ export class WritingService {
       title: r.title,
       content: r.content,
       type: r.type,
-      audioUrl: r.audioUrl,
-      coverUrl: r.coverUrl,
+      audioUrl: this.mediaUrls.withAuth(r.audioUrl),
+      coverUrl: this.mediaUrls.withAuth(r.coverUrl),
       status: r.status,
       views: r.views ?? 0,
       authorId: r.authorId,

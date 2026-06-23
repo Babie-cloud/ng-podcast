@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { BillingService } from './billing.service';
 import { ToastService } from '../../../shared/services/toast.service';
+import { assertStripeRedirectUrl } from '../../core/utils/security.util';
 
 export type BillingInterval = 'monthly' | 'yearly';
 
@@ -15,7 +16,7 @@ export class BillingFlowService {
 
   async redirectToCheckout(interval: BillingInterval): Promise<boolean> {
     try {
-      const url = await this.billing.checkout(interval);
+      const url = assertStripeRedirectUrl(await this.billing.checkout(interval));
       window.location.href = url;
       return true;
     } catch {
@@ -29,7 +30,7 @@ export class BillingFlowService {
 
   async openPortal(): Promise<boolean> {
     try {
-      const url = await this.billing.portal();
+      const url = assertStripeRedirectUrl(await this.billing.portal());
       window.location.href = url;
       return true;
     } catch {

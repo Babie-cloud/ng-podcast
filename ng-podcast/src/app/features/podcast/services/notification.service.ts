@@ -7,7 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { SSR_API_BASE_URL } from '../../core/tokens/ssr-api-base-url.token';
@@ -71,6 +71,9 @@ export class NotificationService {
       );
       this.applyResponse(res);
     } catch (err) {
+      if (err instanceof HttpErrorResponse && err.status === 0) {
+        return;
+      }
       this._error.set(
         readApiErrorDetail(err, 'Impossible de charger les notifications.')
       );

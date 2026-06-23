@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { AuthService, readApiErrorDetail } from '../../services/auth.service';
 import { GoogleSigninButton } from '../google-signin-button/google-signin-button';
+import { safeReturnUrl } from '../../../core/utils/security.util';
 
 @Component({
   selector: 'app-login',
@@ -67,6 +68,6 @@ export class Login {
     if (params.get('verified') === '1') {
       this.info.set('Email confirmé, vous pouvez vous connecter.');
     }
-    return this.route.snapshot.queryParamMap.get('returnUrl') ?? '/dashboard';
+    return safeReturnUrl(this.route.snapshot.queryParamMap.get('returnUrl'), '/dashboard');
   }
 }

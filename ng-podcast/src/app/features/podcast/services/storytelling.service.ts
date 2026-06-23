@@ -3,6 +3,7 @@ import { HttpBackend, HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { SSR_API_BASE_URL } from '../../core/tokens/ssr-api-base-url.token';
+import { MediaUrlService } from '../../core/services/media-url.service';
 import { Storytelling } from '../models/storytelling.model';
 
 interface StorytellingApiDto {
@@ -36,6 +37,7 @@ export type UpdateStorytellingPayload = CreateStorytellingPayload;
 @Injectable({ providedIn: 'root' })
 export class StorytellingService {
   private readonly http = inject(HttpClient);
+  private readonly mediaUrls = inject(MediaUrlService);
   private readonly publicHttp = new HttpClient(inject(HttpBackend));
   private readonly apiRoot =
     inject(SSR_API_BASE_URL, { optional: true }) ?? environment.apiUrl;
@@ -105,8 +107,8 @@ export class StorytellingService {
       title: r.title,
       content: r.content,
       type: r.type,
-      audioUrl: r.audioUrl,
-      coverUrl: r.coverUrl,
+      audioUrl: this.mediaUrls.withAuth(r.audioUrl),
+      coverUrl: this.mediaUrls.withAuth(r.coverUrl),
       anonymous: r.anonymous ?? false,
       status: r.status,
       views: r.views ?? 0,

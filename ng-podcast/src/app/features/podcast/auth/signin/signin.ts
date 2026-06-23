@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { AuthService, readApiErrorDetail } from '../../services/auth.service';
 import { GoogleSigninButton } from '../google-signin-button/google-signin-button';
+import { safeReturnUrl } from '../../../core/utils/security.util';
 
 @Component({
   selector: 'app-signin',
@@ -26,7 +27,7 @@ export class Signin {
     name: ['', Validators.required],
     prenom: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
+    password: ['', [Validators.required, Validators.minLength(8)]],
     confirmPassword: ['', Validators.required],
   });
 
@@ -75,6 +76,6 @@ export class Signin {
   }
 
   private returnUrl(): string {
-    return this.route.snapshot.queryParamMap.get('returnUrl') ?? '/dashboard';
+    return safeReturnUrl(this.route.snapshot.queryParamMap.get('returnUrl'), '/dashboard');
   }
 }
