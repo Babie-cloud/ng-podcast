@@ -41,6 +41,11 @@
                 "localhost",
                 "127.0.0.1",
                 "*.vercel.app"
+              ],
+              "trustProxyHeaders": [
+                "x-forwarded-proto",
+                "x-forwarded-host",
+                "x-forwarded-for"
               ]
             },
             "ssr": {
