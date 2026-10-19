@@ -95,14 +95,18 @@ export class GoogleSigninButton implements AfterViewInit {
   async ngAfterViewInit(): Promise<void> {
     if (!isPlatformBrowser(this.platformId)) return;
 
-    this.clientId = await this.resolveClientId();
-    this.loading.set(false);
-    this.missingConfig.set(!this.clientId);
-    this.cdr.detectChanges();
+    try {
+      this.clientId = await this.resolveClientId();
+      this.missingConfig.set(!this.clientId);
+      if (this.missingConfig()) return;
+
+      await this.loadScript();
+    } finally {
+      this.loading.set(false);
+      this.cdr.detectChanges();
+    }
 
     if (this.missingConfig()) return;
-
-    await this.loadScript();
     window.google?.accounts.id.initialize({
       client_id: this.clientId,
       callback: (response) => {
