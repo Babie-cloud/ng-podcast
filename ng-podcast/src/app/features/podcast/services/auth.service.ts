@@ -111,8 +111,12 @@ export class AuthService {
       return;
     }
     this._token.set(stored);
-    this.authHydrated = this.fetchMe()
-      .catch(() => this.logout())
+    this.authHydrated = this.fetchMeWithTimeout(20_000)
+      .catch(() => {
+        this._token.set(null);
+        this._user.set(null);
+        this.jwtBridge.wipe();
+      })
       .then(() => undefined);
   }
 
@@ -210,6 +214,25 @@ export class AuthService {
       this.http.get<AuthUser>(`${this.apiRoot}/users/me`)
     );
     this._user.set(user);
+  }
+
+  /** Évite de bloquer authGuard si l’API Render dort ou est injoignable. */
+  private fetchMeWithTimeout(timeoutMs: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(
+        () => reject(new Error('Auth hydration timeout')),
+        timeoutMs,
+      );
+      void this.fetchMe()
+        .then(() => {
+          clearTimeout(timer);
+          resolve();
+        })
+        .catch((err) => {
+          clearTimeout(timer);
+          reject(err);
+        });
+    });
   }
 
   /** PATCH /users/me — pseudo public + nom légal (email inchangé ici). */
