@@ -35,7 +35,7 @@ npm install
 Le fichier `src/environments/environment*.ts` definit `apiUrl` (ex. `http://127.0.0.1:8080` en developpement).
 
 Le backend est disponible ici : https://github.com/Babie-cloud/sdk-podcast.
-Il doit etre lance avant le front-end.
+Il doit eêtre lance avant le front-end.
 
 ## Licence
 

@@ -1,0 +1,15 @@
+# Blueprint Render pour le frontend Angular SSR (depot ng-podcast).
+# Le code Angular est dans le sous-dossier ng-podcast/.
+services:
+  - type: web
+    name: ngpodcast-web
+    runtime: node
+    rootDir: ng-podcast
+    plan: free
+    buildCommand: npm ci && npm run build:prod
+    startCommand: node dist/ng-podcast/server/server.mjs
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: API_URL
+        sync: false
