@@ -5,16 +5,19 @@ import {
   HostListener,
   inject,
   signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../features/podcast/services/auth.service';
 import { ThemeService } from '../../../features/podcast/services/theme.service';
+import { NotificationBell } from '../../components/notification-bell/notification-bell';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, NotificationBell],
   templateUrl: './navbar.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './navbar.scss',
 })
 export class Navbar {

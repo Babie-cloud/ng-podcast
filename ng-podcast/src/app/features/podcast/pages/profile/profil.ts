@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService, readApiErrorDetail } from '../../services/auth.service';
@@ -8,6 +8,7 @@ import { AuthService, readApiErrorDetail } from '../../services/auth.service';
   standalone: true,
   imports: [RouterLink, ReactiveFormsModule],
   templateUrl: './profil.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './profil.scss',
 })
 export class Profil {
@@ -68,9 +69,7 @@ export class Profil {
       await this.auth.updateProfile(this.profileForm.getRawValue());
       this.editMode.set(false);
     } catch (e: unknown) {
-      this.saveError.set(
-        readApiErrorDetail(e, "Impossible d'enregistrer les modifications.")
-      );
+      this.saveError.set(readApiErrorDetail(e, "Impossible d'enregistrer les modifications."));
     } finally {
       this.saving.set(false);
     }
@@ -88,7 +87,7 @@ export class Profil {
       await this.auth.deleteAccount();
     } catch (e: unknown) {
       this.deleteError.set(
-        readApiErrorDetail(e, 'Impossible de supprimer le compte pour le moment.')
+        readApiErrorDetail(e, 'Impossible de supprimer le compte pour le moment.'),
       );
     } finally {
       this.deleting.set(false);

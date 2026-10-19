@@ -1,0 +1,77 @@
+<section class="container py-4 py-md-5">
+  <div class="glass-strong p-4 p-md-5 mx-auto np-premium-card">
+    <p class="np-text-muted small mb-2">ng-podcast Premium</p>
+    <h1 class="mb-3">Publiez sans limites, chattez, créez</h1>
+
+    @if (error(); as err) {
+      <div class="np-alert np-alert-danger">{{ err }}</div>
+    }
+
+    @if (status(); as s) {
+      <div class="mb-4">
+        @if (isPremium()) {
+          <span class="np-badge np-badge-success">Premium actif</span>
+          <p class="np-text-muted mt-2 mb-0">
+            Statut abonnement : {{ s.subscriptionStatus }}
+          </p>
+        } @else {
+          <span class="np-badge">Plan gratuit</span>
+        }
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-md-6">
+          <div class="glass p-3 h-100">
+            <h2 class="h5">Gratuit</h2>
+            <ul class="small np-text-muted mb-0">
+              <li>{{ s.quota.maxPublishedEpisodesPerPodcast }} épisodes publiés / podcast</li>
+              <li>{{ s.quota.maxDraftEpisodesPerPodcast }} brouillons / podcast</li>
+              <li>{{ s.quota.maxPublishedWritings }} writings publiés</li>
+              <li>{{ s.quota.maxPublishedStorytellings }} storytellings publiés</li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="glass p-3 h-100 border border-2" style="border-color: var(--np-primary) !important">
+            <h2 class="h5">Premium</h2>
+            <ul class="small mb-3">
+              <li>Quotas illimités</li>
+              <li>Chat privé + salon communautaire</li>
+              <li>Recommandations IA (bientôt)</li>
+              <li>{{ s.pricing.trialDays }} jours d'essai gratuit</li>
+            </ul>
+            <p class="mb-0">
+              <strong>{{ s.pricing.monthlyEur }} €</strong> / mois
+              · <strong>{{ s.pricing.yearlyEur }} €</strong> / an
+            </p>
+          </div>
+        </div>
+      </div>
+
+      @if (!isPremium()) {
+        <div class="d-flex flex-wrap gap-2">
+          <button type="button" class="btn-np" [disabled]="busy()" (click)="checkout('monthly')">
+            Essai gratuit — mensuel
+          </button>
+          <button type="button" class="btn-np-outline" [disabled]="busy()" (click)="checkout('yearly')">
+            Essai gratuit — annuel
+          </button>
+        </div>
+      } @else {
+        <button type="button" class="btn-np-outline" [disabled]="busy()" (click)="openPortal()">
+          Gérer mon abonnement
+        </button>
+      }
+
+      @if (!s.configured) {
+        <p class="small np-text-muted mt-3 mb-0">
+          Stripe n'est pas encore configuré sur le serveur (STRIPE_SECRET_KEY, STRIPE_PRICE_MONTHLY, STRIPE_PRICE_YEARLY).
+        </p>
+      }
+    }
+
+    <p class="mt-4 mb-0">
+      <a routerLink="/dashboard" class="np-nav-link">← Retour au tableau de bord</a>
+    </p>
+  </div>
+</section>

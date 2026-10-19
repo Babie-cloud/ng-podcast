@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
 @Component({
@@ -6,6 +6,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
   standalone: true,
   imports: [RouterLink],
   templateUrl: './feature-placeholder.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './feature-placeholder.scss',
 })
 export class FeaturePlaceholder {

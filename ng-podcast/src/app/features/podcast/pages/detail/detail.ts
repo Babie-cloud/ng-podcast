@@ -1,5 +1,5 @@
 // src/app/features/podcast/pages/detail/detail.ts
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { PodcastStore } from '../../store/podcast.store';
@@ -10,6 +10,7 @@ import { Episode } from '../../models/podcast.model';
   selector: 'app-detail',
   standalone: true,
   imports: [RouterLink, DatePipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './detail.html',
 })
 export class Detail implements OnInit {

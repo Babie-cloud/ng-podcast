@@ -44,7 +44,26 @@
     </div>
   </div>
 
-  <!-- Section podcasts -->
+  <!-- Mes brouillons (créateur connecté) -->
+  @if (auth.isLogged() && draftPodcasts().length) {
+    <div class="np-section-header mb-4">
+      <div>
+        <span class="np-section-label" i18n>Mes podcasts</span>
+        <h2 class="np-section-title" i18n>Brouillons (privés)</h2>
+        <p class="np-text-muted small mb-0" i18n>
+          Seul vous les voyez tant qu’ils ne sont pas publiés.
+          <a routerLink="/podcasts/mine" class="ms-1">Voir tout mon espace</a>
+        </p>
+      </div>
+    </div>
+    <div class="np-grid-3 mb-5">
+      @for (podcast of draftPodcasts(); track podcast.id) {
+        <app-podcast-card [podcast]="podcast" (play)="store.play($event)" />
+      }
+    </div>
+  }
+
+  <!-- Section podcasts publiés -->
   <div class="np-section-header mb-4">
     <div>
       <span class="np-section-label" i18n>Last podcasts</span>
@@ -60,12 +79,18 @@
     </div>
   }
 
-  @if (store.hasError()) {
+  @if (!store.loading() && store.hasError()) {
     <div class="np-alert np-alert-danger" i18n>{{ store.error() }}</div>
   }
 
+  @if (!store.loading() && !store.hasError() && !auth.isLogged() && publishedPodcasts().length === 0 && draftPodcasts().length === 0) {
+    <div class="np-alert np-alert-warning mb-4" i18n>
+      Les nouveaux podcasts restent en brouillon jusqu’à publication. Connectez-vous pour voir les vôtres.
+    </div>
+  }
+
   <div class="np-grid-3 mb-5">
-    @for (podcast of store.podcasts(); track podcast.id) {
+    @for (podcast of publishedPodcasts(); track podcast.id) {
       <app-podcast-card
         [podcast]="podcast"
         (play)="store.play($event)"
@@ -73,20 +98,22 @@
     } @empty {
       @if (!store.loading()) {
         <div class="np-empty glass-card">
-          <p i18n>No podcast for the moment.</p>
-          @if (auth.isLogged()) {
-            <a routerLink="/podcasts/create" class="btn-np" i18n>
-              Create the first one
-            </a>
+          @if (auth.isLogged() && draftPodcasts().length) {
+            <p i18n>Aucun podcast public pour le moment. Vos brouillons sont listés ci-dessus.</p>
           } @else {
-            <a
-              routerLink="/signup"
-              class="btn-np"
-              [queryParams]="{ returnUrl: '/podcasts/create' }"
-              i18n
-            >
-              Create an account to publish  
-            </a>
+            <p i18n>Aucun podcast public pour le moment.</p>
+            @if (auth.isLogged()) {
+              <a routerLink="/podcasts/create" class="btn-np" i18n>Créer un podcast</a>
+            } @else {
+              <a
+                routerLink="/signup"
+                class="btn-np"
+                [queryParams]="{ returnUrl: '/podcasts/create' }"
+                i18n
+              >
+                Créer un compte pour publier
+              </a>
+            }
           }
         </div>
       }

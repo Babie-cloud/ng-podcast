@@ -46,108 +46,88 @@
 // ─── DARK MODE (défaut) ───────────────────────────────────────
 :root,
 [data-theme="dark"] {
-  // Backgrounds
   --np-bg:           #{$np-bg-dark};
   --np-bg-secondary: #{$np-bg-dark-secondary};
   --np-bg-tertiary:  #{$np-bg-dark-tertiary};
 
-  // Surfaces glass
   --np-surface:        #{$np-surface-dark};
   --np-surface-hover:  #{$np-surface-dark-hover};
   --np-surface-active: #{$np-surface-dark-active};
 
-  // Textes
   --np-text:       #{$np-text-dark};
   --np-text-muted: #{$np-text-dark-muted};
   --np-text-hint:  #{$np-text-dark-hint};
 
-  // Bordures
   --np-border:        #{$np-border-dark};
   --np-border-subtle: #{$np-border-dark-subtle};
   --np-border-strong: #{$np-border-dark-strong};
 
-  // Ombres
   --np-shadow-sm: #{$np-shadow-dark-sm};
   --np-shadow-md: #{$np-shadow-dark-md};
   --np-shadow-lg: #{$np-shadow-dark-lg};
 
-  // Composants
   --np-navbar-bg: #{$np-navbar-bg-dark};
   --np-player-bg: #{$np-player-bg-dark};
 
-  // Overlay image au hover
-  --np-overlay: rgba(139, 69, 19, 0.35);
+  --np-overlay: rgba(15, 118, 110, 0.36);
 
-  // Gradient brand
-  --np-gradient: linear-gradient(135deg, #{$np-primary-light}, #{$np-primary});
+  --np-gradient: linear-gradient(135deg, #{$np-accent-warm}, #{$np-primary-light}, #{$np-primary});
 
-  // Lecteur (barre fixe `.player-bar` + tokens partagés)
-  --np-beige: #f5ebe3;
-  --np-player-muted: rgba(245, 235, 227, 0.52);
-  --np-player-seek-track: rgba(245, 232, 211, 0.14);
-  --np-player-seek-buffered: rgba(245, 232, 211, 0.2);
-  --np-player-ctrl-icon: rgba(245, 232, 211, 0.78);
-  --np-player-ctrl-hover-bg: rgba(245, 232, 211, 0.1);
-  --np-player-rate-bg: rgba(245, 232, 211, 0.08);
-  --np-player-rate-border: rgba(245, 232, 211, 0.16);
-  --np-player-volume-track: rgba(245, 232, 211, 0.22);
-  --np-player-rate-option-bg: #2a1f18;
+  --np-beige: #{$np-text-dark};
+  --np-player-muted: rgba(236, 245, 243, 0.52);
+  --np-player-seek-track: rgba(236, 245, 243, 0.14);
+  --np-player-seek-buffered: rgba(240, 180, 90, 0.24);
+  --np-player-ctrl-icon: rgba(236, 245, 243, 0.78);
+  --np-player-ctrl-hover-bg: rgba(15, 118, 110, 0.16);
+  --np-player-rate-bg: rgba(236, 245, 243, 0.08);
+  --np-player-rate-border: rgba(236, 245, 243, 0.14);
+  --np-player-volume-track: rgba(236, 245, 243, 0.20);
+  --np-player-rate-option-bg: #{$np-bg-dark-tertiary};
 }
 
-// ─── LIGHT MODE ───────────────────────────────────────────────
+// ─── LIGHT MODE — parchemin, lavages teal / ambre / argile ────
 [data-theme="light"] {
-  // Backgrounds
   --np-bg:           #{$np-bg-light};
   --np-bg-secondary: #{$np-bg-light-secondary};
   --np-bg-tertiary:  #{$np-bg-light-tertiary};
 
-  // Surfaces glass
   --np-surface:        #{$np-surface-light};
   --np-surface-hover:  #{$np-surface-light-hover};
   --np-surface-active: #{$np-surface-light-active};
 
-  // Textes
   --np-text:       #{$np-text-light};
   --np-text-muted: #{$np-text-light-muted};
   --np-text-hint:  #{$np-text-light-hint};
 
-  // Bordures
   --np-border:        #{$np-border-light};
   --np-border-subtle: #{$np-border-light-subtle};
   --np-border-strong: #{$np-border-light-strong};
 
-  // Ombres
   --np-shadow-sm: #{$np-shadow-sm};
   --np-shadow-md: #{$np-shadow-md};
   --np-shadow-lg: #{$np-shadow-lg};
 
-  // Composants
   --np-navbar-bg: #{$np-navbar-bg-light};
   --np-player-bg: #{$np-player-bg-light};
 
-  // Accent doré léger — même emphase café que les surfaces hover du dark
-  --np-primary-soft: rgba(139, 69, 19, 0.10);
+  --np-primary-soft: rgba(15, 118, 110, 0.07);
 
-  // Overlay cartes — identique philosophie au dark (bronzage doré)
-  --np-overlay: rgba(139, 69, 19, 0.26);
+  --np-overlay: rgba(15, 118, 110, 0.20);
 
-  // Gradient brand — même axe que le mode sombre (cohérence marque café)
-  --np-gradient: linear-gradient(135deg, #{$np-primary-light}, #{$np-primary});
+  --np-gradient: linear-gradient(135deg, #{$np-accent-warm}, #{$np-secondary-light}, #{$np-primary});
 
-  // Lecteur : parchemin chaud + typo brun doré (cohérent avec fonds sable)
   --np-beige: #{$np-text-light};
-  --np-player-muted: rgba(58, 40, 28, 0.50);
-  --np-player-seek-track: rgba(139, 69, 19, 0.14);
-  --np-player-seek-buffered: rgba(139, 69, 19, 0.22);
-  --np-player-ctrl-icon: rgba(47, 31, 20, 0.72);
-  --np-player-ctrl-hover-bg: rgba(139, 69, 19, 0.12);
-  --np-player-rate-bg: rgba(139, 69, 19, 0.07);
-  --np-player-rate-border: rgba(139, 69, 19, 0.18);
-  --np-player-volume-track: rgba(139, 69, 19, 0.2);
-  --np-player-rate-option-bg: #{$np-surface-light};
+  --np-player-muted: rgba(58, 50, 40, 0.52);
+  --np-player-seek-track: rgba(15, 118, 110, 0.12);
+  --np-player-seek-buffered: rgba(217, 119, 6, 0.18);
+  --np-player-ctrl-icon: rgba(58, 50, 40, 0.68);
+  --np-player-ctrl-hover-bg: rgba(15, 118, 110, 0.09);
+  --np-player-rate-bg: rgba(168, 130, 98, 0.08);
+  --np-player-rate-border: rgba(168, 130, 98, 0.16);
+  --np-player-volume-track: rgba(15, 118, 110, 0.14);
+  --np-player-rate-option-bg: #{$np-surface-light-hover};
 }
 
-// ─── TRANSITIONS FLUIDES entre modes ─────────────────────────
 body,
 .glass,
 .glass-card,

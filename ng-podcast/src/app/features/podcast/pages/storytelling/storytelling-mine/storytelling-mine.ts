@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { StorytellingStore } from '../../../store/storytelling.store';
@@ -7,6 +7,7 @@ import { StorytellingStore } from '../../../store/storytelling.store';
   selector: 'app-storytelling-mine',
   standalone: true,
   imports: [RouterLink, DatePipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './storytelling-mine.html',
 })
 export class StorytellingMine implements OnInit {

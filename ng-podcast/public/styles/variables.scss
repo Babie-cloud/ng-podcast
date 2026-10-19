@@ -1,79 +1,81 @@
 // src/styles/variables.scss
 // ═══════════════════════════════════════════════════════════════
-// VARIABLES — ng-podcast · Palette Café Profond
+// VARIABLES — ng-podcast · Palette Parchemin & Pétrole
 // ═══════════════════════════════════════════════════════════════
 
-// ─── COULEURS PRIMAIRES ───────────────────────────────────────
-$np-primary:        #8b4513;
-$np-primary-light:  #d4a07a;
-$np-primary-dark:   #3d1a00;
-$np-primary-glow:   rgba(139, 69, 19, 0.40);
-$np-primary-soft:   rgba(139, 69, 19, 0.12);
-$np-primary-medium: rgba(139, 69, 19, 0.25);
+// ─── COULEURS PRIMAIRES (pétrole / teal) ─────────────────────
+$np-primary:        #0f766e;
+$np-primary-light:  #2dd4bf;
+$np-primary-dark:   #134e4a;
+$np-primary-glow:   rgba(15, 118, 110, 0.38);
+$np-primary-soft:   rgba(15, 118, 110, 0.12);
+$np-primary-medium: rgba(15, 118, 110, 0.22);
 
 // ─── COULEURS SECONDAIRES ─────────────────────────────────────
-$np-secondary:       #c8905a;
-$np-secondary-light: #e8c4a0;
-$np-secondary-dark:  #7a5030;
+$np-secondary:       #14b8a6;
+$np-secondary-light: #99f6e4;
+$np-secondary-dark:  #0d9488;
 
-$np-accent:          #d4a07a;
-$np-accent-warm:     #e8b888;
-$np-accent-deep:     #a06040;
+$np-accent:          #d97706;
+$np-accent-warm:     #f0b45a;
+$np-accent-deep:     #b45309;
+
+// Touches décoratives mode clair (lavages de couleur)
+$np-light-wash-teal:   rgba(45, 212, 191, 0.10);
+$np-light-wash-amber:  rgba(217, 119, 6, 0.08);
+$np-light-wash-clay:   rgba(168, 130, 98, 0.07);
 
 // ─── COULEURS SÉMANTIQUES ─────────────────────────────────────
-$np-success:  #4a9e6a;
-$np-warning:  #c8901a;
-$np-danger:   #c84a3a;
-$np-info:     #4a7a9e;
+$np-success:  #059669;
+$np-warning:  #d97706;
+$np-danger:   #dc2626;
+$np-info:     #0284c7;
 
 // ─── BACKGROUNDS DARK ─────────────────────────────────────────
-$np-bg-dark:           #0f0805;
-$np-bg-dark-secondary: #1a1008;
-$np-bg-dark-tertiary:  #251808;
+$np-bg-dark:           #0a0f0e;
+$np-bg-dark-secondary: #101917;
+$np-bg-dark-tertiary:  #162320;
 
-$np-surface-dark:      rgba(255, 255, 255, 0.055);
-$np-surface-dark-hover: rgba(255, 255, 255, 0.090);
-$np-surface-dark-active: rgba(139, 69, 19, 0.15);
+$np-surface-dark:        rgba(255, 255, 255, 0.055);
+$np-surface-dark-hover:  rgba(255, 255, 255, 0.090);
+$np-surface-dark-active: rgba(15, 118, 110, 0.16);
 
-// ─── BACKGROUNDS LIGHT ────────────────────────────────────────
-// Café Profond — sable, biscuit, vélin (pas de blanc pur ni crème éclatante).
-$np-bg-light:           #b8a894;
-$np-bg-light-secondary: #cfc0ad;
-$np-bg-light-tertiary:  #c5b6a3;
+// ─── BACKGROUNDS LIGHT — parchemin chaud, jamais blanc pur ───
+$np-bg-light:           #e8e0d2;
+$np-bg-light-secondary: #ddd4c4;
+$np-bg-light-tertiary:  #d3c9b8;
 
-// Surfaces parchemin — relief doux sans éclat blanc
-$np-surface-light:       rgba(228, 218, 202, 0.88);
-$np-surface-light-hover: rgba(235, 226, 212, 0.94);
-$np-surface-light-active: rgba(139, 69, 19, 0.14);
+$np-surface-light:       rgba(245, 240, 231, 0.72);
+$np-surface-light-hover: rgba(250, 246, 238, 0.84);
+$np-surface-light-active: rgba(15, 118, 110, 0.09);
 
 // ─── TEXTES DARK ──────────────────────────────────────────────
-$np-text-dark:         #f5ece4;
-$np-text-dark-muted:   rgba(245, 236, 228, 0.55);
-$np-text-dark-hint:    rgba(245, 236, 228, 0.30);
+$np-text-dark:         #ecf5f3;
+$np-text-dark-muted:   rgba(236, 245, 243, 0.58);
+$np-text-dark-hint:    rgba(236, 245, 243, 0.32);
 
-// ─── TEXTES LIGHT ─────────────────────────────────────────────
-// Brun espresso — contraste lisible mais moins agressif que noir pur.
-$np-text-light:        #3a281c;
-$np-text-light-muted:  rgba(58, 40, 28, 0.58);
-$np-text-light-hint:   rgba(58, 40, 28, 0.34);
+// ─── TEXTES LIGHT — brun chaud, pas noir/violet ───────────────
+$np-text-light:        #3a3228;
+$np-text-light-muted:  rgba(58, 50, 40, 0.62);
+$np-text-light-hint:   rgba(58, 50, 40, 0.38);
 
 // ─── BORDURES DARK ────────────────────────────────────────────
 $np-border-dark:        rgba(255, 255, 255, 0.08);
-$np-border-dark-subtle: rgba(139, 69, 19, 0.30);
-$np-border-dark-strong: rgba(255, 255, 255, 0.16);
+$np-border-dark-subtle: rgba(45, 212, 191, 0.22);
+$np-border-dark-strong: rgba(255, 255, 255, 0.15);
 
 // ─── BORDURES LIGHT ───────────────────────────────────────────
-$np-border-light:        rgba(139, 69, 19, 0.18);
-$np-border-light-subtle: rgba(139, 69, 19, 0.10);
-$np-border-light-strong: rgba(61, 26, 0, 0.28);
+$np-border-light:        rgba(15, 118, 110, 0.16);
+$np-border-light-subtle: rgba(168, 130, 98, 0.14);
+$np-border-light-strong: rgba(58, 50, 40, 0.18);
 
 // ─── PLAYER ───────────────────────────────────────────────────
-$np-player-bg-dark:  rgba(5, 2, 1, 0.96);
-$np-player-bg-light: rgba(220, 208, 192, 0.94);
+$np-player-bg-dark:  rgba(10, 15, 14, 0.96);
+$np-player-bg-light: rgba(232, 224, 210, 0.94);
 
 // ─── NAVBAR ───────────────────────────────────────────────────
-$np-navbar-bg-dark:  rgba(5, 2, 1, 0.88);
-$np-navbar-bg-light: rgba(214, 202, 186, 0.90);
+$np-navbar-bg-dark:  rgba(10, 15, 14, 0.88);
+$np-navbar-bg-light: rgba(221, 212, 196, 0.88);
 
 // ─── GLASSMORPHISM ────────────────────────────────────────────
 $np-blur:         blur(16px);
@@ -89,10 +91,10 @@ $np-radius-xl:  28px;
 $np-radius-full: 9999px;
 
 // ─── OMBRES ───────────────────────────────────────────────────
-$np-shadow-sm:   0 1px 2px rgba(61, 26, 0, 0.04), 0 8px 22px rgba(139, 69, 19, 0.08);
-$np-shadow-md:   0 4px 10px rgba(61, 26, 0, 0.05), 0 16px 40px rgba(139, 69, 19, 0.11);
-$np-shadow-lg:   0 10px 26px rgba(61, 26, 0, 0.06), 0 28px 56px rgba(139, 69, 19, 0.14);
-$np-shadow-glow: 0 0 28px rgba(139, 69, 19, 0.45);
+$np-shadow-sm:   0 1px 2px rgba(58, 50, 40, 0.04), 0 8px 22px rgba(15, 118, 110, 0.07);
+$np-shadow-md:   0 4px 10px rgba(58, 50, 40, 0.05), 0 16px 40px rgba(15, 118, 110, 0.09);
+$np-shadow-lg:   0 10px 26px rgba(58, 50, 40, 0.06), 0 28px 56px rgba(15, 118, 110, 0.11);
+$np-shadow-glow: 0 0 28px rgba(45, 212, 191, 0.35);
 
 $np-shadow-dark-sm:   0 2px 12px rgba(0, 0, 0, 0.35);
 $np-shadow-dark-md:   0 8px 32px rgba(0, 0, 0, 0.45);

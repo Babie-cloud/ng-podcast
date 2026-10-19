@@ -51,6 +51,7 @@
     </button>
 
     @if (auth.isLogged()) {
+      <app-notification-bell class="np-hide-mobile" />
       <a routerLink="/dashboard"
          routerLinkActive="active"
          class="btn-np-outline np-hide-mobile"
@@ -104,6 +105,14 @@
                 <i class="fa-solid fa-gear me-2" aria-hidden="true"></i>
                 Paramètres
               </a>
+              <a routerLink="/" fragment="tarifs" role="menuitem" class="np-profile-menu-row" (click)="closeProfileMenu()">
+                <i class="fa-solid fa-crown me-2" aria-hidden="true"></i>
+                Abonnement Premium
+              </a>
+              <a routerLink="/chat" role="menuitem" class="np-profile-menu-row" (click)="closeProfileMenu()">
+                <i class="fa-solid fa-comments me-2" aria-hidden="true"></i>
+                Chat Premium
+              </a>
 
               <p class="np-profile-menu-hint mb-3">
                 Thème&nbsp;: utiliser la bascule lunette/brume à côté du profil.
@@ -122,7 +131,7 @@
       <a routerLink="/login" class="btn-np-outline np-hide-mobile">
         Connexion
       </a>
-      <a routerLink="/signup" class="btn-np np-hide-mobile">
+      <a routerLink="/signup" class="btn-np np-hide-mobile" [queryParams]="{ plan: 'monthly' }">
         S'inscrire
       </a>
     }
@@ -190,6 +199,7 @@
     <a routerLink="/signup"
        class="btn-np"
        style="text-align:center"
+       [queryParams]="{ plan: 'monthly' }"
        (click)="closeMenu()">Créer un compte</a>
   }
 

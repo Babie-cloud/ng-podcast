@@ -61,6 +61,31 @@ export const PodcastStore = signalStore(
       }
     },
 
+    /** Catalogue accueil : podcasts publiés + brouillons du créateur connecté. */
+    async loadHomeCatalog(includeMine: boolean): Promise<void> {
+      patchState(store, { loading: true, error: null });
+      try {
+        const published = await service.getAll();
+        const merged = [...published];
+        if (includeMine) {
+          try {
+            const mine = await service.getMine();
+            for (const p of mine) {
+              if (!merged.some((row) => row.id === p.id)) {
+                merged.unshift(p);
+              }
+            }
+          } catch {
+            /* non connecté ou session expirée */
+          }
+        }
+        patchState(store, { podcasts: merged, loading: false });
+      } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : 'Erreur réseau';
+        patchState(store, { error: message, loading: false });
+      }
+    },
+
     async loadMine(): Promise<void> {
       patchState(store, { loading: true, error: null });
       try {
@@ -103,6 +128,7 @@ export const PodcastStore = signalStore(
           loading: false,
           uploadProgress: 0,
           podcasts: [podcast, ...store.podcasts()],
+          selected: podcast,
         });
         return podcast.id;
       } catch (e: unknown) {

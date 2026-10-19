@@ -88,24 +88,39 @@
             </div>
           </div>
 
-          <section class="episode-play-cues-panel" aria-label="Synchronized lyrics">
+          <section class="episode-play-cues-panel" aria-label="Paroles synchronisées">
             <div class="d-flex justify-content-between align-items-baseline mb-2 flex-wrap gap-2">
-              <h2 class="h6 mb-0">Synchronized lyrics</h2>
-              <span class="small np-text-muted" i18n>Highlighting based on position in the audio</span>
+              <h2 class="h6 mb-0">Paroles synchronisées</h2>
+              <span class="small np-text-muted">Surlignage selon la position dans l'audio</span>
             </div>
             @if (cues().length > 0) {
               <div class="episode-play-cues-scroll">
                 @for (cue of cues(); track $index; let i = $index) {
-                  <p [class]="cueTrackClass(i)">{{ cue.t }}</p>
+                  <p #cueLine [class]="cueTrackClass(i)">{{ cue.t }}</p>
                 }
               </div>
             } @else {
               <div class="episode-play-cues-fallback">
-                <p class="np-text-muted small mb-0" i18n>
-                  No synchronized lines yet (JSON array with <code>s</code>,
-                  <code>e</code> in seconds, <code>t</code> for the text — to be entered by the creator
-                  during podcast editing).
+                <p class="np-text-muted small mb-2">
+                  Aucune ligne synchronisée pour cet épisode.
                 </p>
+                <p class="np-text-muted small mb-0">
+                  Format JSON&nbsp;: tableau de segments avec
+                  <code>s</code> (début en secondes),
+                  <code>e</code> (fin),
+                  <code>t</code> (texte).
+                  Exemple&nbsp;:
+                  <code>[&#123;"s":0,"e":3,"t":"Bonjour"&#125;]</code>
+                </p>
+                @if (auth.isLogged() && isOwner(podcast)) {
+                  <a
+                    [routerLink]="['/podcasts', podcast.id, 'edit']"
+                    class="btn-np-outline btn-np-sm mt-3 d-inline-flex"
+                  >
+                    <i class="fa-solid fa-pen me-1" aria-hidden="true"></i>
+                    Ajouter des paroles (édition)
+                  </a>
+                }
               </div>
             }
           </section>

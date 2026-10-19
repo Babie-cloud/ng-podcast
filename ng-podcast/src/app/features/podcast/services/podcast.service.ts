@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { SSR_API_BASE_URL } from '../../core/tokens/ssr-api-base-url.token';
+import { MediaUrlService } from '../../core/services/media-url.service';
 import { Podcast, Episode } from '../models/podcast.model';
 import { CreatePodcastPayload } from './podcast.service.types';
 
@@ -55,6 +56,7 @@ interface PodcastDetailApiDto extends PodcastSummaryApiDto {
 @Injectable({ providedIn: 'root' })
 export class PodcastService {
   private readonly http = inject(HttpClient);
+  private readonly mediaUrls = inject(MediaUrlService);
   private readonly apiRoot =
     inject(SSR_API_BASE_URL, { optional: true }) ?? environment.apiUrl;
   private readonly base = `${this.apiRoot}/api/podcasts`;
@@ -151,7 +153,7 @@ export class PodcastService {
       id: r.id,
       title: r.title,
       description: r.description ?? '',
-      coverUrl: r.coverUrl ?? '',
+      coverUrl: this.normalizeMediaUrl(r.coverUrl ?? ''),
       authorId: r.authorId,
       authorName: r.authorName,
       episodes: [],
@@ -172,12 +174,30 @@ export class PodcastService {
     return {
       id: e.id,
       title: e.title,
-      audioUrl: e.audioUrl ?? '',
+      audioUrl: this.normalizeMediaUrl(e.audioUrl ?? ''),
       duration: e.duration ?? 0,
       podcastId: e.podcastId,
       createdAt: new Date(e.createdAt),
       status: e.status ?? 'DRAFT',
       captions: e.captions ?? undefined,
     };
+  }
+
+  /** Aligne localhost / 127.0.0.1 sur l’origine API + JWT pour /files/. */
+  private normalizeMediaUrl(url: string): string {
+    if (!url) return '';
+    let resolved = url;
+    try {
+      const apiOrigin = new URL(this.apiRoot).origin;
+      const parsed = new URL(url);
+      if (parsed.pathname.startsWith('/files/')) {
+        resolved = `${apiOrigin}${parsed.pathname}${parsed.search}`;
+      } else if (parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1') {
+        resolved = `${apiOrigin}${parsed.pathname}${parsed.search}`;
+      }
+    } catch {
+      /* URL relative ou invalide */
+    }
+    return this.mediaUrls.withAuth(resolved);
   }
 }

@@ -1,0 +1,151 @@
+<section class="sound-library glass-strong">
+  <header class="sound-library__header">
+    <div>
+      <span class="np-label mb-1">
+        <i class="fa-solid fa-book-open me-1" aria-hidden="true"></i>
+        <span i18n>Sound library</span>
+      </span>
+      <p class="np-text-muted small mb-0" i18n>
+        Search Freesound for jingles (≤ {{ durationLimit('jingle') }}s) or backgrounds (≤ {{ durationLimit('background') }}s).
+      </p>
+    </div>
+  </header>
+
+  @if (!library.hasApiKey()) {
+    <div class="np-alert np-alert-warning mb-0" i18n>
+      Add your Freesound API key to <code>freesoundApiKey</code> in the environment file to enable search.
+    </div>
+  } @else {
+    <div class="sound-library__search">
+      <div class="sound-library__category" role="group" aria-label="Sound category">
+        <button
+          type="button"
+          class="btn-np-outline btn-np-sm"
+          [class.sound-library__category--active]="library.category() === 'jingle'"
+          (click)="onCategoryChange('jingle')"
+          i18n
+        >
+          Jingles
+        </button>
+        <button
+          type="button"
+          class="btn-np-outline btn-np-sm"
+          [class.sound-library__category--active]="library.category() === 'background'"
+          (click)="onCategoryChange('background')"
+          i18n
+        >
+          Backgrounds
+        </button>
+      </div>
+
+      <div class="sound-library__query">
+        <input
+          type="search"
+          class="np-input flex-grow-1"
+          [ngModel]="searchInput()"
+          (ngModelChange)="searchInput.set($event)"
+          (keydown)="onSearchKeydown($event)"
+          placeholder="ambiance, intro, applause…"
+          i18n-placeholder
+          aria-label="Search sounds"
+        />
+        <button
+          type="button"
+          class="btn-np btn-np-sm"
+          (click)="onSearch()"
+          [disabled]="library.loading() || !searchInput().trim()"
+          i18n
+        >
+          @if (library.loading()) {
+            <i class="fa-solid fa-spinner fa-spin me-1" aria-hidden="true"></i>
+            Searching…
+          } @else {
+            <i class="fa-solid fa-magnifying-glass me-1" aria-hidden="true"></i>
+            Search
+          }
+        </button>
+      </div>
+    </div>
+
+    @if (library.error(); as err) {
+      <div class="np-alert np-alert-danger mb-0 d-flex align-items-center justify-content-between gap-2">
+        <span>{{ err }}</span>
+        <button type="button" class="btn-np-ghost btn-np-sm" (click)="library.clearError()" i18n>Dismiss</button>
+      </div>
+    }
+
+    @if (addError(); as addErr) {
+      <div class="np-alert np-alert-danger mb-0 d-flex align-items-center justify-content-between gap-2">
+        <span>{{ addErr }}</span>
+        <button type="button" class="btn-np-ghost btn-np-sm" (click)="addError.set(null)" i18n>Dismiss</button>
+      </div>
+    }
+
+    @if (library.loading() && !library.results().length) {
+      <div class="sound-library__loading">
+        <div class="np-spinner" aria-hidden="true"></div>
+        <p class="np-text-muted small mb-0" i18n>Searching Freesound…</p>
+      </div>
+    }
+
+    @if (library.results().length) {
+      <p class="sound-library__meta small np-text-muted mb-0">
+        <span i18n>{{ library.totalCount() }} results</span>
+        @if (library.lastQuery()) {
+          <span> · “{{ library.lastQuery() }}”</span>
+        }
+      </p>
+
+      <ul class="sound-library__list list-unstyled mb-0">
+        @for (sound of library.results(); track sound.id) {
+          <li class="sound-library__item">
+            <div class="sound-library__item-main">
+              <span class="sound-library__name">{{ sound.name }}</span>
+              <span class="sound-library__duration np-text-muted small">
+                {{ formatDuration(sound.duration) }}
+                @if (sound.username) {
+                  <span> · {{ sound.username }}</span>
+                }
+              </span>
+            </div>
+
+            <div class="sound-library__item-actions">
+              <button
+                type="button"
+                class="btn-np-outline btn-np-sm"
+                (click)="togglePreview(sound)"
+                [disabled]="!library.getPreviewUrl(sound)"
+                [attr.aria-pressed]="isPreviewing(sound)"
+                [attr.aria-label]="isPreviewing(sound) ? 'Stop preview' : 'Play preview'"
+              >
+                @if (isPreviewing(sound)) {
+                  <i class="fa-solid fa-stop me-1" aria-hidden="true"></i>
+                  <span i18n>Stop</span>
+                } @else {
+                  <i class="fa-solid fa-play me-1" aria-hidden="true"></i>
+                  <span i18n>Preview</span>
+                }
+              </button>
+
+              <button
+                type="button"
+                class="btn-np btn-np-sm"
+                (click)="addToStudio(sound)"
+                [disabled]="isAdding(sound) || !library.getPreviewUrl(sound)"
+                i18n
+              >
+                @if (isAdding(sound)) {
+                  <i class="fa-solid fa-spinner fa-spin me-1" aria-hidden="true"></i>
+                  Adding…
+                } @else {
+                  <i class="fa-solid fa-plus me-1" aria-hidden="true"></i>
+                  Add to studio
+                }
+              </button>
+            </div>
+          </li>
+        }
+      </ul>
+    }
+  }
+</section>

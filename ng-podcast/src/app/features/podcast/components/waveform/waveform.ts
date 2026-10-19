@@ -77,7 +77,7 @@ export class Waveform implements AfterViewInit, OnDestroy {
 
         // Couleur calée sur la palette --np-primary
         const alpha = 0.4 + value * 0.6;
-        ctx.fillStyle = `rgba(193, 122, 78, ${alpha})`;
+        ctx.fillStyle = `rgba(45, 212, 191, ${alpha})`;
 
         // Barres arrondies
         ctx.beginPath();

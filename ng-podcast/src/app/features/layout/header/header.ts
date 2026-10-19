@@ -4,6 +4,7 @@ import {
   HostListener,
   inject,
   signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ThemeService } from '../../podcast/services/theme.service';
@@ -14,6 +15,7 @@ import { AuthService } from '../../podcast/services/auth.service';
   standalone: true,
   imports: [RouterLink, RouterLinkActive],
   templateUrl: './header.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './header.scss',
 })
 export class Header {

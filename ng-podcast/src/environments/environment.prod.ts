@@ -7,4 +7,7 @@ export const environment = {
   // Le Google Client ID n'est PAS secret : il est public cote navigateur.
   googleClientId:
     '133671696747-vm4qm6fmbl8rul31pb42lcbpr089n0m1.apps.googleusercontent.com',
+  /** Freesound API token — https://freesound.org/apiv2/apply */
+  freesoundApiKey: '',
+  freesoundApiBaseUrl: 'https://freesound.org/apiv2',
 };

@@ -1,19 +1,64 @@
 <div class="np-page np-section">
-  <div class="np-hero glass-card mb-5">
+  <div class="np-hero glass-card mb-5" [class.np-dashboard-hero-premium]="isPremium()">
     <p class="np-hero-eyebrow">Tableau de bord</p>
     <h1 class="np-gradient-text">Bonjour, {{ displayName() }}</h1>
-    <p class="np-hero-desc" i18n>
-      Manage your podcasts, texts and testimonials, or explore the community from this space.
-    </p>
+    @if (isPremium()) {
+      <p class="np-hero-desc">
+        Espace créateur Premium — quotas illimités, chat et outils avancés.
+      </p>
+    } @else {
+      <p class="np-hero-desc" i18n>
+        Manage your podcasts, texts and testimonials, or explore the community from this space.
+      </p>
+    }
     @if (auth.user(); as u) {
-      @if (u.role === 'ADMIN') {
-        <p class="np-dashboard-meta mb-0">
-          <span class="np-dashboard-badge" i18n>Admin</span>
-        </p>
-      }
+      <p class="np-dashboard-meta mb-0">
+        @if (u.role === 'ADMIN') {
+          <span class="np-dashboard-badge np-dashboard-badge-admin" i18n>Admin</span>
+        }
+        @if (isPremium()) {
+          <span class="np-dashboard-badge np-dashboard-badge-premium">
+            <i class="fa-solid fa-crown me-1" aria-hidden="true"></i>
+            {{ subscriptionLabel() }}
+          </span>
+        }
+      </p>
       <p class="np-text-muted small mb-0 mt-2" style="opacity: 0.85" i18n>account : {{ u.email }}</p>
     }
   </div>
+
+  @if (isPremium() && billingStatus(); as s) {
+    <div class="np-dashboard-premium-panel glass-card mb-4">
+      <div class="np-dashboard-premium-head">
+        <div>
+          <h2 class="h5 mb-1">Votre abonnement</h2>
+          @if (isStripeSubscriber()) {
+            <p class="np-text-muted small mb-0">
+              Statut : {{ s.subscriptionStatus }}
+              @if (s.trialEndsAt) {
+                · Essai jusqu’au {{ s.trialEndsAt | date: 'dd/MM/yyyy' }}
+              }
+            </p>
+          } @else {
+            <p class="np-text-muted small mb-0">
+              Accès Premium complet — membre de la première heure.
+            </p>
+          }
+        </div>
+        @if (isStripeSubscriber()) {
+          <button type="button" class="btn-np-outline" [disabled]="billingBusy()"
+            (click)="manageSubscription()">
+            Gérer / annuler
+          </button>
+        }
+      </div>
+      <ul class="np-dashboard-premium-perks">
+        <li>Podcasts, writings et storytellings sans limite</li>
+        <li>Chat privé et salon communautaire</li>
+        <li>Annulable à tout moment</li>
+      </ul>
+    </div>
+  }
 
   @if (auth.user(); as u) {
     @if (!u.emailVerified) {
@@ -61,6 +106,15 @@
   </div>
 
   <div class="np-dashboard-grid mb-5">
+    @if (isPremium()) {
+      <a routerLink="/chat" class="np-dash-tile glass-card np-dash-tile-premium">
+        <span class="np-dash-tile-title">
+          <i class="fa-solid fa-comments me-1" aria-hidden="true"></i>
+          Chat Premium
+        </span>
+        <span class="np-dash-tile-desc">Messages privés et salon communautaire.</span>
+      </a>
+    }
     <a routerLink="/podcasts/mine" class="np-dash-tile glass-card" i18n>
       <span class="np-dash-tile-title">My podcasts</span>
       <span class="np-dash-tile-desc">Edit or publish your audio series.</span>
@@ -114,6 +168,9 @@
   <div class="np-dashboard-actions">
     <span class="np-text-muted" style="font-size: 14px" i18n>Links :</span>
     <a routerLink="/podcasts/mine" class="btn-np" i18n>My podcasts</a>
+    @if (isPremium()) {
+      <a routerLink="/chat" class="btn-np-outline">Chat Premium</a>
+    }
     <a routerLink="/writing" class="btn-np-outline" i18n>Writing</a>
     <a routerLink="/storytelling" class="btn-np-outline" i18n>Storytelling</a>
     <a routerLink="/search" class="btn-np-outline" i18n>Search</a>

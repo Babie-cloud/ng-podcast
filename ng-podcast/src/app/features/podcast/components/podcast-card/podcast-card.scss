@@ -19,7 +19,7 @@
 .np-card-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(20, 10, 5, 0.45);
+  background: rgba(10, 15, 14, 0.46);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -105,7 +105,7 @@
 @media (hover: none) {
   .np-card-overlay {
     opacity: 1;
-    background: rgba(20, 10, 5, 0.25);
+    background: rgba(10, 15, 14, 0.26);
   }
 
   .np-podcast-card:hover .np-card-cover {

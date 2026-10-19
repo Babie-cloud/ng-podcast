@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { WritingStore } from '../../../store/writing.store';
@@ -7,6 +7,7 @@ import { WritingStore } from '../../../store/writing.store';
   selector: 'app-writing-mine',
   standalone: true,
   imports: [RouterLink, DatePipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './writing-mine.html',
 })
 export class WritingMine implements OnInit {

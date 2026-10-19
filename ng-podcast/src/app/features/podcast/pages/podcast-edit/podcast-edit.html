@@ -68,21 +68,107 @@
 
     <div class="glass-card mb-3">
       <span class="np-section-label d-block mb-2" i18n>Audio</span>
-      <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
-        <div>
-          <h3 class="h5 mb-1" i18n>Episodes</h3>
-          <p class="np-text-muted small mb-0" i18n>
-            Add a track from the studio (file or microphone&nbsp;; the microphone replaces the selected file).
-          </p>
+
+      <div class="episode-create mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+          <div>
+            <h3 class="h5 mb-1" i18n>New episode</h3>
+            <p class="np-text-muted small mb-0" i18n>
+              Import a file, record with the microphone, or use the multi-track studio — then add the episode here.
+            </p>
+          </div>
+          <a [routerLink]="['/podcasts', podcastId(), 'studio']" class="btn-np-outline btn-np-sm" i18n>
+            <i class="fa-solid fa-up-right-from-square me-1" aria-hidden="true"></i>
+            Full-screen studio
+          </a>
         </div>
-        <a [routerLink]="['/podcasts', podcastId(), 'studio']" class="btn-np ms-auto" i18n>
-          <i class="fa-solid fa-microphone-lines me-2" aria-hidden="true"></i>
-          Atelier audio
-        </a>
+
+        <form [formGroup]="episodeForm" class="d-flex flex-column gap-3" (ngSubmit)="addEpisode()">
+          <div>
+            <label class="np-label" for="pe-ep-title" i18n>Episode title*</label>
+            <input id="pe-ep-title" type="text" class="np-input w-100" formControlName="title" />
+            @if (episodeForm.controls.title.invalid && episodeForm.controls.title.touched) {
+              <p class="small text-danger mb-0 mt-1" i18n>At least 2 characters.</p>
+            }
+          </div>
+
+          <div>
+            <label class="np-label" for="pe-ep-desc" i18n>Description (optional)</label>
+            <textarea id="pe-ep-desc" class="np-input w-100" rows="2" formControlName="description"></textarea>
+          </div>
+
+          <div class="form-check">
+            <input id="pe-ep-pub" type="checkbox" class="form-check-input" formControlName="publishNow" />
+            <label class="form-check-label" for="pe-ep-pub" i18n>Publish immediately</label>
+          </div>
+
+          <div class="episode-create-media">
+            <div>
+              <label class="np-label" for="pe-ep-file" i18n>Audio file</label>
+              <input
+                id="pe-ep-file"
+                type="file"
+                class="np-input w-100"
+                accept="audio/*"
+                (change)="onAudioChange($event)"
+              />
+            </div>
+            <div>
+              <label class="np-label" i18n>Microphone</label>
+              <app-audio-recorder (fileReady)="onRecorded($event)" />
+            </div>
+          </div>
+
+          @if (pickedAudioLabel(); as audioLabel) {
+            <p class="small np-text-muted mb-0">
+              <span i18n>Selected audio:</span> {{ audioLabel }} —
+              <button type="button" class="btn btn-link btn-sm p-0 align-baseline" (click)="clearPickedAudio()" i18n>
+                Remove
+              </button>
+            </p>
+          }
+
+          <div class="episode-create-studio">
+            <button
+              type="button"
+              class="btn-np-outline btn-np-sm"
+              (click)="toggleAudioStudio()"
+              i18n
+            >
+              <i class="fa-solid fa-sliders me-1" aria-hidden="true"></i>
+              @if (showAudioStudio()) {
+                Hide multi-track studio
+              } @else {
+                Open multi-track studio
+              }
+            </button>
+
+            @if (showAudioStudio()) {
+              <div class="mt-3">
+                <app-audio-studio-editor (audioReady)="onStudioExport($event)" />
+              </div>
+            }
+          </div>
+
+          <button
+            type="submit"
+            class="btn-np align-self-start"
+            [disabled]="episodeAddBusy() || store.loading()"
+            i18n
+          >
+            @if (episodeAddBusy()) {
+              Adding episode…
+            } @else {
+              Add episode
+            }
+          </button>
+        </form>
       </div>
 
+      <h3 class="h5 mb-3" i18n>Existing episodes</h3>
+
       @if (p.episodes.length === 0) {
-        <p class="np-text-muted small mb-0" i18n>No episodes — open the studio to create one.</p>
+        <p class="np-text-muted small mb-0" i18n>No episodes yet — create one above.</p>
       }
 
       @if (p.episodes.length > 0) {
@@ -133,7 +219,102 @@
               </div>
 
               <div>
-                <label class="np-label small" [attr.for]="'caps-' + ep.id">Synchronized lyrics (JSON)</label>
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+                  <label class="np-label small mb-0" [attr.for]="'caps-' + ep.id" i18n>
+                    Synchronized lyrics (JSON)
+                  </label>
+                  <button
+                    type="button"
+                    class="btn-np-outline btn-np-sm"
+                    (click)="isMusixmatchOpen(ep) ? closeMusixmatchSearch() : openMusixmatchSearch(ep)"
+                    i18n
+                  >
+                    <i class="fa-solid fa-music me-1" aria-hidden="true"></i>
+                    @if (isMusixmatchOpen(ep)) {
+                      Hide Musixmatch
+                    } @else {
+                      Import from Musixmatch
+                    }
+                  </button>
+                </div>
+
+                @if (isMusixmatchOpen(ep)) {
+                  <div class="glass-strong p-3 mb-3 d-flex flex-column gap-2">
+                    <p class="small np-text-muted mb-0" i18n>
+                      Search Musixmatch, then import lyrics as timed cues (distributed over the episode duration).
+                    </p>
+                    <div class="d-flex flex-wrap gap-2">
+                      <input
+                        type="search"
+                        class="np-input flex-grow-1"
+                        placeholder="Track title"
+                        i18n-placeholder
+                        [value]="musixmatchQueryTrack()"
+                        (input)="musixmatchQueryTrack.set($any($event.target).value)"
+                        aria-label="Musixmatch track title"
+                      />
+                      <input
+                        type="search"
+                        class="np-input flex-grow-1"
+                        placeholder="Artist (optional)"
+                        i18n-placeholder
+                        [value]="musixmatchQueryArtist()"
+                        (input)="musixmatchQueryArtist.set($any($event.target).value)"
+                        aria-label="Musixmatch artist"
+                      />
+                      <button
+                        type="button"
+                        class="btn-np btn-np-sm"
+                        (click)="searchMusixmatch(ep)"
+                        [disabled]="musixmatchBusyId() === ep.id || musixmatchConfigured() === false"
+                        i18n
+                      >
+                        @if (musixmatchBusyId() === ep.id) {
+                          Searching…
+                        } @else {
+                          Search
+                        }
+                      </button>
+                    </div>
+
+                    @if (musixmatchError(); as mxErr) {
+                      <div class="np-alert np-alert-danger mb-0 small">{{ mxErr }}</div>
+                    }
+
+                    @if (musixmatchResults().length) {
+                      <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
+                        @for (track of musixmatchResults(); track track.track_id) {
+                          <li
+                            class="d-flex flex-wrap justify-content-between align-items-center gap-2 p-2 rounded"
+                            style="border: 1px solid color-mix(in srgb, var(--np-border, #444) 35%, transparent)"
+                          >
+                            <div class="small">
+                              <strong>{{ track.track_name }}</strong>
+                              <span class="np-text-muted"> · {{ track.artist_name }}</span>
+                              @if (track.album_name) {
+                                <span class="np-text-muted"> · {{ track.album_name }}</span>
+                              }
+                            </div>
+                            <button
+                              type="button"
+                              class="btn-np-outline btn-np-sm"
+                              (click)="importMusixmatchLyrics(ep, track)"
+                              [disabled]="musixmatchImportId() === track.track_id"
+                              i18n
+                            >
+                              @if (musixmatchImportId() === track.track_id) {
+                                Importing…
+                              } @else {
+                                Import lyrics
+                              }
+                            </button>
+                          </li>
+                        }
+                      </ul>
+                    }
+                  </div>
+                }
+
                 <textarea
                   [id]="'caps-' + ep.id"
                   #capTa
@@ -145,7 +326,8 @@
                 ></textarea>
                 <div class="d-flex justify-content-between flex-wrap gap-2 mt-2">
                   <p class="small np-text-muted mb-0">
-                    <code>s</code>/<code>e</code> in seconds, <code>t</code>&nbsp;= text. Leave empty to clear.
+                    <code>s</code>/<code>e</code> in seconds, <code>t</code>&nbsp;= text.
+                    Use Musixmatch import or enter JSON manually, then save.
                   </p>
                   <button
                     type="button"

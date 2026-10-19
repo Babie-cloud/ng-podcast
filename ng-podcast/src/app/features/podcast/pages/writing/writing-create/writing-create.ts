@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { WritingStore } from '../../../store/writing.store';
@@ -9,6 +9,7 @@ import { ContentUploadService } from '../../../services/content-upload.service';
   selector: 'app-writing-create',
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './writing-create.html',
 })
 export class WritingCreate {

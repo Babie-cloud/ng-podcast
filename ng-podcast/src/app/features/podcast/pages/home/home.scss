@@ -1,15 +1,19 @@
 .home {
-      padding: 20px;
-    }
-    .loading, .error {
-      font-size: 1.2em;
-      color: #666;
-    }
-    .error {
-      color: red;
-    };
+  padding: 20px;
+}
+
+.loading,
+.error {
+  font-size: 1.2em;
+  color: var(--np-text-muted);
+}
+
+.error {
+  color: var(--np-danger);
+}
+
 .podcast-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-  } 
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}

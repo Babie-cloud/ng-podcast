@@ -1,0 +1,38 @@
+.np-pricing-coming-soon {
+  max-width: 640px;
+  border: 1px dashed color-mix(in srgb, var(--np-primary) 40%, transparent);
+}
+
+.np-pricing-card {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.np-pricing-card-featured {
+  border: 2px solid var(--np-primary);
+}
+
+.np-pricing-label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--np-text-muted);
+  margin: 0;
+}
+
+.np-pricing-price {
+  font-size: 1.35rem;
+  margin: 0;
+}
+
+.np-pricing-features {
+  margin: 0 0 0.5rem;
+  padding-left: 1.1rem;
+  flex: 1;
+}
+
+.np-pricing-note p:last-child {
+  margin-bottom: 0;
+}

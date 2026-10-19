@@ -2,10 +2,12 @@ import {
   HTTP_INTERCEPTORS,
   provideHttpClient,
   withInterceptorsFromDi,
+  withXhr,
 } from '@angular/common/http';
 import { APP_INITIALIZER, ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { JwtAuthInterceptor } from './features/core/interceptors/auth.interceptor';
+import { HttpErrorInterceptor } from './features/core/interceptors/http-error.interceptor';
 import { JwtTokenBridge } from './features/core/services/jwt-token-bridge';
 import { routes } from './app.routes';
 
@@ -20,8 +22,9 @@ function hydrateJwtBridge(bridge: JwtTokenBridge): () => Promise<void> {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withXhr(), withInterceptorsFromDi()),
     { provide: HTTP_INTERCEPTORS, useExisting: JwtAuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useExisting: HttpErrorInterceptor, multi: true },
     {
       provide: APP_INITIALIZER,
       useFactory: hydrateJwtBridge,

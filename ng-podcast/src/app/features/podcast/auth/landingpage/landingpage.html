@@ -16,24 +16,12 @@
         </p>
 
         <div class="np-landing-actions">
-          @if (auth.isLogged()) {
-            <!--  Connecté : accès direct -->
-            <a routerLink="/podcasts" class="btn-np btn-np-lg" i18n>
-              Your podcast
-            </a>
-            <a routerLink="/podcasts/create" class="btn-np-outline btn-np-lg" i18n>
-              + Create podcast
-            </a>
-          } @else {
-            <!--  Non connecté : vers inscription/login -->
-            <a routerLink="/signup" class="btn-np btn-np-lg"
-              [queryParams]="{ returnUrl: '/podcasts/create' }" i18n>
-              Start for free
-            </a>
-            <a routerLink="/login" class="btn-np-outline btn-np-lg" i18n>
-              Log in
-            </a>
-          }
+          <a routerLink="/dashboard" class="btn-np btn-np-lg">
+            Mon tableau de bord
+          </a>
+          <a routerLink="/podcasts/create" class="btn-np-outline btn-np-lg" i18n>
+            + Create podcast
+          </a>
         </div>
 
         <!-- Stats -->
@@ -51,6 +39,20 @@
             <span class="np-stat-lbl" i18n>Years on line</span>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Premium — prochainement -->
+  <section id="tarifs" class="np-section np-pricing-section">
+    <div class="np-page">
+      <div class="glass-card np-pricing-coming-soon p-4 p-md-5 text-center mx-auto">
+        <span class="np-section-label d-block mb-2">Premium</span>
+        <h2 class="np-section-title mb-2">Abonnement <em>Premium</em> — bientôt</h2>
+        <p class="np-text-muted mb-0 mx-auto" style="max-width: 36rem">
+          Quotas illimités, chat communautaire et fonctionnalités avancées arriveront prochainement.
+          En attendant, profitez librement de votre compte créateur.
+        </p>
       </div>
     </div>
   </section>
@@ -93,9 +95,7 @@
             Write and share your poems, stories and creative texts
             with the community.
           </p>
-          <span class="np-feature-cta">
-            {{ auth.isLogged() ? 'Access →' : ' Login required' }}
-          </span>
+          <span class="np-feature-cta">Accéder →</span>
         </div>
 
         <!-- Feature Storytelling -->
@@ -108,9 +108,7 @@
             Share your testimonies, confessions and life stories
             in audio or text.
           </p>
-          <span class="np-feature-cta">
-            {{ auth.isLogged() ? 'Access →' : ' Login required' }}
-          </span>
+          <span class="np-feature-cta">Accéder →</span>
         </div>
 
       </div>
@@ -146,14 +144,6 @@
           }
         }
       </div>
-
-      @if (!auth.isLogged()) {
-        <p class="np-text-muted small mt-4 mb-0" i18n>
-          To <strong>publish</strong> or <strong>modify</strong> the audio, you must
-          <a routerLink="/signup" [queryParams]="{ returnUrl: '/podcasts/create' }">create an account</a>
-          then log in. In read-only mode, explore the cards and listen to public episodes.
-        </p>
-      }
     </div>
   </section>
 

@@ -106,7 +106,7 @@
 }
 
 .episode-play-cue-active {
-  background: color-mix(in srgb, var(--np-accent, #6366f1) 26%, transparent);
+  background: color-mix(in srgb, var(--np-accent) 26%, transparent);
   font-weight: 600;
   transform: translateX(2px);
 }

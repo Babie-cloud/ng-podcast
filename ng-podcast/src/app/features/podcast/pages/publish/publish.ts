@@ -1,5 +1,5 @@
 // src/app/features/podcast/pages/publish/publish.ts
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { PodcastStore } from '../../store/podcast.store';
@@ -9,6 +9,7 @@ import { PodcastService } from '../../services/podcast.service';
   selector: 'app-publish',
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './publish.html',
 })
 export class Publish implements OnInit {
@@ -48,7 +49,7 @@ export class Publish implements OnInit {
   togglePlatform(p: string): void {
     const current = this.platforms();
     this.platforms.set(
-      current.includes(p) ? current.filter((x: string) => x !== p) : [...current, p]
+      current.includes(p) ? current.filter((x: string) => x !== p) : [...current, p],
     );
   }
 

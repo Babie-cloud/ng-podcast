@@ -1,5 +1,12 @@
 // src/app/features/podcast/components/podcast-card/podcast-card.ts
-import { Component, Input, Output, EventEmitter, computed } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  computed,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { Podcast, Episode } from '../../models/podcast.model';
@@ -11,15 +18,15 @@ import { inject } from '@angular/core';
   standalone: true,
   imports: [RouterLink, DatePipe],
   templateUrl: './podcast-card.html',
-  styleUrl: './podcast-card.scss'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './podcast-card.scss',
 })
 export class PodcastCard {
-
   // ─── INPUT classique (pas signal) ────────────────────────────
   @Input({ required: true }) podcast!: Podcast;
 
   // ─── OUTPUTS ─────────────────────────────────────────────────
-  @Output() play   = new EventEmitter<Episode>();
+  @Output() play = new EventEmitter<Episode>();
   @Output() delete = new EventEmitter<string>();
 
   readonly store = inject(PodcastStore);
@@ -30,8 +37,7 @@ export class PodcastCard {
   }
 
   get isCurrentlyPlaying(): boolean {
-    return this.store.currentEpisode()?.id === this.firstEpisode?.id
-      && this.store.isPlaying();
+    return this.store.currentEpisode()?.id === this.firstEpisode?.id && this.store.isPlaying();
   }
 
   // ─── MÉTHODES ────────────────────────────────────────────────

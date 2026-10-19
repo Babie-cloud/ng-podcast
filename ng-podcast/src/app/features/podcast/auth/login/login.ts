@@ -1,29 +1,32 @@
 // src/app/features/podcast/auth/login/login.ts
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink, Router } from '@angular/router';
+import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { AuthService, readApiErrorDetail } from '../../services/auth.service';
 import { GoogleSigninButton } from '../google-signin-button/google-signin-button';
+import { safeReturnUrl } from '../../../core/utils/security.util';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink, GoogleSigninButton],
   templateUrl: './login.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './login.scss',
 })
 export class Login {
-  private fb      = new FormBuilder();
-  private router  = inject(Router);
-  readonly auth   = inject(AuthService);
+  private fb = new FormBuilder();
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  readonly auth = inject(AuthService);
 
   showPassword = false;
   readonly loading = signal(false);
-  readonly error   = signal<string | null>(null);
-  readonly info    = signal<string | null>(null);
+  readonly error = signal<string | null>(null);
+  readonly info = signal<string | null>(null);
 
   loginForm = this.fb.group({
-    email:    ['', [Validators.required, Validators.email]],
+    email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
   });
 
@@ -39,9 +42,7 @@ export class Login {
     try {
       const { email, password } = this.loginForm.getRawValue();
       await this.auth.login({ email: email!, password: password! });
-
       await this.router.navigateByUrl(this.returnUrl());
-
     } catch (e: unknown) {
       this.error.set(readApiErrorDetail(e, 'Email ou mot de passe incorrect.'));
     } finally {
@@ -67,6 +68,6 @@ export class Login {
     if (params.get('verified') === '1') {
       this.info.set('Email confirmé, vous pouvez vous connecter.');
     }
-    return params.get('returnUrl') ?? '/dashboard';
+    return safeReturnUrl(this.route.snapshot.queryParamMap.get('returnUrl'), '/dashboard');
   }
 }

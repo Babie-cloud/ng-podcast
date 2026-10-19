@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { WritingStore } from '../../../store/writing.store';
@@ -9,6 +9,7 @@ import { ContentUploadService } from '../../../services/content-upload.service';
   selector: 'app-writing-edit',
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './writing-edit.html',
 })
 export class WritingEdit implements OnInit {

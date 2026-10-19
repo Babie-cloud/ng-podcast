@@ -1,5 +1,5 @@
 // src/app/features/podcast/pages/home/home.ts
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { PodcastStore } from '../../store/podcast.store';
 import { PodcastCard } from '../../components/podcast-card/podcast-card';
@@ -10,7 +10,8 @@ import { NewsletterForm } from '../../../../shared/components/newsletter-form/ne
   selector: 'app-home',
   standalone: true,
   imports: [RouterLink, PodcastCard, NewsletterForm],
-  templateUrl: './home.html'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './home.html',
 })
 export class Home implements OnInit {
   readonly store = inject(PodcastStore);
@@ -18,13 +19,32 @@ export class Home implements OnInit {
 
   // ✅ topics manquait dans la classe
   readonly topics = [
-    'Intelligence Artificielle', 'Startups', 'Robotique',
-    'Cybersécurité', 'Futurisme', 'Web3', 'Quantique',
-    'Biotech', 'Spatial', 'Open Source', 'Green Tech', 'Design',
-    'Poésie', 'Témoignages', 'Confessions'
+    'Intelligence Artificielle',
+    'Startups',
+    'Robotique',
+    'Cybersécurité',
+    'Futurisme',
+    'Web3',
+    'Quantique',
+    'Biotech',
+    'Spatial',
+    'Open Source',
+    'Green Tech',
+    'Design',
+    'Poésie',
+    'Témoignages',
+    'Confessions',
   ];
 
   ngOnInit() {
-    this.store.loadAll();
+    void this.store.loadHomeCatalog(this.auth.isLogged());
+  }
+
+  draftPodcasts() {
+    return this.store.podcasts().filter((p) => p.status !== 'PUBLISHED');
+  }
+
+  publishedPodcasts() {
+    return this.store.podcasts().filter((p) => p.status === 'PUBLISHED');
   }
 }

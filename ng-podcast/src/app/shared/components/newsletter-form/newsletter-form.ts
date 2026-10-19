@@ -1,4 +1,4 @@
-import { Component, inject, input, signal } from '@angular/core';
+import { Component, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NewsletterService } from '../../../features/podcast/services/newsletter.service';
 
@@ -6,6 +6,7 @@ import { NewsletterService } from '../../../features/podcast/services/newsletter
   selector: 'app-newsletter-form',
   standalone: true,
   imports: [FormsModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './newsletter-form.html',
 })
 export class NewsletterForm {

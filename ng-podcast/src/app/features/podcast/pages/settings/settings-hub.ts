@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ThemeService } from '../../services/theme.service';
 import type { ThemeMode } from '../../services/theme.service';
@@ -9,6 +9,7 @@ import { AuthService } from '../../services/auth.service';
   standalone: true,
   imports: [RouterLink],
   templateUrl: './settings-hub.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings-hub.scss',
 })
 export class SettingsHub {
