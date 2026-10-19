@@ -10,6 +10,6 @@ services:
     startCommand: node dist/ng-podcast/server/server.mjs
     envVars:
       - key: NODE_VERSION
-        value: "20"
+        value: "24"
       - key: API_URL
         sync: false
