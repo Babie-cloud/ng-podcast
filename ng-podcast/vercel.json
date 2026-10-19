@@ -2,6 +2,10 @@
   "version": 2,
   "installCommand": "npm ci",
   "buildCommand": "npm run build:prod",
+  "env": {
+    "API_URL": "https://ngpodcast-api.onrender.com",
+    "NG_TRUST_PROXY_HEADERS": "x-forwarded-proto,x-forwarded-host,x-forwarded-for"
+  },
   "rewrites": [{ "source": "/(.*)", "destination": "/api" }],
   "functions": {
     "api/index.mjs": {
