@@ -7,7 +7,6 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { GoogleSigninButton } from '../google-signin-button/google-signin-button';
 
 @Component({
   selector: 'app-google-complete',
@@ -41,7 +40,14 @@ export class GoogleComplete implements OnInit {
 
     try {
       await this.auth.completeSessionFromToken(token);
-      const target = GoogleSigninButton.consumeReturnUrl('/dashboard');
+      let target = '/dashboard';
+      try {
+        const stored = sessionStorage.getItem('np_google_return_url');
+        sessionStorage.removeItem('np_google_return_url');
+        if (stored?.startsWith('/') && !stored.startsWith('//')) target = stored;
+      } catch {
+        /* ignore */
+      }
       await this.router.navigateByUrl(target);
     } catch {
       this.error.set('Impossible de finaliser la session Google.');
