@@ -19,6 +19,13 @@ export const routes: Routes = [
       import('./features/podcast/auth/login/login').then((m) => m.Login),
   },
   {
+    path: 'auth/google/complete',
+    loadComponent: () =>
+      import('./features/podcast/auth/google-complete/google-complete').then(
+        (m) => m.GoogleComplete,
+      ),
+  },
+  {
     path: 'resetpassword',
     loadComponent: () =>
       import('./features/podcast/auth/resetpassword/resetpassword').then(
