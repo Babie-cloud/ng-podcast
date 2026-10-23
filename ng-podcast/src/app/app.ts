@@ -7,7 +7,7 @@ import { Player } from './features/podcast/components/player/player';
 import { Footer } from './features/layout/footer/footer';
 import { ToastContainer } from './shared/components/toast-container/toast-container';
 
-const AUTH_SHELL_PATHS = ['/signup', '/login', '/resetpassword'] as const;
+const AUTH_SHELL_PATHS = ['/signup', '/login', '/resetpassword', '/auth/google'] as const;
 
 @Component({
   selector: 'app-root',

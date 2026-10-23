@@ -30,6 +30,13 @@ export class Login {
     password: ['', Validators.required],
   });
 
+  constructor() {
+    const googleError = this.route.snapshot.queryParamMap.get('google_error');
+    if (googleError?.trim()) {
+      this.error.set(googleError.trim());
+    }
+  }
+
   async onSubmit(): Promise<void> {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();

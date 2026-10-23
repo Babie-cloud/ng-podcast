@@ -179,6 +179,17 @@ export class AuthService {
     }
   }
 
+  /** Après redirect Google → API → /auth/google/complete?token=… */
+  async completeSessionFromToken(token: string): Promise<void> {
+    const trimmed = token.trim();
+    if (!trimmed) {
+      throw new Error('Jeton manquant');
+    }
+    this._token.set(trimmed);
+    this.jwtBridge.remember(trimmed);
+    await this.fetchMe();
+  }
+
   async resendVerification(email: string): Promise<void> {
     await firstValueFrom(
       this.http.post<void>(`${this.base}/resend-verification`, { email })

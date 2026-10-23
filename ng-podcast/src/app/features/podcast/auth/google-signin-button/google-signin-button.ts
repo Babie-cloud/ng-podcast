@@ -25,6 +25,9 @@ declare global {
           initialize: (config: {
             client_id: string;
             callback: (response: { credential?: string }) => void;
+            ux_mode?: 'popup' | 'redirect';
+            login_uri?: string;
+            use_fedcm_for_prompt?: boolean;
           }) => void;
           renderButton: (
             element: HTMLElement,
@@ -40,10 +43,12 @@ interface AuthPublicConfig {
   googleClientId: string;
 }
 
+const RETURN_URL_KEY = 'np_google_return_url';
+
 @Component({
   selector: 'app-google-signin-button',
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (loading()) {
       <div class="text-center small text-muted mb-3">Chargement Google…</div>
@@ -51,7 +56,7 @@ interface AuthPublicConfig {
       <div class="np-alert np-alert-warning small mb-3">
         <strong>Connexion Google : configuration requise</strong>
         <p class="mb-2 mt-2">
-          Définissez <code>GOOGLE_CLIENT_ID</code> côté API Spring, puis redémarrez le serveur.
+          Définissez <code>GOOGLE_CLIENT_ID</code> sur l’API (Render), puis redéployez.
         </p>
         <ol class="mb-0 ps-3">
           <li>
@@ -63,24 +68,29 @@ interface AuthPublicConfig {
               Google Cloud Console → Credentials
             </a>
           </li>
-          <li>Créez un <strong>OAuth 2.0 Client ID</strong> (type Web)</li>
+          <li>Client OAuth <strong>Web</strong></li>
           <li>
-            Ajoutez les origines : <code>http://localhost:4200</code> et
-            <code>http://127.0.0.1:4200</code>
+            Origines JS :
+            <code>https://ng-podcast.vercel.app</code>,
+            <code>http://localhost:4200</code>
           </li>
           <li>
-            Dans <code>sdk-podcast/mon-api/.env</code> :
-            <code>GOOGLE_CLIENT_ID=votre-id.apps.googleusercontent.com</code>
+            Redirect URI :
+            <code>https://ngpodcast-api.onrender.com/auth/google/callback</code>
           </li>
         </ol>
       </div>
     } @else {
       <div #buttonHost class="d-flex justify-content-center mb-3"></div>
+      <p class="text-center small text-muted mb-0">
+        Connexion Google via redirection (pas de popup).
+      </p>
     }
   `,
 })
 export class GoogleSigninButton implements AfterViewInit {
   @Input() text: 'signin_with' | 'signup_with' | 'continue_with' = 'continue_with';
+  /** Conservé pour compat ; en mode redirect le callback navigateur n’est pas utilisé. */
   @Output() credential = new EventEmitter<string>();
   @ViewChild('buttonHost') buttonHost?: ElementRef<HTMLElement>;
 
@@ -107,12 +117,27 @@ export class GoogleSigninButton implements AfterViewInit {
     }
 
     if (this.missingConfig()) return;
+
+    const returnUrl =
+      new URLSearchParams(window.location.search).get('returnUrl') ?? '/dashboard';
+    try {
+      sessionStorage.setItem(RETURN_URL_KEY, returnUrl);
+    } catch {
+      /* private mode */
+    }
+
+    const loginUri = `${environment.apiUrl.replace(/\/$/, '')}/auth/google/callback`;
+
     window.google?.accounts.id.initialize({
       client_id: this.clientId,
+      // Fallback si un navigateur force encore le mode popup.
       callback: (response) => {
         if (response.credential) this.credential.emit(response.credential);
       },
+      ux_mode: 'redirect',
+      login_uri: loginUri,
     });
+
     const host = this.buttonHost?.nativeElement;
     if (!host) return;
     window.google?.accounts.id.renderButton(host, {
@@ -125,18 +150,29 @@ export class GoogleSigninButton implements AfterViewInit {
     });
   }
 
-  private async resolveClientId(): Promise<string> {
-    const fromEnv = environment.googleClientId?.trim() ?? '';
-    if (fromEnv) return fromEnv;
+  static consumeReturnUrl(fallback = '/dashboard'): string {
+    try {
+      const stored = sessionStorage.getItem(RETURN_URL_KEY);
+      sessionStorage.removeItem(RETURN_URL_KEY);
+      if (stored?.startsWith('/') && !stored.startsWith('//')) return stored;
+    } catch {
+      /* ignore */
+    }
+    return fallback;
+  }
 
+  private async resolveClientId(): Promise<string> {
+    // Toujours préférer la config API (Render) pour rester aligné avec le backend.
     try {
       const config = await firstValueFrom(
         this.publicHttp.get<AuthPublicConfig>(`${environment.apiUrl}/auth/config`),
       );
-      return config.googleClientId?.trim() ?? '';
+      const fromApi = config.googleClientId?.trim() ?? '';
+      if (fromApi) return fromApi;
     } catch {
-      return '';
+      /* API down — fallback env */
     }
+    return environment.googleClientId?.trim() ?? '';
   }
 
   private loadScript(): Promise<void> {
