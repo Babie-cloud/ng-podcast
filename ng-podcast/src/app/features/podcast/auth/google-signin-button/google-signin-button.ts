@@ -72,11 +72,14 @@ const RETURN_URL_KEY = 'np_google_return_url';
           <li>
             Origines JS :
             <code>https://ng-podcast.vercel.app</code>,
-            <code>http://localhost:4200</code>
+            <code>http://localhost:4200</code>,
+            <code>http://127.0.0.1:4200</code>
           </li>
           <li>
-            Redirect URI :
+            Redirect URIs (obligatoire) :
             <code>https://ngpodcast-api.onrender.com/auth/google/callback</code>
+            et
+            <code>http://127.0.0.1:8080/auth/google/callback</code>
           </li>
         </ol>
       </div>
