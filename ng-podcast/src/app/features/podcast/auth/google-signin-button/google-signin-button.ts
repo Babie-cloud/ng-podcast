@@ -27,6 +27,7 @@ declare global {
             callback: (response: { credential?: string }) => void;
             ux_mode?: 'popup' | 'redirect';
             login_uri?: string;
+            cancel_on_tap_outside?: boolean;
             use_fedcm_for_prompt?: boolean;
           }) => void;
           renderButton: (
@@ -43,8 +44,6 @@ interface AuthPublicConfig {
   googleClientId: string;
 }
 
-const RETURN_URL_KEY = 'np_google_return_url';
-
 @Component({
   selector: 'app-google-signin-button',
   standalone: true,
@@ -56,7 +55,7 @@ const RETURN_URL_KEY = 'np_google_return_url';
       <div class="np-alert np-alert-warning small mb-3">
         <strong>Connexion Google : configuration requise</strong>
         <p class="mb-2 mt-2">
-          Définissez <code>GOOGLE_CLIENT_ID</code> sur l’API (Render), puis redéployez.
+          Définissez <code>GOOGLE_CLIENT_ID</code> sur l’API, puis redémarrez / redéployez.
         </p>
         <ol class="mb-0 ps-3">
           <li>
@@ -68,32 +67,28 @@ const RETURN_URL_KEY = 'np_google_return_url';
               Google Cloud Console → Credentials
             </a>
           </li>
-          <li>Client OAuth <strong>Web</strong></li>
+          <li>Client OAuth <strong>Web</strong> (même ID que l’API)</li>
           <li>
-            Origines JS :
+            <strong>Authorized JavaScript origins</strong> (exact) :
             <code>https://ng-podcast.vercel.app</code>,
             <code>http://localhost:4200</code>,
             <code>http://127.0.0.1:4200</code>
-          </li>
-          <li>
-            Redirect URIs (obligatoire) :
-            <code>https://ngpodcast-api.onrender.com/auth/google/callback</code>
-            et
-            <code>http://127.0.0.1:8080/auth/google/callback</code>
           </li>
         </ol>
       </div>
     } @else {
       <div #buttonHost class="d-flex justify-content-center mb-3"></div>
-      <p class="text-center small text-muted mb-0">
-        Connexion Google via redirection (pas de popup).
-      </p>
+      @if (popupHint()) {
+        <p class="text-center small text-warning mb-0">
+          Si rien ne s’ouvre : autorisez les popups pour ce site (icône dans la barre d’adresse),
+          ou utilisez Chrome.
+        </p>
+      }
     }
   `,
 })
 export class GoogleSigninButton implements AfterViewInit {
   @Input() text: 'signin_with' | 'signup_with' | 'continue_with' = 'continue_with';
-  /** Conservé pour compat ; en mode redirect le callback navigateur n’est pas utilisé. */
   @Output() credential = new EventEmitter<string>();
   @ViewChild('buttonHost') buttonHost?: ElementRef<HTMLElement>;
 
@@ -103,6 +98,7 @@ export class GoogleSigninButton implements AfterViewInit {
 
   readonly loading = signal(isPlatformBrowser(this.platformId));
   readonly missingConfig = signal(false);
+  readonly popupHint = signal(false);
   private clientId = '';
 
   async ngAfterViewInit(): Promise<void> {
@@ -121,28 +117,25 @@ export class GoogleSigninButton implements AfterViewInit {
 
     if (this.missingConfig()) return;
 
-    const returnUrl =
-      new URLSearchParams(window.location.search).get('returnUrl') ?? '/dashboard';
-    try {
-      sessionStorage.setItem(RETURN_URL_KEY, returnUrl);
-    } catch {
-      /* private mode */
-    }
-
-    const loginUri = `${environment.apiUrl.replace(/\/$/, '')}/auth/google/callback`;
-
+    // Mode popup : n’exige PAS de Redirect URI dans Google Cloud
+    // (seulement Authorized JavaScript origins). Évite redirect_uri_mismatch.
     window.google?.accounts.id.initialize({
       client_id: this.clientId,
-      // Fallback si un navigateur force encore le mode popup.
       callback: (response) => {
-        if (response.credential) this.credential.emit(response.credential);
+        if (response.credential) {
+          this.credential.emit(response.credential);
+          return;
+        }
+        this.popupHint.set(true);
+        this.cdr.detectChanges();
       },
-      ux_mode: 'redirect',
-      login_uri: loginUri,
+      ux_mode: 'popup',
+      cancel_on_tap_outside: true,
     });
 
     const host = this.buttonHost?.nativeElement;
     if (!host) return;
+
     window.google?.accounts.id.renderButton(host, {
       type: 'standard',
       theme: 'outline',
@@ -151,21 +144,21 @@ export class GoogleSigninButton implements AfterViewInit {
       text: this.text,
       width: 280,
     });
-  }
 
-  static consumeReturnUrl(fallback = '/dashboard'): string {
-    try {
-      const stored = sessionStorage.getItem(RETURN_URL_KEY);
-      sessionStorage.removeItem(RETURN_URL_KEY);
-      if (stored?.startsWith('/') && !stored.startsWith('//')) return stored;
-    } catch {
-      /* ignore */
-    }
-    return fallback;
+    // Aide Firefox : après clic, si toujours pas de credential sous 3s
+    host.addEventListener(
+      'click',
+      () => {
+        window.setTimeout(() => {
+          this.popupHint.set(true);
+          this.cdr.detectChanges();
+        }, 2500);
+      },
+      { once: true, capture: true },
+    );
   }
 
   private async resolveClientId(): Promise<string> {
-    // Toujours préférer la config API (Render) pour rester aligné avec le backend.
     try {
       const config = await firstValueFrom(
         this.publicHttp.get<AuthPublicConfig>(`${environment.apiUrl}/auth/config`),
